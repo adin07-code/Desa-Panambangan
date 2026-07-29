@@ -9,10 +9,42 @@ export default function PortalPage() {
             background-color: #0c0c0c;
             color: #ffffff;
             font-family: 'Inter', sans-serif;
-            background-image: linear-gradient(to bottom, rgba(12, 12, 12, 0.6), rgba(12, 12, 12, 0.95)), url('/bg-desa.png');
+            overflow-x: hidden;
+        }
+        .bg-slider {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background-color: #0c0c0c;
+            overflow: hidden;
+        }
+        .bg-slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
+            opacity: 0;
+            animation: slide-anim 24s infinite linear;
+            transform: scale(1.05);
+        }
+        .bg-slide-1 {
+            background-image: linear-gradient(to bottom, rgba(12, 12, 12, 0.6), rgba(12, 12, 12, 0.95)), url('/bg-desa.png');
+            animation-delay: 0s;
+        }
+        .bg-slide-2 {
+            background-image: linear-gradient(to bottom, rgba(12, 12, 12, 0.6), rgba(12, 12, 12, 0.95)), url('/bg-kembang-tahu.png');
+            animation-delay: 8s;
+        }
+        .bg-slide-3 {
+            background-image: linear-gradient(to bottom, rgba(12, 12, 12, 0.6), rgba(12, 12, 12, 0.95)), url('/bg-desa-2.png');
+            animation-delay: 16s;
+        }
+        @keyframes slide-anim {
+            0% { opacity: 0; transform: scale(1.05); }
+            10% { opacity: 1; transform: scale(1.02); }
+            33% { opacity: 1; transform: scale(1.0); }
+            43% { opacity: 0; transform: scale(1.05); }
+            100% { opacity: 0; transform: scale(1.05); }
         }
         .link-card {
             background: rgba(255, 255, 255, 0.08);
@@ -48,7 +80,12 @@ export default function PortalPage() {
             100% { transform: translateY(0px); }
         }
       `}} />
-      <div className="flex flex-col items-center min-h-screen py-12 px-4">
+      <div className="bg-slider">
+          <div className="bg-slide bg-slide-1"></div>
+          <div className="bg-slide bg-slide-2"></div>
+          <div className="bg-slide bg-slide-3"></div>
+      </div>
+      <div className="flex flex-col items-center min-h-screen py-12 px-4 relative z-10">
           {/* Profile Section */}
           <div className="flex flex-col items-center mb-10 w-full max-w-md">
               <div className="profile-img w-28 h-28 rounded-full overflow-hidden border-2 border-gray-700 mb-5 bg-white flex items-center justify-center shadow-2xl relative p-2">
