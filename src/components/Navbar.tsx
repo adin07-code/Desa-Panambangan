@@ -13,7 +13,7 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center gap-2">
-              <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">DP</div>
+              <img src="/logo.png" alt="Logo Desa" className="w-9 h-9 object-contain bg-white rounded-full p-0.5 shadow-sm" />
               <span className="font-bold text-xl text-green-700 hidden sm:block">Desa Panambangan</span>
             </Link>
           </div>
