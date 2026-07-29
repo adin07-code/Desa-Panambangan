@@ -9,7 +9,10 @@ export default function PortalPage() {
             background-color: #0c0c0c;
             color: #ffffff;
             font-family: 'Inter', sans-serif;
-            background-image: radial-gradient(circle at 50% 0%, #1a201c 0%, #0c0c0c 50%);
+            background-image: linear-gradient(to bottom, rgba(12, 12, 12, 0.6), rgba(12, 12, 12, 0.95)), url('/bg-desa.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
         .link-card {
             background-color: #171717;
