@@ -41,7 +41,7 @@ export default function PortalPage() {
       <div className="flex flex-col items-center min-h-screen py-12 px-4">
           {/* Profile Section */}
           <div className="flex flex-col items-center mb-10 w-full max-w-md">
-              <div className="profile-img w-28 h-28 rounded-full overflow-hidden border-2 border-gray-700 mb-5 bg-[#171717] flex items-center justify-center shadow-2xl relative p-1">
+              <div className="profile-img w-28 h-28 rounded-full overflow-hidden border-2 border-gray-700 mb-5 bg-white flex items-center justify-center shadow-2xl relative p-2">
                   <img src="/logo.png" alt="Logo Desa Panambangan" className="w-full h-full object-contain" />
               </div>
               <h1 className="text-2xl font-bold mb-2 tracking-tight">Desa Panambangan</h1>
