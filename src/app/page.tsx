@@ -100,7 +100,7 @@ export default function PortalPage() {
           {/* Footer */}
           <div className="mt-16 text-center">
               <p className="text-gray-500 text-sm italic mb-2 tracking-wide">"Panambangan Berkarya"</p>
-              <p className="text-gray-600 text-xs font-medium">© KKM UMC 2026 - Teknik Informatika</p>
+              <p className="text-gray-600 text-xs font-medium">© KKM UMC 2026 - Kelompok 14</p>
           </div>
       </div>
     </>
