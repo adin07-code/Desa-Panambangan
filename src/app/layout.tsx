@@ -9,7 +9,15 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Desa Panambangan Berkarya",
-  description: "Web Blog Edukasi Ketahanan Pangan Desa Panambangan",
+  description: "Web Portal dan Blog Edukasi Ketahanan Pangan Desa Panambangan. Menyajikan informasi UMKM Kembang Tahu, pemetaan desa, budidaya Maggot BSF, dan tanaman TOGA.",
+  keywords: ["Desa Panambangan", "Ketahanan Pangan", "UMKM Kembang Tahu", "Maggot BSF", "TOGA", "Pemetaan Desa", "KKM UMC 2026"],
+  authors: [{ name: "KKM UMC 2026" }],
+  openGraph: {
+    title: "Desa Panambangan Berkarya",
+    description: "Pusat informasi, potensi desa, dan edukasi ketahanan pangan Desa Panambangan.",
+    type: "website",
+    locale: "id_ID",
+  }
 };
 
 export default function RootLayout({
