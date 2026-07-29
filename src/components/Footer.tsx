@@ -2,7 +2,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white py-12 border-t border-gray-800" id="kontak">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
-        <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4 shadow-lg">DP</div>
+        <img src="/logo.png" alt="Logo Desa" className="w-14 h-14 object-contain bg-white rounded-full p-1 shadow-lg mb-4" />
         <h4 className="text-xl font-bold mb-2">Desa Panambangan Berkarya</h4>
         <p className="text-gray-400 text-sm mb-8 text-center max-w-md">Menuju desa mandiri pangan dan ramah lingkungan melalui program edukasi dan pemberdayaan masyarakat terpadu.</p>
         <div className="w-full border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
