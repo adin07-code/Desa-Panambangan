@@ -15,22 +15,29 @@ export default function PortalPage() {
             background-attachment: fixed;
         }
         .link-card {
-            background-color: #171717;
-            border: 1px solid #262626;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
         .link-card:hover {
-            background-color: #202020;
-            border-color: #3f3f3f;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.4);
         }
         .icon-box {
-            background-color: #262626;
-            transition: all 0.25s ease;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
         }
         .link-card:hover .icon-box {
-            background-color: #333333;
+            background: rgba(0, 0, 0, 0.4);
+            transform: scale(1.1) rotate(5deg);
         }
         .profile-img {
             animation: float 6s ease-in-out infinite;
