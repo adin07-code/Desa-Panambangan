@@ -4,8 +4,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
 import Link from "next/link";
-import { User, Calendar, Eye, MessageCircle } from "lucide-react";
+import { User, Calendar, MessageCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import ViewCounter from "@/components/ViewCounter";
 
 export async function generateStaticParams() {
   const articles = getAllArticles();
@@ -52,7 +53,7 @@ export default async function ArticlePage({
                 <div className="flex flex-wrap items-center text-[12px] text-gray-500 mb-2 gap-4">
                   <span className="flex items-center"><Calendar className="w-4 h-4 mr-1 text-[#dc3545]" /> 30 Juli 2026</span>
                   <span className="flex items-center"><User className="w-4 h-4 mr-1 text-[#dc3545]" /> Administrator</span>
-                  <span className="flex items-center"><Eye className="w-4 h-4 mr-1 text-[#dc3545]" /> 23 Kali</span>
+                  <ViewCounter slug={article.slug} increment={true} iconClass="w-4 h-4 mr-1 text-[#dc3545]" />
                   <span className="flex items-center"><MessageCircle className="w-4 h-4 mr-1 text-[#dc3545]" /> 0</span>
                 </div>
               </div>

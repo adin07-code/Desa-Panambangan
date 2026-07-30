@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArticleData } from "@/lib/markdown";
-import { User, Calendar, Eye, MessageCircle } from "lucide-react";
+import { User, Calendar, MessageCircle } from "lucide-react";
+import ViewCounter from "./ViewCounter";
 
 export default function ArticleCard({ article }: { article: ArticleData }) {
   const colorMap: Record<string, { bg: string }> = {
@@ -41,7 +42,7 @@ export default function ArticleCard({ article }: { article: ArticleData }) {
         <div className="flex items-center text-[11px] text-gray-500 mb-2 gap-3">
           <span className="flex items-center"><Calendar className="w-3 h-3 mr-1" /> 30 Juli 2026</span>
           <span className="flex items-center"><User className="w-3 h-3 mr-1" /> Administrator</span>
-          <span className="flex items-center"><Eye className="w-3 h-3 mr-1" /> 23 Kali</span>
+          <ViewCounter slug={article.slug} />
           <span className="flex items-center"><MessageCircle className="w-3 h-3 mr-1" /> 0</span>
         </div>
         
