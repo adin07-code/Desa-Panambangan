@@ -58,9 +58,15 @@ export default async function ArticlePage({
               </div>
 
               {/* Main Image placeholder if needed, otherwise just content */}
-              <div className="w-full h-[300px] md:h-[400px] bg-gradient-to-r from-[#dc3545] to-[#f47c87] mb-8 rounded-sm flex items-center justify-center text-white text-3xl font-bold opacity-90 shadow-sm">
-                {article.title}
-              </div>
+              {article.coverImage ? (
+                <div className="w-full h-[300px] md:h-[400px] mb-8 rounded-sm overflow-hidden shadow-sm relative">
+                  <img src={article.coverImage} alt={article.title} className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <div className="w-full h-[300px] md:h-[400px] bg-gradient-to-r from-[#dc3545] to-[#f47c87] mb-8 rounded-sm flex items-center justify-center text-white text-3xl font-bold opacity-90 shadow-sm text-center px-6">
+                  {article.title}
+                </div>
+              )}
 
               {/* Markdown Content */}
               <article className="prose prose-lg max-w-none text-gray-700 text-justify prose-headings:text-[#333] prose-a:text-[#dc3545] hover:prose-a:text-[#c82333]">

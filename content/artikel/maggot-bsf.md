@@ -1,8 +1,9 @@
 ---
 title: "Panduan Awal Budidaya Maggot BSF Skala Rumahan"
-category: "MAGGOT"
-excerpt: "Ubah sampah dapur organik menjadi pakan ternak bernutrisi tinggi menggunakan larva lalat tentara hitam."
+category: "Maggot BSF"
+excerpt: "Ubah sampah dapur organik menjadi pakan ternak bernutrisi tinggi dengan menggunakan larva lalat tentara hitam."
 imageColor: "orange"
+coverImage: "/maggot-bsf.png"
 ---
 
 # Budidaya Maggot BSF Skala Rumahan

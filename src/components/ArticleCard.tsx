@@ -18,9 +18,13 @@ export default function ArticleCard({ article }: { article: ArticleData }) {
       <div className="w-full sm:w-1/3 mb-4 sm:mb-0 sm:pr-4">
         <Link href={`/artikel/${article.slug}`}>
           <div className="h-40 bg-gray-200 relative overflow-hidden rounded">
-            <div className={`absolute inset-0 bg-gradient-to-br ${theme.bg} flex items-center justify-center text-white font-bold text-center px-4 transition-transform duration-500 group-hover:scale-105`}>
-              {article.title}
-            </div>
+            {article.coverImage ? (
+              <img src={article.coverImage} alt={article.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            ) : (
+              <div className={`absolute inset-0 bg-gradient-to-br ${theme.bg} flex items-center justify-center text-white font-bold text-center px-4 transition-transform duration-500 group-hover:scale-105`}>
+                {article.title}
+              </div>
+            )}
           </div>
         </Link>
       </div>

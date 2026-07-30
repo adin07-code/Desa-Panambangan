@@ -1,8 +1,9 @@
 ---
 title: "Cara Praktis Menanam Jahe Merah di Pekarangan Rumah"
-category: "TOGA"
+category: "Tanaman TOGA"
 excerpt: "Jahe merah kaya akan manfaat kesehatan dan bernilai ekonomi. Pelajari cara menanamnya di lahan sempit dengan panduan ini."
 imageColor: "green"
+coverImage: "/jahe-merah.png"
 ---
 
 # Panduan Praktis: Cara Menanam Jahe Merah di Pekarangan Rumah

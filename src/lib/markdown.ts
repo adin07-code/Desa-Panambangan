@@ -10,6 +10,7 @@ export type ArticleData = {
   category: string;
   excerpt: string;
   imageColor: string;
+  coverImage?: string;
   content: string;
 };
 
@@ -32,6 +33,7 @@ export function getArticleBySlug(slug: string): ArticleData | null {
       category: data.category || 'Umum',
       excerpt: data.excerpt || '',
       imageColor: data.imageColor || 'green',
+      coverImage: data.coverImage,
       content: content,
     };
   } catch (e) {
