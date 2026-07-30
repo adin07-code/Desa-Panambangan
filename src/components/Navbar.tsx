@@ -13,18 +13,18 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           {/* Logo and Title */}
-          <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-3 w-full md:w-auto text-center md:text-left">
             <Link href="/" className="flex-shrink-0">
-              <img src="/logo.png" alt="Logo Desa" className="w-12 h-12 object-contain" />
+              <img src="/logo.png" alt="Logo Desa" className="w-14 h-14 object-contain" />
             </Link>
             <div className="flex flex-col">
               <span className="font-bold text-lg text-gray-700 leading-tight">KKM 14 DESA PANAMBANGAN</span>
-              <span className="text-xs text-gray-500 font-medium">KEC. SEDONG KAB. CIREBON PROV. JAWA BARAT</span>
+              <span className="text-xs text-gray-500 font-medium mt-0.5">KEC. SEDONG KAB. CIREBON PROV. JAWA BARAT</span>
             </div>
           </div>
           
           {/* Search Bar */}
-          <div className="flex items-center w-full md:w-auto mt-2 md:mt-0">
+          <div className="flex items-center justify-center w-full md:w-auto mt-3 md:mt-0">
             <div className="flex w-full md:w-72 border border-gray-300 rounded overflow-hidden">
               <input 
                 type="text" 
