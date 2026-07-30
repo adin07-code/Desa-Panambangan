@@ -67,7 +67,7 @@ export default function Sidebar() {
             
             {/* Bar 1 */}
             <div className="flex flex-col items-center w-1/4">
-              <div className="w-full bg-[#7cb5ec] h-[50%] relative group">
+              <div className="w-full bg-[#7cb5ec] relative group" style={{ height: "50%" }}>
                   <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">2.112</span>
               </div>
               <span className="text-[9px] text-gray-500 mt-2 -rotate-45 origin-top-left translate-y-2 translate-x-2">LAKI-LAKI</span>
@@ -75,7 +75,7 @@ export default function Sidebar() {
             
             {/* Bar 2 */}
             <div className="flex flex-col items-center w-1/4">
-              <div className="w-full bg-[#434348] h-[60%] relative group">
+              <div className="w-full bg-[#434348] relative group" style={{ height: "60%" }}>
                 <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">2.508</span>
               </div>
               <span className="text-[9px] text-gray-500 mt-2 -rotate-45 origin-top-left translate-y-2 translate-x-2">PEREMPUAN</span>
@@ -83,7 +83,7 @@ export default function Sidebar() {
 
             {/* Bar 3 */}
             <div className="flex flex-col items-center w-1/4">
-              <div className="w-full bg-[#90ed7d] h-[40%] relative group">
+              <div className="w-full bg-[#90ed7d] relative group" style={{ height: "40%" }}>
                 <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">1.655</span>
               </div>
               <span className="text-[9px] text-gray-500 mt-2 -rotate-45 origin-top-left translate-y-2 translate-x-2">KEPALA KELUARGA</span>
@@ -91,7 +91,7 @@ export default function Sidebar() {
 
             {/* Bar 4 */}
             <div className="flex flex-col items-center w-1/4">
-              <div className="w-full bg-[#f7a35c] h-[100%] relative group">
+              <div className="w-full bg-[#f7a35c] relative group" style={{ height: "100%" }}>
                 <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">4.171</span>
               </div>
               <span className="text-[9px] text-gray-500 mt-2 -rotate-45 origin-top-left translate-y-2 translate-x-2">TOTAL</span>
