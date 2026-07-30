@@ -18,7 +18,7 @@ export default function Navbar() {
               <img src="/logo.png" alt="Logo Desa" className="w-12 h-12 object-contain" />
             </Link>
             <div className="flex flex-col">
-              <span className="font-bold text-lg text-gray-700 leading-tight">WEBSITE DESA PANAMBANGAN</span>
+              <span className="font-bold text-lg text-gray-700 leading-tight">KKN 14 DESA PANAMBANGAN</span>
               <span className="text-xs text-gray-500 font-medium">KEC. SEDONG KAB. CIREBON PROV. JAWA BARAT</span>
             </div>
           </div>

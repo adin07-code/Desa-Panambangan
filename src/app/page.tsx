@@ -91,7 +91,7 @@ export default function PortalPage() {
               <div className="profile-img w-28 h-28 rounded-full overflow-hidden border-2 border-gray-700 mb-5 bg-white flex items-center justify-center shadow-2xl relative p-2">
                   <img src="/logo.png" alt="Logo Desa Panambangan" className="w-full h-full object-contain" />
               </div>
-              <h1 className="text-2xl font-bold mb-2 tracking-tight">Desa Panambangan</h1>
+              <h1 className="text-2xl font-bold mb-2 tracking-tight">KKN 14 DESA PANAMBANGAN</h1>
               <p className="text-gray-400 text-sm font-medium">Pusat Informasi & Potensi Desa</p>
           </div>
 
