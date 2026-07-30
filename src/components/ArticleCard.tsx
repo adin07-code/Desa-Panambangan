@@ -1,42 +1,50 @@
 import Link from "next/link";
 import { ArticleData } from "@/lib/markdown";
-import { ArrowRight } from "lucide-react";
+import { User, Calendar, Eye, MessageCircle } from "lucide-react";
 
 export default function ArticleCard({ article }: { article: ArticleData }) {
-  // Map color string to Tailwind classes
-  const colorMap: Record<string, { bg: string, text: string, tagBg: string, tagText: string }> = {
-    green: { bg: "from-green-400 to-green-600", text: "text-green-600", tagBg: "bg-green-100", tagText: "text-green-700" },
-    yellow: { bg: "from-yellow-400 to-yellow-600", text: "text-yellow-600", tagBg: "bg-yellow-100", tagText: "text-yellow-700" },
-    orange: { bg: "from-orange-400 to-orange-600", text: "text-orange-600", tagBg: "bg-orange-100", tagText: "text-orange-700" },
-    teal: { bg: "from-teal-400 to-teal-600", text: "text-teal-600", tagBg: "bg-teal-100", tagText: "text-teal-700" },
+  const colorMap: Record<string, { bg: string }> = {
+    green: { bg: "from-green-400 to-green-600" },
+    yellow: { bg: "from-yellow-400 to-yellow-600" },
+    orange: { bg: "from-orange-400 to-orange-600" },
+    teal: { bg: "from-teal-400 to-teal-600" },
   };
 
   const theme = colorMap[article.imageColor] || colorMap.green;
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 flex flex-col group border border-gray-100">
-      <div className="h-48 bg-gray-200 relative overflow-hidden">
-        <div className={`absolute inset-0 bg-gradient-to-br ${theme.bg} flex items-center justify-center text-white font-bold text-lg group-hover:scale-105 transition-transform duration-500 px-4 text-center`}>
-          {article.title}
-        </div>
+    <div className="flex flex-col sm:flex-row mb-6 border-b border-gray-200 pb-6 group">
+      {/* Image Thumbnail */}
+      <div className="w-full sm:w-1/3 mb-4 sm:mb-0 sm:pr-4">
+        <Link href={`/artikel/${article.slug}`}>
+          <div className="h-40 bg-gray-200 relative overflow-hidden rounded">
+            <div className={`absolute inset-0 bg-gradient-to-br ${theme.bg} flex items-center justify-center text-white font-bold text-center px-4 transition-transform duration-500 group-hover:scale-105`}>
+              {article.title}
+            </div>
+          </div>
+        </Link>
       </div>
-      <div className="p-6 flex-grow flex flex-col">
-        <span className={`inline-block px-3 py-1 ${theme.tagBg} ${theme.tagText} text-xs font-bold rounded-full mb-3 w-max uppercase`}>
-          {article.category}
-        </span>
-        <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight group-hover:text-green-600 transition-colors">
-          {article.title}
-        </h3>
-        <p className="text-gray-600 text-sm mb-4 flex-grow line-clamp-3">
+      
+      {/* Article Content */}
+      <div className="w-full sm:w-2/3 flex flex-col justify-start">
+        <Link href={`/artikel/${article.slug}`}>
+          <h3 className="text-[17px] font-bold text-[#dc3545] mb-2 leading-tight hover:underline">
+            {article.title}
+          </h3>
+        </Link>
+        
+        {/* Meta Data */}
+        <div className="flex items-center text-[11px] text-gray-500 mb-2 gap-3">
+          <span className="flex items-center"><Calendar className="w-3 h-3 mr-1" /> 30 Juli 2026</span>
+          <span className="flex items-center"><User className="w-3 h-3 mr-1" /> Administrator</span>
+          <span className="flex items-center"><Eye className="w-3 h-3 mr-1" /> 23 Kali</span>
+          <span className="flex items-center"><MessageCircle className="w-3 h-3 mr-1" /> 0</span>
+        </div>
+        
+        {/* Excerpt */}
+        <p className="text-gray-700 text-[13px] leading-relaxed text-justify line-clamp-4">
           {article.excerpt}
         </p>
-        <Link 
-          href={`/artikel/${article.slug}`}
-          className="text-green-600 font-semibold text-sm hover:text-green-700 mt-auto inline-flex items-center"
-        >
-          Baca Selengkapnya
-          <ArrowRight className="w-4 h-4 ml-1" />
-        </Link>
       </div>
     </div>
   );
