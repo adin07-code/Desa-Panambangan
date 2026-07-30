@@ -63,38 +63,38 @@ export default function Sidebar() {
           </div>
           
           {/* Fake Bar Chart */}
-          <div className="flex justify-around items-end h-40 border-l border-b border-gray-300 pb-1 pl-1">
+          <div className="flex justify-around items-end h-40 border-l border-b border-gray-300 pb-0 pl-1 mb-10">
             
             {/* Bar 1 */}
-            <div className="flex flex-col items-center w-1/4">
+            <div className="flex flex-col justify-end items-center w-1/4 h-full relative">
               <div className="w-full bg-[#7cb5ec] relative group" style={{ height: "50%" }}>
-                  <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">2.112</span>
+                  <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-gray-500 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">2.112</span>
               </div>
-              <span className="text-[9px] text-gray-500 mt-2 -rotate-45 origin-top-left translate-y-2 translate-x-2">LAKI-LAKI</span>
+              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[9px] text-gray-500 -rotate-45 whitespace-nowrap">LAKI-LAKI</span>
             </div>
             
             {/* Bar 2 */}
-            <div className="flex flex-col items-center w-1/4">
+            <div className="flex flex-col justify-end items-center w-1/4 h-full relative">
               <div className="w-full bg-[#434348] relative group" style={{ height: "60%" }}>
-                <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">2.508</span>
+                <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-gray-500 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">2.508</span>
               </div>
-              <span className="text-[9px] text-gray-500 mt-2 -rotate-45 origin-top-left translate-y-2 translate-x-2">PEREMPUAN</span>
+              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[9px] text-gray-500 -rotate-45 whitespace-nowrap">PEREMPUAN</span>
             </div>
 
             {/* Bar 3 */}
-            <div className="flex flex-col items-center w-1/4">
+            <div className="flex flex-col justify-end items-center w-1/4 h-full relative">
               <div className="w-full bg-[#90ed7d] relative group" style={{ height: "40%" }}>
-                <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">1.655</span>
+                <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-gray-500 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">1.655</span>
               </div>
-              <span className="text-[9px] text-gray-500 mt-2 -rotate-45 origin-top-left translate-y-2 translate-x-2">KEPALA KELUARGA</span>
+              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[9px] text-gray-500 -rotate-45 whitespace-nowrap">KEPALA KEL.</span>
             </div>
 
             {/* Bar 4 */}
-            <div className="flex flex-col items-center w-1/4">
+            <div className="flex flex-col justify-end items-center w-1/4 h-full relative">
               <div className="w-full bg-[#f7a35c] relative group" style={{ height: "100%" }}>
-                <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">4.171</span>
+                <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-gray-500 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">4.171</span>
               </div>
-              <span className="text-[9px] text-gray-500 mt-2 -rotate-45 origin-top-left translate-y-2 translate-x-2">TOTAL</span>
+              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[9px] text-gray-500 -rotate-45 whitespace-nowrap">TOTAL</span>
             </div>
 
           </div>
