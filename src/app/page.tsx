@@ -13,7 +13,7 @@ export default function PortalPage() {
         }
         .bg-slider {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100%; height: 100vh;
             z-index: -1;
             background-color: #0c0c0c;
             overflow: hidden;
