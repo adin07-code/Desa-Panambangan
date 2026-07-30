@@ -25,16 +25,17 @@ export default function Navbar() {
           
           {/* Search Bar */}
           <div className="flex items-center justify-center w-full md:w-auto mt-3 md:mt-0">
-            <div className="flex w-full md:w-72 border border-gray-300 rounded overflow-hidden">
+            <form action="/blog" method="GET" className="flex w-full md:w-72 border border-gray-300 rounded overflow-hidden">
               <input 
                 type="text" 
+                name="q"
                 placeholder="Cari Artikel" 
                 className="px-3 py-1.5 w-full text-sm outline-none"
               />
-              <button className="bg-[#2e79b9] hover:bg-[#256396] text-white px-4 py-1.5 text-sm font-medium transition-colors flex items-center justify-center">
+              <button type="submit" className="bg-[#2e79b9] hover:bg-[#256396] text-white px-4 py-1.5 text-sm font-medium transition-colors flex items-center justify-center">
                 Cari
               </button>
-            </div>
+            </form>
             
             {/* Mobile Menu Toggle */}
             <button 

@@ -5,8 +5,23 @@ import Sidebar from "@/components/Sidebar";
 import { getAllArticles } from "@/lib/markdown";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 
-export default function Home() {
-  const articles = getAllArticles();
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const resolvedParams = await searchParams;
+  const q = typeof resolvedParams.q === 'string' ? resolvedParams.q.toLowerCase() : '';
+
+  let articles = getAllArticles();
+  
+  if (q) {
+    articles = articles.filter(article => 
+      article.title.toLowerCase().includes(q) || 
+      article.excerpt.toLowerCase().includes(q) ||
+      article.category.toLowerCase().includes(q)
+    );
+  }
 
   return (
     <>
@@ -19,36 +34,46 @@ export default function Home() {
           <div className="w-full lg:w-[70%]">
             
             {/* Slider Simulation */}
-            <div className="relative w-full h-[350px] bg-gray-200 mb-8 overflow-hidden group">
-              <img src="/bg-desa.png" alt="Featured Slider" className="w-full h-full object-cover" />
-              
-              {/* Slider Overlays */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-              <div className="absolute bottom-4 left-4 bg-white/80 px-4 py-2 font-bold text-gray-900 border-l-4 border-[#dc3545]">
-                Edukasi Ketahanan Pangan Melalui TOGA & Maggot BSF
+            {!q && (
+              <div className="relative w-full h-[350px] bg-gray-200 mb-8 overflow-hidden group">
+                <img src="/bg-desa.png" alt="Featured Slider" className="w-full h-full object-cover" />
+                
+                {/* Slider Overlays */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                <div className="absolute bottom-4 left-4 bg-white/80 px-4 py-2 font-bold text-gray-900 border-l-4 border-[#dc3545]">
+                  Edukasi Ketahanan Pangan Melalui TOGA & Maggot BSF
+                </div>
+                
+                {/* Slider Controls */}
+                <button className="absolute left-0 top-1/2 -translate-y-1/2 bg-[#dc3545] text-white p-2 opacity-80 hover:opacity-100">
+                  <ChevronLeft size={24} />
+                </button>
+                <button className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#dc3545] text-white p-2 opacity-80 hover:opacity-100">
+                  <ChevronRight size={24} />
+                </button>
               </div>
-              
-              {/* Slider Controls */}
-              <button className="absolute left-0 top-1/2 -translate-y-1/2 bg-[#dc3545] text-white p-2 opacity-80 hover:opacity-100">
-                <ChevronLeft size={24} />
-              </button>
-              <button className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#dc3545] text-white p-2 opacity-80 hover:opacity-100">
-                <ChevronRight size={24} />
-              </button>
-            </div>
+            )}
 
             {/* ARTIKEL TERKINI Header */}
             <div className="flex items-center mb-6">
               <div className="flex-grow border-t-[3px] border-b-[1px] border-[#dc3545] h-2"></div>
-              <h2 className="px-4 text-xl font-extrabold text-[#333] uppercase tracking-wide whitespace-nowrap">ARTIKEL TERKINI</h2>
+              <h2 className="px-4 text-xl font-extrabold text-[#333] uppercase tracking-wide whitespace-nowrap">
+                {q ? `HASIL PENCARIAN: "${q}"` : "ARTIKEL TERKINI"}
+              </h2>
               <div className="flex-grow border-t-[3px] border-b-[1px] border-[#dc3545] h-2"></div>
             </div>
 
             {/* Articles List */}
             <div className="flex flex-col">
-              {articles.map((article) => (
-                <ArticleCard key={article.slug} article={article} />
-              ))}
+              {articles.length > 0 ? (
+                articles.map((article) => (
+                  <ArticleCard key={article.slug} article={article} />
+                ))
+              ) : (
+                <div className="py-12 text-center text-gray-500 bg-gray-50 border border-dashed border-gray-300 rounded-md">
+                  Maaf, tidak ada artikel yang cocok dengan kata kunci tersebut.
+                </div>
+              )}
             </div>
 
           </div>
