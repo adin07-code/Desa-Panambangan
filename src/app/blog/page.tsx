@@ -57,7 +57,7 @@ export default async function Home({
             {/* ARTIKEL TERKINI Header */}
             <div className="flex items-center mb-6">
               <div className="flex-grow border-t-[3px] border-b-[1px] border-[#dc3545] h-2"></div>
-              <h2 className="px-4 text-xl font-extrabold text-[#333] uppercase tracking-wide whitespace-nowrap">
+              <h2 className="px-2 sm:px-4 text-lg sm:text-xl font-extrabold text-[#333] uppercase tracking-wide text-center">
                 {q ? `HASIL PENCARIAN: "${q}"` : "ARTIKEL TERKINI"}
               </h2>
               <div className="flex-grow border-t-[3px] border-b-[1px] border-[#dc3545] h-2"></div>

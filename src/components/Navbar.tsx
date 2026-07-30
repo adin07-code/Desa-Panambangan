@@ -74,8 +74,8 @@ export default function Navbar() {
       </nav>
       
       {/* Marquee */}
-      <div className="bg-gray-100 border-b border-gray-200 py-1.5 overflow-hidden flex whitespace-nowrap">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-hidden relative">
+      <div className="bg-gray-100 border-b border-gray-200 py-1.5 overflow-hidden block">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-hidden relative whitespace-nowrap">
           <div className="text-xs font-semibold text-gray-700 animate-marquee inline-block">
             Mari kita wujudkan Desa Panambangan menjadi Desa yang mandiri dan berwawasan lingkungan melalui program edukasi TOGA dan pengelolaan limbah organik dengan budidaya Maggot BSF.
           </div>
