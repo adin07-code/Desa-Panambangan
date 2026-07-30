@@ -158,7 +158,7 @@ export default function PortalPage() {
                   </a>
               </div>
 
-              <p className="text-gray-600 text-xs font-medium">© KKM UMC 2026 - KELOMPOK 14</p>
+              <p className="text-gray-600 text-xs font-medium">© KKM UMC 2026 - KKM 14</p>
           </div>
       </div>
     </>
