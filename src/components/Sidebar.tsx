@@ -1,12 +1,38 @@
+"use client";
+
 import { Menu } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function Sidebar() {
+  const [time, setTime] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setTime(new Date());
+    const interval = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatDay = (date: Date) => {
+    const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    return days[date.getDay()];
+  };
+
+  const formatMonth = (date: Date) => {
+    const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    return months[date.getMonth()];
+  };
+
+  const formattedDate = time ? `${formatDay(time)}, ${time.getDate()} ${formatMonth(time)} ${time.getFullYear()}` : "Memuat...";
+  
+  const pad = (num: number) => num.toString().padStart(2, "0");
+  const formattedTime = time ? `${pad(time.getHours())} : ${pad(time.getMinutes())} : ${pad(time.getSeconds())}` : "-- : -- : --";
+
   return (
     <div className="w-full flex flex-col gap-6">
       {/* Date Widget */}
-      <div className="bg-[#dc3545] text-white text-center py-3 font-bold shadow">
-        Kamis, 30 Juli 2026<br/>
-        08 : 30 : 34
+      <div className="bg-[#dc3545] text-white text-center py-3 font-bold shadow" suppressHydrationWarning>
+        {formattedDate}<br/>
+        {formattedTime}
       </div>
 
       {/* Kategori */}
