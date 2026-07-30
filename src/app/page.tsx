@@ -145,9 +145,20 @@ export default function PortalPage() {
           </div>
 
           {/* Footer */}
-          <div className="mt-16 text-center">
-              <p className="text-gray-500 text-sm italic mb-2 tracking-wide">"Panambangan Berkarya"</p>
-              <p className="text-gray-600 text-xs font-medium">© KKM UMC 2026 - Kelompok 14</p>
+          <div className="mt-16 text-center flex flex-col items-center">
+              <p className="text-gray-500 text-sm italic mb-4 tracking-wide">"Panambangan Berkarya"</p>
+              
+              {/* Social Media Links */}
+              <div className="flex gap-5 mb-4">
+                  <a href="https://www.instagram.com/kkmpanambangan14_umc?igsh=endneGxnNXZqNTJ5" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-500 transition-colors transform hover:scale-110">
+                      <i className="fa-brands fa-instagram text-2xl"></i>
+                  </a>
+                  <a href="https://www.tiktok.com/@kkm.panambangan_umc?_r=1&_t=ZS-98S89Bdo4of" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors transform hover:scale-110">
+                      <i className="fa-brands fa-tiktok text-2xl"></i>
+                  </a>
+              </div>
+
+              <p className="text-gray-600 text-xs font-medium">© KKM UMC 2026 - KELOMPOK 14</p>
           </div>
       </div>
     </>
