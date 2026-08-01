@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,7 +16,7 @@ export default function Navbar() {
           {/* Logo and Title */}
           <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-3 w-full md:w-auto text-center md:text-left">
             <Link href="/" className="flex-shrink-0">
-              <img src="/logo.png" alt="Logo Desa" className="w-14 h-14 object-contain" />
+              <Image src="/logo.png" alt="Logo Desa" width={56} height={56} className="w-14 h-14 object-contain" />
             </Link>
             <div className="flex flex-col">
               <span className="font-bold text-lg text-gray-700 leading-tight">KKM 14 DESA PANAMBANGAN</span>

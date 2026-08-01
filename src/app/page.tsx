@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function PortalPage() {
   return (
@@ -89,7 +90,7 @@ export default function PortalPage() {
           {/* Profile Section */}
           <div className="flex flex-col items-center mb-10 w-full max-w-md">
               <div className="profile-img w-28 h-28 rounded-full overflow-hidden border-2 border-gray-700 mb-5 bg-white flex items-center justify-center shadow-2xl relative p-2">
-                  <img src="/logo.png" alt="Logo Desa Panambangan" className="w-full h-full object-contain" />
+                  <Image src="/logo.png" alt="Logo Desa Panambangan" width={96} height={96} className="w-full h-full object-contain" />
               </div>
               <h1 className="text-2xl font-bold mb-2 tracking-tight text-center">KKM 14 DESA PANAMBANGAN</h1>
               <p className="text-gray-400 text-sm font-medium text-center">Pusat Informasi & Potensi Desa</p>

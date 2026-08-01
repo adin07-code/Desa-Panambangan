@@ -4,6 +4,7 @@ import ArticleCard from "@/components/ArticleCard";
 import Sidebar from "@/components/Sidebar";
 import { getAllArticles } from "@/lib/markdown";
 import { ChevronRight, ChevronLeft } from "lucide-react";
+import Image from "next/image";
 
 export default async function Home({
   searchParams,
@@ -36,7 +37,7 @@ export default async function Home({
             {/* Slider Simulation */}
             {!q && (
               <div className="relative w-full h-[350px] bg-gray-200 mb-8 overflow-hidden group">
-                <img src="/bg-desa.png" alt="Featured Slider" className="w-full h-full object-cover" />
+                <Image src="/bg-desa.png" alt="Featured Slider" fill className="object-cover" />
                 
                 {/* Slider Overlays */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>

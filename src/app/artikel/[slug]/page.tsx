@@ -7,6 +7,7 @@ import Link from "next/link";
 import { User, Calendar, MessageCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import ViewCounter from "@/components/ViewCounter";
+import Image from "next/image";
 
 export async function generateStaticParams() {
   const articles = getAllArticles();
@@ -61,7 +62,7 @@ export default async function ArticlePage({
               {/* Main Image placeholder if needed, otherwise just content */}
               {article.coverImage ? (
                 <div className="w-full h-[300px] md:h-[400px] mb-8 rounded-sm overflow-hidden shadow-sm relative">
-                  <img src={article.coverImage} alt={article.title} className="w-full h-full object-cover" />
+                  <Image src={article.coverImage} alt={article.title} fill className="object-cover" />
                 </div>
               ) : (
                 <div className="w-full h-[300px] md:h-[400px] bg-gradient-to-r from-[#dc3545] to-[#f47c87] mb-8 rounded-sm flex items-center justify-center text-white text-3xl font-bold opacity-90 shadow-sm text-center px-6">
