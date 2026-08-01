@@ -36,7 +36,7 @@ export function getArticleBySlug(slug: string): ArticleData | null {
       coverImage: data.coverImage,
       content: content,
     };
-  } catch (e) {
+  } catch {
     return null;
   }
 }

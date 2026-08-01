@@ -146,7 +146,7 @@ export default function PortalPage() {
 
           {/* Footer */}
           <div className="mt-16 text-center flex flex-col items-center">
-              <p className="text-gray-500 text-sm italic mb-4 tracking-wide">"Panambangan Berkarya"</p>
+              <p className="text-gray-500 text-sm italic mb-4 tracking-wide">&ldquo;Panambangan Berkarya&rdquo;</p>
               
               {/* Social Media Links */}
               <div className="flex gap-5 mb-4">

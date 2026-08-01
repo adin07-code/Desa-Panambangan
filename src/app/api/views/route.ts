@@ -21,7 +21,7 @@ export async function POST(request: Request) {
 
     views[slug] = (views[slug] || 0) + 1;
     return NextResponse.json({ views: views[slug] });
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
   }
 }

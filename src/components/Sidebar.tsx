@@ -7,9 +7,12 @@ export default function Sidebar() {
   const [time, setTime] = useState<Date | null>(null);
 
   useEffect(() => {
-    setTime(new Date());
+    const timer = setTimeout(() => setTime(new Date()), 0);
     const interval = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
   }, []);
 
   const formatDay = (date: Date) => {
