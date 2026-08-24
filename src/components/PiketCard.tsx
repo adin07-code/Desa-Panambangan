@@ -11,22 +11,6 @@ type PiketSchedule = {
 
 type PiketCardProps = {
   data: PiketSchedule;
-  isEditMode: boolean;
-};
-
-const getBackgroundImage = (day: string) => {
-  switch (day.toLowerCase()) {
-    case 'senin': return '/bg_senin.jpg';
-    case 'selasa': return '/bg_selasa.jpg';
-    case 'rabu': return '/bg_rabu.jpg';
-    case 'kamis': return '/bg_kamis.jpg';
-    case 'jumat': return '/bg_jumat.jpg';
-    case 'sabtu': return '/bg_sabtu.jpg';
-    case 'minggu': return '/bg_minggu.jpg';
-    default: return '';
-  }
-};
-
 export default function PiketCard({ data, isEditMode }: PiketCardProps) {
   const [menu, setMenu] = useState({ pagi: "", siang: "", malam: "" });
   const [isSaving, setIsSaving] = useState(false);
@@ -70,134 +54,102 @@ export default function PiketCard({ data, isEditMode }: PiketCardProps) {
   };
 
   return (
-    <div 
-      className="rounded-2xl border border-white/20 p-6 flex flex-col gap-6 hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:-translate-y-2 transition-all duration-500 shadow-xl overflow-hidden relative group"
-      style={{
-        backgroundImage: `url(${getBackgroundImage(data.day)})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      {/* Overlay to ensure text readability */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm group-hover:bg-black/70 group-hover:backdrop-blur-md transition-all duration-500 z-0"></div>
-
-      {/* Content Container (z-10) */}
-      <div className="relative z-10 flex flex-col h-full gap-6">
+    <div className="bg-[#567a62] rounded-3xl p-5 flex flex-col gap-4 shadow-lg hover:-translate-y-1 transition-transform duration-300 relative">
+      {/* Decorative Tapes */}
+      <div className="absolute -top-3 -left-3 w-12 h-6 bg-[#d1a798]/80 -rotate-45 z-10"></div>
+      <div className="absolute -bottom-3 -right-3 w-12 h-6 bg-[#d1a798]/80 -rotate-45 z-10"></div>
 
       {/* Header (Hari & Tanggal) */}
-      <div className="flex items-center justify-between border-b border-white/10 pb-4">
-        <h3 className="text-xl font-bold text-white tracking-wide">{data.day}</h3>
-        <span className="text-xs font-semibold text-gray-300 bg-white/10 px-3 py-1.5 rounded-full tracking-wider uppercase">
+      <div className="flex flex-col items-center justify-center text-center pb-2">
+        <h3 className="text-3xl font-cute font-bold text-[#FDFBF5] tracking-widest uppercase uppercase">{data.day}</h3>
+        <span className="text-xs font-bold text-[#a4c1ae] tracking-wider uppercase mt-1">
           {new Date(data.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
         </span>
       </div>
 
       {/* Petugas Section */}
-      <div className="flex flex-col gap-4">
-        {/* Kebersihan */}
-        <div className="bg-blue-900/20 p-4 rounded-xl border border-blue-500/20 relative overflow-hidden">
-          <div className="absolute -right-4 -top-4 w-16 h-16 bg-blue-500/10 rounded-full blur-xl"></div>
-          <div className="flex items-center gap-2 mb-3 text-blue-400">
-            <i className="fa-solid fa-broom"></i>
-            <h4 className="font-semibold text-sm tracking-wide">Tim Kebersihan</h4>
+      <div className="bg-[#Fdfbf2] rounded-2xl p-4 flex flex-col gap-3 flex-grow shadow-inner">
+        {/* Kebersihan & Masak */}
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <h4 className="font-cute font-bold text-[#466651] text-xl border-b-2 border-[#567a62]/20 mb-2">Kebersihan</h4>
+            <ol className="text-sm font-semibold text-[#567a62] space-y-1 ml-4 list-decimal marker:text-[#8ea596]">
+              {data.kebersihan.map((name, i) => (
+                <li key={i}>{name}</li>
+              ))}
+            </ol>
           </div>
-          <ul className="text-sm text-gray-300 space-y-2">
-            {data.kebersihan.map((name, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 shrink-0 shadow-[0_0_8px_rgba(96,165,250,0.8)]"></span>
-                <span className="leading-tight">{name}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Masak */}
-        <div className="bg-orange-900/20 p-4 rounded-xl border border-orange-500/20 relative overflow-hidden">
-          <div className="absolute -right-4 -top-4 w-16 h-16 bg-orange-500/10 rounded-full blur-xl"></div>
-          <div className="flex items-center gap-2 mb-3 text-orange-400">
-            <i className="fa-solid fa-fire-burner"></i>
-            <h4 className="font-semibold text-sm tracking-wide">Tim Masak</h4>
+          <div>
+            <h4 className="font-cute font-bold text-[#466651] text-xl border-b-2 border-[#567a62]/20 mb-2">Masak</h4>
+            <ol className="text-sm font-semibold text-[#567a62] space-y-1 ml-4 list-decimal marker:text-[#8ea596]">
+              {data.masak.map((name, i) => (
+                <li key={i}>{name}</li>
+              ))}
+            </ol>
           </div>
-          <ul className="text-sm text-gray-300 space-y-2">
-            {data.masak.map((name, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1.5 shrink-0 shadow-[0_0_8px_rgba(251,146,60,0.8)]"></span>
-                <span className="leading-tight">{name}</span>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
 
       {/* Menu Makanan Section */}
-      <div className="bg-emerald-900/20 p-5 rounded-xl border border-emerald-500/20 mt-auto relative overflow-hidden">
-        <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-emerald-500/10 rounded-full blur-2xl"></div>
-        <div className="flex items-center gap-2 mb-4 text-emerald-400">
-          <i className="fa-solid fa-utensils"></i>
-          <h4 className="font-semibold text-sm tracking-wide">Menu Masakan</h4>
-        </div>
+      <div className="bg-[#466651] rounded-2xl p-4 shadow-inner mt-2">
+        <h4 className="font-cute font-bold text-[#FDFBF5] text-xl mb-3 text-center tracking-wide">Menu Masakan</h4>
         
         {!isLoaded ? (
-          <div className="text-xs text-gray-500 animate-pulse">Memuat menu...</div>
+          <div className="text-xs text-center text-[#a4c1ae] animate-pulse">Memuat...</div>
         ) : isEditMode ? (
-          <div className="space-y-3 relative z-10">
+          <div className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1">Pagi</label>
+              <label className="block text-xs font-bold text-[#a4c1ae] mb-1">Pagi</label>
               <input 
                 type="text" 
                 value={menu.pagi} 
                 onChange={(e) => setMenu({...menu, pagi: e.target.value})}
-                placeholder="Contoh: Nasi Goreng" 
-                className="w-full text-sm px-3 py-2 bg-white/5 border border-white/10 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                className="w-full text-sm px-3 py-2 bg-[#FDFBF5] border-2 border-[#567a62] text-[#466651] font-semibold rounded-lg focus:outline-none focus:border-[#d1a798]"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1">Siang</label>
+              <label className="block text-xs font-bold text-[#a4c1ae] mb-1">Siang</label>
               <input 
                 type="text" 
                 value={menu.siang} 
                 onChange={(e) => setMenu({...menu, siang: e.target.value})}
-                placeholder="Contoh: Ayam Geprek" 
-                className="w-full text-sm px-3 py-2 bg-white/5 border border-white/10 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                className="w-full text-sm px-3 py-2 bg-[#FDFBF5] border-2 border-[#567a62] text-[#466651] font-semibold rounded-lg focus:outline-none focus:border-[#d1a798]"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1">Malam</label>
+              <label className="block text-xs font-bold text-[#a4c1ae] mb-1">Malam</label>
               <input 
                 type="text" 
                 value={menu.malam} 
                 onChange={(e) => setMenu({...menu, malam: e.target.value})}
-                placeholder="Contoh: Mie Rebus Telur" 
-                className="w-full text-sm px-3 py-2 bg-white/5 border border-white/10 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                className="w-full text-sm px-3 py-2 bg-[#FDFBF5] border-2 border-[#567a62] text-[#466651] font-semibold rounded-lg focus:outline-none focus:border-[#d1a798]"
               />
             </div>
             <button 
               onClick={handleSave} 
               disabled={isSaving}
-              className="w-full mt-3 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white text-sm font-semibold py-2.5 rounded-lg transition-all shadow-lg shadow-emerald-500/20"
+              className="w-full mt-3 bg-[#d1a798] hover:bg-[#c09787] text-[#466651] text-sm font-bold py-2 rounded-lg transition-all"
             >
               {isSaving ? "Menyimpan..." : "Simpan Menu"}
             </button>
           </div>
         ) : (
-          <div className="flex flex-col gap-3 relative z-10">
-            <div className="flex justify-between items-end border-b border-white/5 pb-2">
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Pagi</span>
-              <span className="text-sm font-medium text-gray-200 text-right">{menu.pagi || "-"}</span>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col border-b border-[#567a62] pb-1">
+              <span className="text-[10px] font-bold text-[#a4c1ae] uppercase tracking-widest">Pagi</span>
+              <span className="text-sm font-bold text-[#FDFBF5]">{menu.pagi || "-"}</span>
             </div>
-            <div className="flex justify-between items-end border-b border-white/5 pb-2">
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Siang</span>
-              <span className="text-sm font-medium text-gray-200 text-right">{menu.siang || "-"}</span>
+            <div className="flex flex-col border-b border-[#567a62] pb-1">
+              <span className="text-[10px] font-bold text-[#a4c1ae] uppercase tracking-widest">Siang</span>
+              <span className="text-sm font-bold text-[#FDFBF5]">{menu.siang || "-"}</span>
             </div>
-            <div className="flex justify-between items-end">
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Malam</span>
-              <span className="text-sm font-medium text-gray-200 text-right">{menu.malam || "-"}</span>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-bold text-[#a4c1ae] uppercase tracking-widest">Malam</span>
+              <span className="text-sm font-bold text-[#FDFBF5]">{menu.malam || "-"}</span>
             </div>
           </div>
         )}
       </div>
-      
-      </div> {/* Tutup Content Container */}
     </div>
   );
 }

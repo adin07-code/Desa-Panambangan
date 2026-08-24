@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap');
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
@@ -22,4 +23,16 @@
   display: inline-block;
   white-space: nowrap;
   animation: marquee 25s linear infinite;
+}
+
+.font-cute {
+  font-family: 'Gaegu', cursive;
+}
+
+.bg-grid-paper {
+  background-color: #Fdfbf2;
+  background-image: 
+    linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
 }

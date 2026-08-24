@@ -44,44 +44,30 @@ export default function PiketPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0c0c] text-white py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Ornaments */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-600/20 blur-[120px]"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-600/20 blur-[120px]"></div>
-      </div>
+    <div className="min-h-screen bg-grid-paper text-gray-800 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
 
       <div className="max-w-7xl mx-auto">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div className="flex items-center gap-5">
-            <Link href="/" className="w-12 h-12 flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-lg hover:bg-white/20 hover:scale-105 transition-all shrink-0">
-              <ArrowLeft className="w-5 h-5 text-white" />
+        <div className="flex flex-col items-center text-center gap-6 mb-12">
+          <div className="flex flex-col items-center gap-3 relative">
+            <Link href="/" className="absolute -left-16 top-2 w-10 h-10 flex items-center justify-center bg-[#567a62] text-[#Fdfbf2] rounded-full shadow-md hover:scale-105 transition-all shrink-0">
+              <ArrowLeft className="w-5 h-5" />
             </Link>
-            <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 tracking-tight">Jadwal Piket KKM</h1>
-                <div className="hidden md:flex items-center gap-2 bg-white/10 border border-white/20 px-3 py-1 rounded-full backdrop-blur-md shadow-lg">
-                  <i className="fa-regular fa-clock text-emerald-400"></i>
-                  <span className="text-sm font-bold text-white tracking-widest w-20 text-center">
-                    {mounted ? currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "..."}
-                  </span>
-                </div>
-              </div>
-              <p className="text-gray-400 mt-1 text-sm md:text-base">Rotasi otomatis tugas Masak & Kebersihan Harian</p>
-              {/* Mobile Clock */}
-              <div className="md:hidden flex items-center gap-2 mt-2 bg-white/10 border border-white/20 px-3 py-1 rounded-full backdrop-blur-md shadow-lg w-max">
-                <i className="fa-regular fa-clock text-emerald-400 text-xs"></i>
-                <span className="text-xs font-bold text-white tracking-widest">
-                  {mounted ? currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "..."} WIB
-                </span>
-              </div>
+            
+            <h1 className="text-5xl md:text-6xl font-cute text-[#466651] tracking-wide uppercase drop-shadow-sm">Jadwal Piket</h1>
+            <h2 className="text-4xl md:text-5xl font-cute text-[#466651] tracking-wide uppercase mt-[-10px]">KKM & Kebersihan</h2>
+            
+            <div className="flex items-center gap-2 bg-[#567a62] text-[#Fdfbf2] px-4 py-1.5 rounded-full shadow-sm mt-2">
+              <i className="fa-regular fa-clock"></i>
+              <span className="text-sm font-bold tracking-widest w-20 text-center">
+                {mounted ? currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "..."}
+              </span>
             </div>
           </div>
           
           {/* Mode Konsumsi (Mini CMS Toggle) */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mt-4">
             {!isEditMode ? (
               <div className="flex items-center gap-2">
                 {showPasswordInput && (
@@ -90,12 +76,12 @@ export default function PiketPage() {
                     placeholder="Password Konsumsi"
                     value={passwordInput}
                     onChange={(e) => setPasswordInput(e.target.value)}
-                    className="text-sm px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 w-44 backdrop-blur-sm transition-all"
+                    className="text-sm px-4 py-2 rounded-xl bg-white border-2 border-[#466651] text-[#466651] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#567a62] w-44 transition-all font-semibold"
                   />
                 )}
                 <button 
                   onClick={handleLoginKonsumsi}
-                  className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2"
+                  className="bg-[#567a62] text-[#Fdfbf2] hover:bg-[#466651] px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-sm"
                 >
                   <i className="fa-solid fa-lock"></i>
                   {showPasswordInput ? "Login" : "Edit Menu"}
@@ -104,7 +90,7 @@ export default function PiketPage() {
             ) : (
               <button 
                 onClick={() => setIsEditMode(false)}
-                className="bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2"
+                className="bg-red-500 text-white hover:bg-red-600 px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-sm"
               >
                 <i className="fa-solid fa-lock-open"></i> Selesai Edit
               </button>
