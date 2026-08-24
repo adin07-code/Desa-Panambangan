@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import QRButton from '@/components/QRButton';
 
 export default function PortalPage() {
   return (
@@ -87,6 +88,7 @@ export default function PortalPage() {
           <div className="bg-slide bg-slide-3"></div>
       </div>
       <div className="flex flex-col items-center min-h-screen py-12 px-4 relative z-10">
+          <QRButton />
           {/* Profile Section */}
           <div className="flex flex-col items-center mb-10 w-full max-w-md">
               <div className="profile-img w-28 h-28 rounded-full overflow-hidden border-2 border-gray-700 mb-5 bg-white flex items-center justify-center shadow-2xl relative p-2">
