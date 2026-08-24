@@ -22,7 +22,7 @@ export default function AbsensiPage() {
   useEffect(() => {
     const fetchAbsensi = async () => {
       try {
-        const res = await fetch("/api/absensi");
+        const res = await fetch(`/api/absensi?t=${new Date().getTime()}`, { cache: "no-store" });
         if (res.ok) {
           const result = await res.json();
           setData(result.data || []);

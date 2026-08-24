@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const dynamic = 'force-dynamic';
+
 // [PERHATIAN]: Di lingkungan Vercel (Serverless), variabel global ini 
 // akan mereset setiap kali "Cold Start" terjadi. 
 // Ini hanya untuk simulasi saat development.
