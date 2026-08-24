@@ -4,7 +4,71 @@ import { NextResponse } from "next/server";
 // akan mereset setiap kali "Cold Start" terjadi. 
 // Ini hanya untuk simulasi saat development.
 // Saran: Gunakan Vercel KV (Redis), Supabase, atau Firebase untuk database sungguhan.
-const mockDatabase: Record<string, string>[] = [];
+const mockDatabase: Record<string, string>[] = [
+  {
+    id: "1",
+    timestamp: "8/24/2026 07:15:00",
+    nama_lengkap: "AKHMAD FAISAL",
+    nim: "230111098",
+    prodi: "Manajemen",
+    email: "akhmadfaisal@example.com",
+    receivedAt: new Date("2026-08-24T00:15:00.000Z").toISOString(),
+  },
+  {
+    id: "2",
+    timestamp: "8/24/2026 07:20:00",
+    nama_lengkap: "Aisyah Wulan Sari",
+    nim: "230741005",
+    prodi: "Ilmu Gizi",
+    email: "aisyah@example.com",
+    receivedAt: new Date("2026-08-24T00:20:00.000Z").toISOString(),
+  },
+  {
+    id: "3",
+    timestamp: "8/24/2026 07:30:00",
+    nama_lengkap: "INDAH AMALIA",
+    nim: "230211086",
+    prodi: "Ilmu Komunikasi",
+    email: "indah@example.com",
+    receivedAt: new Date("2026-08-24T00:30:00.000Z").toISOString(),
+  },
+  {
+    id: "4",
+    timestamp: "8/24/2026 07:35:00",
+    nama_lengkap: "MUHAMAD FAUZIY SUDRAJAT",
+    nim: "230221010",
+    prodi: "Ilmu Pemerintahan",
+    email: "fauziy@example.com",
+    receivedAt: new Date("2026-08-24T00:35:00.000Z").toISOString(),
+  },
+  {
+    id: "5",
+    timestamp: "8/24/2026 07:40:00",
+    nama_lengkap: "Robbie andreas alfaro",
+    nim: "230511135",
+    prodi: "Teknik Informatika",
+    email: "robbie@example.com",
+    receivedAt: new Date("2026-08-24T00:40:00.000Z").toISOString(),
+  },
+  {
+    id: "6",
+    timestamp: "8/24/2026 07:45:00",
+    nama_lengkap: "Dea salsabila",
+    nim: "230641155",
+    prodi: "PGSD",
+    email: "dea@example.com",
+    receivedAt: new Date("2026-08-24T00:45:00.000Z").toISOString(),
+  },
+  {
+    id: "7",
+    timestamp: "8/24/2026 07:50:00",
+    nama_lengkap: "PUTRI SEKAR THAJI",
+    nim: "230641068",
+    prodi: "PGSD",
+    email: "putri@example.com",
+    receivedAt: new Date("2026-08-24T00:50:00.000Z").toISOString(),
+  }
+];
 
 export async function POST(request: Request) {
   try {
