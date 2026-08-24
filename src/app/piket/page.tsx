@@ -59,7 +59,7 @@ export default function PiketPage() {
           
           <div className="flex flex-col items-center text-center gap-3">
             <h1 className="text-5xl md:text-6xl font-cute text-[#466651] tracking-wide uppercase drop-shadow-sm">Jadwal Piket KKM</h1>
-            <h2 className="text-4xl md:text-5xl font-cute text-[#466651] tracking-wide uppercase mt-[-10px]">Masak dan Kebersihan</h2>
+            <h2 className="text-4xl md:text-5xl font-cute text-[#466651] tracking-wide uppercase mt-[-10px]">Masak & Kebersihan</h2>
             
             <div className="flex items-center gap-2 bg-[#567a62] text-[#FDFBF5] px-4 py-1.5 rounded-full shadow-sm mt-2">
               <i className="fa-regular fa-clock"></i>
