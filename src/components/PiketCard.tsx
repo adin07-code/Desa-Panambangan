@@ -59,8 +59,8 @@ export default function PiketCard({ data, isEditMode }: PiketCardProps) {
   return (
     <div className="bg-[#567a62] rounded-3xl p-5 flex flex-col gap-4 shadow-lg hover:-translate-y-1 transition-transform duration-300 relative">
       {/* Decorative Tapes */}
-      <div className="absolute -top-3 -left-3 w-12 h-6 bg-[#d1a798]/80 -rotate-45 z-10"></div>
-      <div className="absolute -bottom-3 -right-3 w-12 h-6 bg-[#d1a798]/80 -rotate-45 z-10"></div>
+      <div className="absolute -top-3 -left-3 w-12 h-6 bg-[#d89f4b]/80 -rotate-45 z-10"></div>
+      <div className="absolute -bottom-3 -right-3 w-12 h-6 bg-[#d89f4b]/80 -rotate-45 z-10"></div>
 
       {/* Header (Hari & Tanggal) */}
       <div className="flex flex-col items-center justify-center text-center pb-2">
@@ -71,7 +71,7 @@ export default function PiketCard({ data, isEditMode }: PiketCardProps) {
       </div>
 
       {/* Petugas Section */}
-      <div className="bg-[#Fdfbf2] rounded-2xl p-4 flex flex-col gap-3 flex-grow shadow-inner">
+      <div className="bg-[#FDFBF5] rounded-2xl p-4 flex flex-col gap-3 flex-grow shadow-inner">
         {/* Kebersihan & Masak */}
         <div className="grid grid-cols-1 gap-4">
           <div>
@@ -107,7 +107,7 @@ export default function PiketCard({ data, isEditMode }: PiketCardProps) {
                 type="text" 
                 value={menu.siang} 
                 onChange={(e) => setMenu({...menu, siang: e.target.value})}
-                className="w-full text-sm px-3 py-2 bg-[#FDFBF5] border-2 border-[#567a62] text-[#466651] font-semibold rounded-lg focus:outline-none focus:border-[#d1a798]"
+                className="w-full text-sm px-3 py-2 bg-[#FDFBF5] border-2 border-[#567a62] text-[#466651] font-semibold rounded-lg focus:outline-none focus:border-[#d89f4b]"
               />
             </div>
             <div>
@@ -116,13 +116,13 @@ export default function PiketCard({ data, isEditMode }: PiketCardProps) {
                 type="text" 
                 value={menu.sore} 
                 onChange={(e) => setMenu({...menu, sore: e.target.value})}
-                className="w-full text-sm px-3 py-2 bg-[#FDFBF5] border-2 border-[#567a62] text-[#466651] font-semibold rounded-lg focus:outline-none focus:border-[#d1a798]"
+                className="w-full text-sm px-3 py-2 bg-[#FDFBF5] border-2 border-[#567a62] text-[#466651] font-semibold rounded-lg focus:outline-none focus:border-[#d89f4b]"
               />
             </div>
             <button 
               onClick={handleSave} 
               disabled={isSaving}
-              className="w-full mt-3 bg-[#d1a798] hover:bg-[#c09787] text-[#466651] text-sm font-bold py-2 rounded-lg transition-all"
+              className="w-full mt-3 bg-[#d89f4b] hover:bg-[#c68e3e] text-[#466651] text-sm font-bold py-2 rounded-lg transition-all"
             >
               {isSaving ? "Menyimpan..." : "Simpan Menu"}
             </button>
