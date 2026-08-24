@@ -185,7 +185,16 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
             let reply = '*📋 Rekapan Absensi (Live dari Web)*\n\n';
             absensiData.forEach((item, index) => {
                 const time = new Date(item.receivedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                reply += `${index + 1}. *${item.nama_lengkap}* - _${time}_\n`;
+                
+                // Bersihkan spasi berlebih dan ubah ke Title Case (Awal Kata Kapital)
+                const namaBersih = item.nama_lengkap
+                    .trim()
+                    .toLowerCase()
+                    .split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+                    
+                reply += `${index + 1}. *${namaBersih}* - _${time}_\n`;
             });
             
             await message.reply(reply);
