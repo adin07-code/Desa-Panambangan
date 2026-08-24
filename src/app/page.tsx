@@ -137,7 +137,7 @@ export default function PortalPage() {
               </Link>
 
               {/* Pengumpulan Logbook Card */}
-              <div className="mt-4 flex justify-center">
+              <div id="logbook" className="mt-4 flex justify-center">
                   <LogbookCard />
               </div>
 
