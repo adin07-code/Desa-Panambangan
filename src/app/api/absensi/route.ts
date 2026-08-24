@@ -82,6 +82,21 @@ export async function POST(request: Request) {
       );
     }
 
+    // Cek apakah sudah absen hari ini
+    const today = new Date().toISOString().split("T")[0]; // Ambil tanggal hari ini (YYYY-MM-DD)
+    const isDuplicate = mockDatabase.some((entry) => {
+      // Periksa apakah NIM sama dan tanggal (dari receivedAt) sama
+      const entryDate = new Date(entry.receivedAt).toISOString().split("T")[0];
+      return entry.nim === data.nim && entryDate === today;
+    });
+
+    if (isDuplicate) {
+      return NextResponse.json(
+        { error: "Mahasiswa ini sudah melakukan absensi hari ini" },
+        { status: 409 }
+      );
+    }
+
     // Tambahkan ke "database" simulasi kita
     mockDatabase.push({
       ...data,
