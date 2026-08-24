@@ -136,24 +136,15 @@ export default function PortalPage() {
                   <i className="fa-solid fa-chevron-right text-sm text-gray-600 group-hover:text-gray-400 transition-colors"></i>
               </Link>
 
-              {/* Button 7: Anggaran KKM */}
-              <Link href="/rab" className="link-card flex items-center justify-between p-2 pr-4 rounded-2xl group cursor-pointer w-full text-left">
-                  <div className="flex items-center gap-4">
-                      <div className="icon-box w-14 h-14 rounded-xl flex items-center justify-center text-gray-400 group-hover:text-blue-400">
-                          <i className="fa-solid fa-wallet text-2xl"></i>
-                      </div>
-                      <span className="font-semibold text-gray-200 group-hover:text-white text-[15px]">Rencana Anggaran Biaya (RAB)</span>
-                  </div>
-                  <i className="fa-solid fa-chevron-right text-sm text-gray-600 group-hover:text-gray-400 transition-colors"></i>
-              </Link>
+
 
               {/* Button 8: Laporan Keuangan */}
               <Link href="/laporan-keuangan" className="link-card flex items-center justify-between p-2 pr-4 rounded-2xl group cursor-pointer w-full text-left">
                   <div className="flex items-center gap-4">
                       <div className="icon-box w-14 h-14 rounded-xl flex items-center justify-center text-gray-400 group-hover:text-emerald-400">
-                          <i className="fa-solid fa-money-bill-trend-up text-2xl"></i>
+                          <i className="fa-solid fa-file-invoice-dollar text-2xl"></i>
                       </div>
-                      <span className="font-semibold text-gray-200 group-hover:text-white text-[15px]">Laporan Keuangan Harian</span>
+                      <span className="font-semibold text-gray-200 group-hover:text-white text-[15px]">Laporan Keuangan</span>
                   </div>
                   <i className="fa-solid fa-chevron-right text-sm text-gray-600 group-hover:text-gray-400 transition-colors"></i>
               </Link>
