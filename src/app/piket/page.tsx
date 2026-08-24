@@ -49,12 +49,15 @@ export default function PiketPage() {
       <div className="max-w-7xl mx-auto">
         
         {/* Header Section */}
-        <div className="flex flex-col items-center text-center gap-6 mb-12">
-          <div className="flex flex-col items-center gap-3 relative">
-            <Link href="/" className="absolute -left-16 top-2 w-10 h-10 flex items-center justify-center bg-[#567a62] text-[#Fdfbf2] rounded-full shadow-md hover:scale-105 transition-all shrink-0">
+        <div className="flex flex-col mb-8 relative">
+          {/* Back Button */}
+          <div className="mb-4 md:absolute md:top-2 md:-left-14">
+            <Link href="/" className="inline-flex w-10 h-10 items-center justify-center bg-[#567a62] text-[#Fdfbf2] rounded-full shadow-md hover:scale-105 transition-all">
               <ArrowLeft className="w-5 h-5" />
             </Link>
-            
+          </div>
+          
+          <div className="flex flex-col items-center text-center gap-3">
             <h1 className="text-5xl md:text-6xl font-cute text-[#466651] tracking-wide uppercase drop-shadow-sm">Jadwal Piket</h1>
             <h2 className="text-4xl md:text-5xl font-cute text-[#466651] tracking-wide uppercase mt-[-10px]">KKM & Kebersihan</h2>
             
@@ -67,7 +70,7 @@ export default function PiketPage() {
           </div>
           
           {/* Mode Konsumsi (Mini CMS Toggle) */}
-          <div className="flex items-center gap-2 mt-4">
+          <div className="flex items-center justify-center gap-2 mt-4">
             {!isEditMode ? (
               <div className="flex items-center gap-2">
                 {showPasswordInput && (

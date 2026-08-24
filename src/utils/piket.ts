@@ -40,12 +40,12 @@ export function getWeeklySchedule(baseDate: Date) {
   
   // Hardcoded jadwal kebersihan sesuai gambar
   const kebersihanSchedule: Record<string, string[]> = {
-    "Senin": ["Aisyah Wulan Sari (Konsumsi)", "Ramadhan Faqih (Humas)", "Puspa Sekar Agustin (Dokumentasi)"],
-    "Selasa": ["Putri Sekar Thaji (Wakil)", "Maisya Siti Fatimiah (Konsumsi)", "Akhmad Ulin Nuha (Dokumentasi)"],
-    "Rabu": ["Nabila Puspitarani", "Rikeu Nirmala Dewi (Bendahara)", "Fauzan Rizky Alifian (Peralatan)"],
-    "Kamis": ["Akhmad Faisal (Acara)", "Anisya Septriyani (Acara)", "Alin Lantria (Sekretaris)"],
-    "Jumat": ["Robbie andreas alfaro (Humas)", "Dea Salsabilla (Peralatan)", "Dini Fitriani (Dokumentasi)"],
-    "Sabtu": ["Muhamad Fauziy Sudrajat (Ketua)", "Adin Nugraha (Acara)", "Indah Amalia"],
+    "Senin": ["Aisyah Wulan Sari", "Ramadhan Faqih", "Puspa Sekar Agustin"],
+    "Selasa": ["Putri Sekar Thaji", "Maisya Siti Fatimiah", "Akhmad Ulin Nuha"],
+    "Rabu": ["Nabila Puspitarani", "Rikeu Nirmala Dewi", "Fauzan Rizky Alifian"],
+    "Kamis": ["Akhmad Faisal", "Anisya Septriyani", "Alin Lantria"],
+    "Jumat": ["Robbie andreas alfaro", "Dea Salsabilla", "Dini Fitriani"],
+    "Sabtu": ["Muhamad Fauziy Sudrajat", "Adin Nugraha", "Indah Amalia"],
     "Minggu": ["Piket Bersama (Seluruh Anggota KKM)"]
   };
 
