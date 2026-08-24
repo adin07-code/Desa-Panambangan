@@ -1,5 +1,5 @@
 const Papa = require('papaparse');
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/12NBhmmkQ5HdBYiLS5EyzGOOlY8CJtf6wm9-KobjmSYs/export?format=csv&gid=1527735025";
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/12NBhmmkQ5HdBYiLS5EyzGOOlY8CJtf6wm9-KobjmSYs/export?format=csv&gid=311091503";
 
 async function run() {
     const res = await fetch(SHEET_CSV_URL);
