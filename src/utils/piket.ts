@@ -75,21 +75,15 @@ export function getWeekNumber(d: Date) {
 }
 
 function generateKebersihanSchedule(weekNum: number) {
-  const shuffled = shuffle(kkmMembers, weekNum * 20);
-  const days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-  const schedule: Record<string, string[]> = {};
-  
-  let index = 0;
-  for (const day of days) {
-    schedule[day] = [
-      shuffled[index++].full,
-      shuffled[index++].full,
-      shuffled[index++].full
-    ];
-  }
-  schedule["Minggu"] = ["Piket Bersama (Seluruh Anggota KKM)"];
-  
-  return schedule;
+  return {
+    "Senin": ["Ais", "Faqih", "Puspa"],
+    "Selasa": ["Putri", "Maisya", "Ulin"],
+    "Rabu": ["Nabila", "Rikeu", "Iki"],
+    "Kamis": ["Faisal", "Anisa", "Alin"],
+    "Jumat": ["Robi", "Dea", "Dini"],
+    "Sabtu": ["Fauzy", "Adin", "Indah"],
+    "Minggu": ["Minggu Piket Bareng-bareng"]
+  };
 }
 
 function generateMasakSchedule(weekNum: number) {
