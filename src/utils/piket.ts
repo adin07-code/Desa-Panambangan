@@ -115,6 +115,16 @@ function generateMasakSchedule(weekNum: number) {
   return schedule;
 }
 
+const fixedMasakSchedule: Record<string, string[]> = {
+  "2026-08-19": ["Siang: Putri & Faqih", "Sore: Rikeu & Fauziy"],
+  "2026-08-20": ["Siang: Alin & Fauzan", "Sore: Anisya & Robbie"],
+  "2026-08-21": ["Siang: Adin & Indah", "Sore: Ulin & Dini"],
+  "2026-08-22": ["Siang: Faisal & Dea", "Sore: Faqih & Puspa"],
+  "2026-08-23": ["Siang: Fauziy & Nabila", "Sore: Fauzan & Putri"],
+  "2026-08-24": ["Siang: Robbie & Rikeu", "Sore: Adin & Anisya"],
+  "2026-08-25": ["Siang: Ulin & Indah", "Sore: Faisal & Dini"]
+};
+
 export function getWeeklySchedule(baseDate: Date) {
   const days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
   const weekNum = getWeekNumber(baseDate);
@@ -135,7 +145,7 @@ export function getWeeklySchedule(baseDate: Date) {
     return {
       day,
       date: dateStr,
-      masak: masakSchedule[day] || [],
+      masak: fixedMasakSchedule[dateStr] || masakSchedule[day] || [],
       kebersihan: kebersihanSchedule[day] || [],
     };
   });
