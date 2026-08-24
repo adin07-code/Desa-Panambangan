@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Papa from "papaparse";
+import { keuanganData } from "@/data/keuanganData";
 
 export const dynamic = 'force-dynamic';
 
@@ -16,15 +17,21 @@ export async function GET() {
     // The CSV might have title rows before the actual header. 
     // We will find the row that has 'TANGGAL' and use that as header.
     const rows = Papa.parse(csvText, { skipEmptyLines: true }).data as string[][];
-    let headerRowIndex = 0;
+    let headerRowIndex = -1;
     
     for (let i = 0; i < rows.length; i++) {
-        if (rows[i].includes('TANGGAL') || rows[i].includes('TANGGAL ')) {
+        if (rows[i].includes('TANGGAL') || rows[i].includes('TANGGAL ') || rows[i].includes(' TANGGAL ')) {
             headerRowIndex = i;
             break;
         }
     }
     
+    // If we didn't find the header (e.g. Google returns the RAB tab instead of Laporan Keuangan),
+    // we use the static fallback data so the website doesn't show Rp 0.
+    if (headerRowIndex === -1) {
+        return NextResponse.json({ data: keuanganData, success: true, message: "Using static fallback due to missing header in CSV" });
+    }
+
     // Extract actual data using the found header
     const { data } = Papa.parse(csvText, {
       header: false,
@@ -81,11 +88,15 @@ export async function GET() {
             jumlah: jumlah
         });
     }
+    
+    if (parsedData.length === 0) {
+        return NextResponse.json({ data: keuanganData, success: true, message: "Using static fallback due to empty parsed data" });
+    }
 
     return NextResponse.json({ data: parsedData, success: true });
     
   } catch (error) {
     console.error("Error fetching Keuangan dari Google Sheets:", error);
-    return NextResponse.json({ data: [], error: "Gagal mengambil data", success: false });
+    return NextResponse.json({ data: keuanganData, error: "Gagal mengambil data, menggunakan fallback", success: false });
   }
 }
