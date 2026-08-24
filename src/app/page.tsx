@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import QRButton from '@/components/QRButton';
+import { LogbookCard } from '@/components/LogbookSection';
 
 export default function PortalPage() {
   return (
@@ -144,6 +145,33 @@ export default function PortalPage() {
                   </div>
                   <i className="fa-solid fa-chevron-right text-sm text-gray-600 group-hover:text-gray-400 transition-colors"></i>
               </a>
+
+              {/* Button 5: Jadwal Piket KKM */}
+              <Link href="/piket" className="link-card flex items-center justify-between p-2 pr-4 rounded-2xl group cursor-pointer w-full text-left">
+                  <div className="flex items-center gap-4">
+                      <div className="icon-box w-14 h-14 rounded-xl flex items-center justify-center text-gray-400 group-hover:text-orange-400">
+                          <i className="fa-solid fa-clipboard-list text-2xl"></i>
+                      </div>
+                      <span className="font-semibold text-gray-200 group-hover:text-white text-[15px]">Jadwal Piket KKM</span>
+                  </div>
+                  <i className="fa-solid fa-chevron-right text-sm text-gray-600 group-hover:text-gray-400 transition-colors"></i>
+              </Link>
+
+              {/* Button 6: Live Absensi */}
+              <Link href="/absensi" className="link-card flex items-center justify-between p-2 pr-4 rounded-2xl group cursor-pointer w-full text-left">
+                  <div className="flex items-center gap-4">
+                      <div className="icon-box w-14 h-14 rounded-xl flex items-center justify-center text-gray-400 group-hover:text-purple-400">
+                          <i className="fa-solid fa-calendar-check text-2xl"></i>
+                      </div>
+                      <span className="font-semibold text-gray-200 group-hover:text-white text-[15px]">Live Absensi Harian</span>
+                  </div>
+                  <i className="fa-solid fa-chevron-right text-sm text-gray-600 group-hover:text-gray-400 transition-colors"></i>
+              </Link>
+
+              {/* Pengumpulan Logbook Card */}
+              <div className="mt-4 flex justify-center">
+                  <LogbookCard />
+              </div>
 
           </div>
 
