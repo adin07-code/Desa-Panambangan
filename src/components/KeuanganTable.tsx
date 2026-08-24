@@ -1,8 +1,16 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { KeuanganItem } from '@/data/keuanganData';
 import { TrendingDown, TrendingUp, Wallet, CheckCircle2 } from 'lucide-react';
+
+export interface KeuanganItem {
+    id: string;
+    tanggal: string;
+    hari: string;
+    keterangan: string;
+    tipe: 'Pemasukan' | 'Pengeluaran';
+    jumlah: number;
+}
 
 interface KeuanganTableProps {
   data: KeuanganItem[];
