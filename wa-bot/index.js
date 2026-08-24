@@ -52,6 +52,7 @@ Berikut adalah beberapa perintah yang bisa Anda gunakan:
 3. *!jadwal* - Menampilkan link ke website jadwal piket
 4. *!absensi* - Menampilkan link ke website absensi harian
 5. *!logbook* - Menampilkan link ke pengisian logbook harian
+6. *!rundown* - Menampilkan rundown kegiatan 1 bulan
 
 _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply(helpText);
@@ -70,6 +71,11 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
     // Command: !logbook
     else if (text === '!logbook' || text === 'logbook') {
         await message.reply('📖 *Logbook Harian KKM 14*\n\nJangan lupa isi logbook harian Anda melalui link berikut:\nhttps://drive.google.com/drive/folders/1cEQ3LK5ovNZ0swVoM5X29TTWPeMj7Gyd');
+    }
+
+    // Command: !rundown
+    else if (text === '!rundown' || text === 'rundown') {
+        await message.reply('📄 *Rundown 1 Bulan KKM 14*\n\nSilakan cek detail rundown kegiatan kita selama 1 bulan penuh melalui link berikut:\nhttps://docs.google.com/document/d/1vO67-m_gBJYlS53Yn8OAhs6c5OheWpMsyWQm2kVuBfQ/edit?tab=t.0');
     }
     
     // Command: halo
