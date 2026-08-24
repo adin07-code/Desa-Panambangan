@@ -5,8 +5,10 @@ const fs = require('fs');
 const path = require('path');
 
 const absensiFile = path.join(__dirname, 'data_absensi.json');
+const usersFile = path.join(__dirname, 'data_users.json');
 
 // Detect if running on Android (Termux)
+
 const isAndroid = os.platform() === 'android';
 
 const puppeteerConfig = {
@@ -59,8 +61,9 @@ Berikut adalah beberapa perintah yang bisa Anda gunakan:
 6. *!rundown* - Menampilkan rundown kegiatan 1 bulan
 
 *Fitur Input WA:*
-7. *!hadir [Nama] - [Keterangan]* - Mengisi absensi langsung dari WA (Contoh: !hadir Budi - Sakit)
-8. *!rekapan* - Melihat daftar rekapan absensi yang sudah diinput
+7. *!daftar [Email] - [Nama] - [NIM] - [Prodi]* (Contoh: !daftar budi@gmail.com - Budi - 12345 - Teknik Informatika)
+8. *!hadir* - Mengisi absensi otomatis jika sudah terdaftar
+9. *!rekapan* - Melihat daftar rekapan absensi yang sudah diinput
 
 _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply(helpText);
@@ -91,62 +94,105 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply('Halo! 👋 Saya adalah Bot Asisten KKM 14 Desa Panambangan. Ketik *!bantuan* untuk melihat apa saja yang bisa saya lakukan.');
     }
 
-    // Command: !hadir [Nama] - [Keterangan]
-    else if (text.startsWith('!hadir')) {
-        const input = message.body.substring(6).trim(); // Remove '!hadir'
+    // Command: !daftar
+    else if (text.startsWith('!daftar')) {
+        const input = message.body.substring(7).trim();
         if (!input) {
-            await message.reply('❌ *Format salah!*\n\nGunakan format:\n*!hadir [Nama] - [Keterangan]*\n\nContoh:\n*!hadir Budi - Hadir*\n*!hadir Siti - Sakit*');
+            await message.reply('❌ *Format salah!*\n\nGunakan format:\n*!daftar [Email] - [Nama] - [NIM] - [Prodi]*\n\nContoh:\n*!daftar budi@gmail.com - Budi Santoso - 123456 - Teknik Informatika*');
             return;
         }
 
-        // Parse input: e.g. "Budi - Sakit"
         const parts = input.split('-');
-        const nama = parts[0] ? parts[0].trim() : 'Tidak diketahui';
-        const keterangan = parts[1] ? parts[1].trim() : 'Hadir';
-        const waktu = new Date().toLocaleString('id-ID');
+        if (parts.length < 4) {
+            await message.reply('❌ *Data kurang lengkap!* Pastikan ada Email, Nama, NIM, dan Prodi yang dipisahkan dengan tanda hubung (-).');
+            return;
+        }
 
-        // Save to file
-        let absensiData = [];
-        if (fs.existsSync(absensiFile)) {
-            try {
-                absensiData = JSON.parse(fs.readFileSync(absensiFile, 'utf8'));
-            } catch (e) {
-                absensiData = [];
-            }
+        const email = parts[0].trim();
+        const nama = parts[1].trim();
+        const nim = parts[2].trim();
+        const prodi = parts[3].trim();
+        const phone = message.from;
+
+        let usersData = {};
+        if (fs.existsSync(usersFile)) {
+            try { usersData = JSON.parse(fs.readFileSync(usersFile, 'utf8')); } catch (e) {}
         }
         
-        absensiData.push({ nama, keterangan, waktu });
-        fs.writeFileSync(absensiFile, JSON.stringify(absensiData, null, 2));
+        usersData[phone] = { email, nama, nim, prodi };
+        fs.writeFileSync(usersFile, JSON.stringify(usersData, null, 2));
 
-        await message.reply(`✅ *Absensi berhasil dicatat!*\n\n*Nama:* ${nama}\n*Keterangan:* ${keterangan}\n*Waktu:* ${waktu}`);
+        await message.reply(`✅ *Pendaftaran Berhasil!*\n\nNomor WA kamu sudah terhubung dengan data:\n*Nama:* ${nama}\n*NIM:* ${nim}\n*Prodi:* ${prodi}\n\nSekarang kamu cukup ketik *!hadir* setiap hari untuk absen otomatis!`);
+    }
+
+    // Command: !hadir
+    else if (text === '!hadir' || text === 'hadir') {
+        const phone = message.from;
+        let usersData = {};
+        if (fs.existsSync(usersFile)) {
+            try { usersData = JSON.parse(fs.readFileSync(usersFile, 'utf8')); } catch (e) {}
+        }
+
+        const user = usersData[phone];
+        if (!user) {
+            await message.reply('❌ *Nomor WA belum terdaftar!*\nSilakan daftar dulu dengan perintah:\n*!daftar [Email] - [Nama] - [NIM] - [Prodi]*');
+            return;
+        }
+
+        await message.reply('⏳ Sedang mengirim data absensi ke Google Form...');
+
+        // Kirim HTTP POST ke Google Form
+        const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLScHnzihnFInc5wbDFMk3uevPsb2UgymqNFOtWWiIGIxvFv9-w/formResponse';
+        
+        const params = new URLSearchParams();
+        params.append('entry.1673244097', user.email);
+        params.append('entry.250831635', user.nama);
+        params.append('entry.1035893054', user.nim);
+        params.append('entry.2015941125', user.prodi);
+
+        try {
+            const res = await fetch(formUrl, {
+                method: 'POST',
+                body: params,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+            
+            // Google form redirects on success or returns 200
+            await message.reply(`✅ *Absensi Sukses!*\n\nTerima kasih *${user.nama}*, absensi kamu telah berhasil masuk ke sistem web/Google Sheet.`);
+        } catch (error) {
+            console.error(error);
+            await message.reply('❌ *Gagal mengirim absensi.* Coba lagi nanti atau gunakan QR code di web.');
+        }
     }
 
     // Command: !rekapan
     else if (text === '!rekapan' || text === 'rekapan') {
-        if (!fs.existsSync(absensiFile)) {
-            await message.reply('Belum ada data absensi.');
-            return;
-        }
-        
-        let absensiData = [];
+        await message.reply('⏳ Sedang menarik data dari website...');
         try {
-            absensiData = JSON.parse(fs.readFileSync(absensiFile, 'utf8'));
+            const res = await fetch(`https://desa-panambangan.vercel.app/api/absensi?t=${new Date().getTime()}`);
+            if (!res.ok) throw new Error('Gagal memuat API');
+            
+            const result = await res.json();
+            const absensiData = result.data || [];
+            
+            if (absensiData.length === 0) {
+                await message.reply('Belum ada data absensi hari ini di website.');
+                return;
+            }
+
+            let reply = '*📋 Rekapan Absensi (Live dari Web)*\n\n';
+            absensiData.forEach((item, index) => {
+                const time = new Date(item.receivedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                reply += `${index + 1}. *${item.nama_lengkap}* - _${time}_\n`;
+            });
+            
+            await message.reply(reply);
         } catch (e) {
-            await message.reply('Gagal membaca data absensi.');
-            return;
+            await message.reply('❌ Terjadi kesalahan saat menarik data dari website.');
+            console.error(e);
         }
-
-        if (absensiData.length === 0) {
-            await message.reply('Belum ada data absensi.');
-            return;
-        }
-
-        let reply = '*📋 Rekapan Absensi KKM 14*\n\n';
-        absensiData.forEach((item, index) => {
-            reply += `${index + 1}. *${item.nama}* (${item.keterangan}) - _${item.waktu}_\n`;
-        });
-        
-        await message.reply(reply);
     }
 });
 
