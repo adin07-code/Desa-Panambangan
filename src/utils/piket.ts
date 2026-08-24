@@ -74,7 +74,7 @@ export function getWeekNumber(d: Date) {
   return Math.ceil((((date.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
 }
 
-function generateKebersihanSchedule(weekNum: number) {
+function generateKebersihanSchedule(): Record<string, string[]> {
   return {
     "Senin": ["Ais", "Faqih", "Puspa"],
     "Selasa": ["Putri", "Maisya", "Ulin"],
@@ -127,7 +127,7 @@ export function getWeeklySchedule(baseDate: Date) {
   // Create a unique seed per year+week to ensure it shifts consistently
   const uniqueWeekId = year * 100 + weekNum; 
   
-  const kebersihanSchedule = generateKebersihanSchedule(uniqueWeekId);
+  const kebersihanSchedule = generateKebersihanSchedule();
   const masakSchedule = generateMasakSchedule(uniqueWeekId);
 
   const schedule = days.map((day, index) => {
