@@ -41,15 +41,15 @@ export default async function Home({
                 
                 {/* Slider Overlays */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                <div className="absolute bottom-4 left-4 bg-white/80 px-4 py-2 font-bold text-gray-900 border-l-4 border-[#dc3545]">
+                <div className="absolute bottom-4 left-4 bg-white/80 px-4 py-2 font-bold text-[#466651] border-l-4 border-[#567a62]">
                   Edukasi Ketahanan Pangan Melalui TOGA & Maggot BSF
                 </div>
                 
                 {/* Slider Controls */}
-                <button className="absolute left-0 top-1/2 -translate-y-1/2 bg-[#dc3545] text-white p-2 opacity-80 hover:opacity-100">
+                <button className="absolute left-0 top-1/2 -translate-y-1/2 bg-[#567a62] hover:bg-[#466651] text-white p-2 transition-colors">
                   <ChevronLeft size={24} />
                 </button>
-                <button className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#dc3545] text-white p-2 opacity-80 hover:opacity-100">
+                <button className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#567a62] hover:bg-[#466651] text-white p-2 transition-colors">
                   <ChevronRight size={24} />
                 </button>
               </div>
@@ -57,11 +57,11 @@ export default async function Home({
 
             {/* ARTIKEL TERKINI Header */}
             <div className="flex items-center mb-6">
-              <div className="flex-grow border-t-[3px] border-b-[1px] border-[#dc3545] h-2"></div>
-              <h2 className="px-2 sm:px-4 text-lg sm:text-xl font-extrabold text-[#333] uppercase tracking-wide text-center">
+              <div className="flex-grow border-t-[3px] border-b-[1px] border-[#567a62]/80 h-2"></div>
+              <h2 className="px-2 sm:px-4 text-lg sm:text-xl font-extrabold text-[#466651] uppercase tracking-wide text-center">
                 {q ? `HASIL PENCARIAN: "${q}"` : "ARTIKEL TERKINI"}
               </h2>
-              <div className="flex-grow border-t-[3px] border-b-[1px] border-[#dc3545] h-2"></div>
+              <div className="flex-grow border-t-[3px] border-b-[1px] border-[#567a62]/80 h-2"></div>
             </div>
 
             {/* Articles List */}

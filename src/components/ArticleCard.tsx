@@ -34,7 +34,7 @@ export default function ArticleCard({ article }: { article: ArticleData }) {
       {/* Article Content */}
       <div className="w-full sm:w-2/3 flex flex-col justify-start">
         <Link href={`/artikel/${article.slug}`}>
-          <h3 className="text-[17px] font-bold text-[#dc3545] mb-2 leading-tight hover:underline">
+          <h3 className="text-[17px] font-bold text-[#466651] group-hover:text-[#d89f4b] transition-colors mb-2 leading-tight">
             {article.title}
           </h3>
         </Link>

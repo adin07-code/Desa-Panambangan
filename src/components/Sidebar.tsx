@@ -33,30 +33,30 @@ export default function Sidebar() {
   return (
     <div className="w-full flex flex-col gap-6">
       {/* Date Widget */}
-      <div className="bg-[#dc3545] text-white text-center py-3 font-bold shadow" suppressHydrationWarning>
+      <div className="bg-[#567a62] text-[#FDFBF5] text-center py-3 font-bold shadow" suppressHydrationWarning>
         {formattedDate}<br/>
         {formattedTime}
       </div>
 
       {/* Kategori */}
       <div>
-        <h3 className="text-xl font-bold uppercase border-b-2 border-[#dc3545] pb-2 mb-4">KATEGORI</h3>
-        <ul className="flex flex-col space-y-2 text-sm text-gray-600">
-          <li className="flex items-center border-b border-gray-100 pb-2 hover:text-[#dc3545] cursor-pointer">
-            <span className="text-gray-400 mr-2">»</span> Berita Desa
+        <h3 className="text-xl font-bold text-[#466651] uppercase border-b-2 border-[#567a62] pb-2 mb-4">KATEGORI</h3>
+        <ul className="flex flex-col space-y-2 text-sm text-[#567a62]">
+          <li className="flex items-center border-b border-[#567a62]/10 pb-2 hover:text-[#d89f4b] cursor-pointer transition-colors">
+            <span className="text-[#a4c1ae] mr-2">»</span> Berita Desa
           </li>
-          <li className="flex items-center border-b border-gray-100 pb-2 hover:text-[#dc3545] cursor-pointer">
-            <span className="text-gray-400 mr-2">»</span> Edukasi Lingkungan
+          <li className="flex items-center border-b border-[#567a62]/10 pb-2 hover:text-[#d89f4b] cursor-pointer transition-colors">
+            <span className="text-[#a4c1ae] mr-2">»</span> Edukasi Lingkungan
           </li>
-          <li className="flex items-center border-b border-gray-100 pb-2 hover:text-[#dc3545] cursor-pointer">
-            <span className="text-gray-400 mr-2">»</span> Program Kerja KKM
+          <li className="flex items-center border-b border-[#567a62]/10 pb-2 hover:text-[#d89f4b] cursor-pointer transition-colors">
+            <span className="text-[#a4c1ae] mr-2">»</span> Program Kerja KKM
           </li>
         </ul>
       </div>
 
       {/* Statistik Penduduk */}
       <div>
-        <h3 className="text-xl font-bold uppercase border-b-2 border-[#dc3545] pb-2 mb-4 flex items-center">
+        <h3 className="text-xl font-bold text-[#466651] uppercase border-b-2 border-[#567a62] pb-2 mb-4 flex items-center">
           <span className="mr-2">📊</span> STATISTIK PENDUDUK
         </h3>
         <div className="border border-gray-200 p-4 shadow-sm relative bg-white">
@@ -117,10 +117,10 @@ export default function Sidebar() {
 
       {/* Agenda */}
       <div>
-        <h3 className="text-xl font-bold uppercase border-b-2 border-[#dc3545] pb-2 mb-4 flex items-center">
+        <h3 className="text-xl font-bold text-[#466651] uppercase border-b-2 border-[#567a62] pb-2 mb-4 flex items-center">
           <span className="mr-2">📅</span> AGENDA
         </h3>
-        <p className="text-sm text-gray-500 text-center py-4 border border-gray-100 bg-gray-50">Belum ada agenda terdekat.</p>
+        <p className="text-sm text-[#567a62] text-center py-4 border border-[#567a62]/10 bg-white shadow-sm rounded">Belum ada agenda terdekat.</p>
       </div>
 
     </div>

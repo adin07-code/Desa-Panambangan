@@ -6,19 +6,19 @@ import React from 'react';
 // ==============================================
 export function LogbookCard() {
   return (
-    <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 md:p-8 max-w-sm w-full flex flex-col items-center text-center transition-all hover:shadow-lg hover:-translate-y-1">
-      <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4">
+    <div className="bg-white/60 backdrop-blur-md border border-[#567a62]/20 shadow-md rounded-2xl p-6 md:p-8 max-w-sm w-full flex flex-col items-center text-center transition-all hover:shadow-lg hover:-translate-y-1">
+      <div className="w-16 h-16 bg-[#567a62]/10 text-[#d89f4b] rounded-full flex items-center justify-center mb-4">
         <i className="fa-solid fa-file-signature text-2xl"></i>
       </div>
-      <h3 className="text-xl font-bold text-gray-900 mb-2">Pengumpulan Logbook</h3>
-      <p className="text-gray-500 text-sm mb-6 leading-relaxed">
+      <h3 className="text-xl font-extrabold text-[#466651] mb-2">Pengumpulan Logbook</h3>
+      <p className="text-[#567a62] text-sm mb-6 font-medium leading-relaxed">
         Upload logbook kegiatan harian Anda ke folder Google Drive resmi KKM 14.
       </p>
       <a 
         href="https://drive.google.com/drive/folders/1cEQ3LK5ovNZ0swVoM5X29TTWPeMj7Gyd" 
         target="_blank" 
         rel="noopener noreferrer"
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm shadow-blue-200"
+        className="w-full bg-[#567a62] hover:bg-[#466651] text-[#FDFBF5] font-semibold py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
       >
         <span>Kumpulkan di Sini</span>
         <i className="fa-solid fa-arrow-up-right-from-square text-sm"></i>
