@@ -26,11 +26,14 @@ export async function GET() {
       const ts = row["Timestamp"] || "";
       const datePart = ts.split(" ")[0]; // "8/24/2026"
       
+      let nama = row["Nama Lengkap"] || "";
+      nama = nama.trim().toLowerCase().split(' ').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+      
       return {
         id: index.toString(),
         timestamp: ts,
         datePart: datePart,
-        nama_lengkap: row["Nama Lengkap"] || "",
+        nama_lengkap: nama,
         nim: row["NIM"] || "",
         prodi: row["Prodi"] || "",
         email: row["Email"] || "",
