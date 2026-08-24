@@ -57,6 +57,7 @@ export default function Navbar() {
             <Link href="/blog" className="text-[#FDFBF5] hover:bg-[#385241] px-3 py-3 text-sm font-bold uppercase transition-colors">BERANDA</Link>
             <Link href="/artikel/jahe-merah" className="text-[#FDFBF5] hover:bg-[#385241] px-3 py-3 text-sm font-bold uppercase transition-colors">ARTIKEL TOGA</Link>
             <Link href="/artikel/maggot-bsf" className="text-[#FDFBF5] hover:bg-[#385241] px-3 py-3 text-sm font-bold uppercase transition-colors">ARTIKEL MAGGOT</Link>
+            <Link href="/rab" className="text-[#FDFBF5] hover:bg-[#385241] px-3 py-3 text-sm font-bold uppercase transition-colors">ANGGARAN KKM</Link>
             <Link href="/" className="text-[#FDFBF5] hover:bg-[#385241] px-3 py-3 text-sm font-bold uppercase transition-colors">KEMBALI KE PORTAL</Link>
           </div>
         </div>
@@ -68,6 +69,7 @@ export default function Navbar() {
               <Link href="/blog" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-bold text-[#FDFBF5] hover:bg-[#385241] uppercase transition-colors">BERANDA</Link>
               <Link href="/artikel/jahe-merah" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-bold text-[#FDFBF5] hover:bg-[#385241] uppercase transition-colors">ARTIKEL TOGA</Link>
               <Link href="/artikel/maggot-bsf" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-bold text-[#FDFBF5] hover:bg-[#385241] uppercase transition-colors">ARTIKEL MAGGOT</Link>
+              <Link href="/rab" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-bold text-[#FDFBF5] hover:bg-[#385241] uppercase transition-colors">ANGGARAN KKM</Link>
               <Link href="/" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-bold text-[#FDFBF5] hover:bg-[#385241] uppercase transition-colors">KEMBALI KE PORTAL</Link>
             </div>
           </div>
