@@ -113,38 +113,6 @@ export default function PortalPage() {
                   <i className="fa-solid fa-chevron-right text-sm text-gray-600 group-hover:text-gray-400 transition-colors"></i>
               </Link>
 
-              {/* Button 2: UMKM Kembang Tahu */}
-              <a href="#" className="link-card flex items-center justify-between p-2 pr-4 rounded-2xl group cursor-pointer w-full text-left">
-                  <div className="flex items-center gap-4">
-                      <div className="icon-box w-14 h-14 rounded-xl flex items-center justify-center text-gray-400 group-hover:text-yellow-400">
-                          <i className="fa-solid fa-store text-2xl"></i>
-                      </div>
-                      <span className="font-semibold text-gray-200 group-hover:text-white text-[15px]">UMKM Kembang Tahu</span>
-                  </div>
-                  <i className="fa-solid fa-chevron-right text-sm text-gray-600 group-hover:text-gray-400 transition-colors"></i>
-              </a>
-
-              {/* Button 3: Mapping */}
-              <a href="#" className="link-card flex items-center justify-between p-2 pr-4 rounded-2xl group cursor-pointer w-full text-left">
-                  <div className="flex items-center gap-4">
-                      <div className="icon-box w-14 h-14 rounded-xl flex items-center justify-center text-gray-400 group-hover:text-blue-400">
-                          <i className="fa-solid fa-map-location-dot text-2xl"></i>
-                      </div>
-                      <span className="font-semibold text-gray-200 group-hover:text-white text-[15px]">Peta Pemetaan (Mapping)</span>
-                  </div>
-                  <i className="fa-solid fa-chevron-right text-sm text-gray-600 group-hover:text-gray-400 transition-colors"></i>
-              </a>
-
-              {/* Button 4: Pengelolaan Sampah */}
-              <a href="#" className="link-card flex items-center justify-between p-2 pr-4 rounded-2xl group cursor-pointer w-full text-left">
-                  <div className="flex items-center gap-4">
-                      <div className="icon-box w-14 h-14 rounded-xl flex items-center justify-center text-gray-400 group-hover:text-green-500">
-                          <i className="fa-solid fa-recycle text-2xl"></i>
-                      </div>
-                      <span className="font-semibold text-gray-200 group-hover:text-white text-[15px]">Pengelolaan Sampah</span>
-                  </div>
-                  <i className="fa-solid fa-chevron-right text-sm text-gray-600 group-hover:text-gray-400 transition-colors"></i>
-              </a>
 
               {/* Button 5: Jadwal Piket KKM */}
               <Link href="/piket" className="link-card flex items-center justify-between p-2 pr-4 rounded-2xl group cursor-pointer w-full text-left">
