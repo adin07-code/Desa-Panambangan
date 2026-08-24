@@ -15,7 +15,7 @@ type PiketCardProps = {
 };
 
 export default function PiketCard({ data, isEditMode }: PiketCardProps) {
-  const [menu, setMenu] = useState({ pagi: "", siang: "", malam: "" });
+  const [menu, setMenu] = useState({ siang: "", sore: "" });
   const [isSaving, setIsSaving] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -102,15 +102,6 @@ export default function PiketCard({ data, isEditMode }: PiketCardProps) {
         ) : isEditMode ? (
           <div className="space-y-3">
             <div>
-              <label className="block text-xs font-bold text-[#a4c1ae] mb-1">Pagi</label>
-              <input 
-                type="text" 
-                value={menu.pagi} 
-                onChange={(e) => setMenu({...menu, pagi: e.target.value})}
-                className="w-full text-sm px-3 py-2 bg-[#FDFBF5] border-2 border-[#567a62] text-[#466651] font-semibold rounded-lg focus:outline-none focus:border-[#d1a798]"
-              />
-            </div>
-            <div>
               <label className="block text-xs font-bold text-[#a4c1ae] mb-1">Siang</label>
               <input 
                 type="text" 
@@ -120,11 +111,11 @@ export default function PiketCard({ data, isEditMode }: PiketCardProps) {
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[#a4c1ae] mb-1">Malam</label>
+              <label className="block text-xs font-bold text-[#a4c1ae] mb-1">Sore</label>
               <input 
                 type="text" 
-                value={menu.malam} 
-                onChange={(e) => setMenu({...menu, malam: e.target.value})}
+                value={menu.sore} 
+                onChange={(e) => setMenu({...menu, sore: e.target.value})}
                 className="w-full text-sm px-3 py-2 bg-[#FDFBF5] border-2 border-[#567a62] text-[#466651] font-semibold rounded-lg focus:outline-none focus:border-[#d1a798]"
               />
             </div>
@@ -139,16 +130,12 @@ export default function PiketCard({ data, isEditMode }: PiketCardProps) {
         ) : (
           <div className="flex flex-col gap-2">
             <div className="flex flex-col border-b border-[#567a62] pb-1">
-              <span className="text-[10px] font-bold text-[#a4c1ae] uppercase tracking-widest">Pagi</span>
-              <span className="text-sm font-bold text-[#FDFBF5]">{menu.pagi || "-"}</span>
-            </div>
-            <div className="flex flex-col border-b border-[#567a62] pb-1">
               <span className="text-[10px] font-bold text-[#a4c1ae] uppercase tracking-widest">Siang</span>
               <span className="text-sm font-bold text-[#FDFBF5]">{menu.siang || "-"}</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] font-bold text-[#a4c1ae] uppercase tracking-widest">Malam</span>
-              <span className="text-sm font-bold text-[#FDFBF5]">{menu.malam || "-"}</span>
+              <span className="text-[10px] font-bold text-[#a4c1ae] uppercase tracking-widest">Sore</span>
+              <span className="text-sm font-bold text-[#FDFBF5]">{menu.sore || "-"}</span>
             </div>
           </div>
         )}

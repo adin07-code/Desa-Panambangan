@@ -51,13 +51,13 @@ export function getWeeklySchedule(baseDate: Date) {
 
   // Hardcoded jadwal masak (Pagi & Malam) sesuai gambar
   const masakSchedule: Record<string, string[]> = {
-    "Senin": ["Pagi: Robbie & Rikeu", "Malam: Adin & Anisya"],
-    "Selasa": ["Pagi: Ulin & Indah", "Malam: Faisal & Dini"],
-    "Rabu": ["Pagi: Putri & Faqih", "Malam: Rikeu & Fauziy"],
-    "Kamis": ["Pagi: Alin & Fauzan", "Malam: Anisya & Robbie"],
-    "Jumat": ["Pagi: Adin & Indah", "Malam: Ulin & Dini"],
-    "Sabtu": ["Pagi: Faisal & Dea", "Malam: Faqih & Puspa"],
-    "Minggu": ["Pagi: Fauziy & Nabila", "Malam: Fauzan & Putri"]
+    "Senin": ["Siang: Robbie & Rikeu", "Sore: Adin & Anisya"],
+    "Selasa": ["Siang: Ulin & Indah", "Sore: Faisal & Dini"],
+    "Rabu": ["Siang: Putri & Faqih", "Sore: Rikeu & Fauziy"],
+    "Kamis": ["Siang: Alin & Fauzan", "Sore: Anisya & Robbie"],
+    "Jumat": ["Siang: Adin & Indah", "Sore: Ulin & Dini"],
+    "Sabtu": ["Siang: Faisal & Dea", "Sore: Faqih & Puspa"],
+    "Minggu": ["Siang: Fauziy & Nabila", "Sore: Fauzan & Putri"]
   };
 
   const schedule = days.map((day, index) => {
