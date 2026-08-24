@@ -14,6 +14,19 @@ type PiketCardProps = {
   isEditMode: boolean;
 };
 
+const getBackgroundImage = (day: string) => {
+  switch (day.toLowerCase()) {
+    case 'senin': return '/bg_senin.jpg';
+    case 'selasa': return '/bg_selasa.jpg';
+    case 'rabu': return '/bg_rabu.jpg';
+    case 'kamis': return '/bg_kamis.jpg';
+    case 'jumat': return '/bg_jumat.jpg';
+    case 'sabtu': return '/bg_sabtu.jpg';
+    case 'minggu': return '/bg_minggu.jpg';
+    default: return '';
+  }
+};
+
 export default function PiketCard({ data, isEditMode }: PiketCardProps) {
   const [menu, setMenu] = useState({ pagi: "", siang: "", malam: "" });
   const [isSaving, setIsSaving] = useState(false);
@@ -57,7 +70,20 @@ export default function PiketCard({ data, isEditMode }: PiketCardProps) {
   };
 
   return (
-    <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6 flex flex-col gap-6 hover:bg-white/10 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
+    <div 
+      className="rounded-2xl border border-white/20 p-6 flex flex-col gap-6 hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:-translate-y-2 transition-all duration-500 shadow-xl overflow-hidden relative group"
+      style={{
+        backgroundImage: `url(${getBackgroundImage(data.day)})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      {/* Overlay to ensure text readability */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm group-hover:bg-black/70 group-hover:backdrop-blur-md transition-all duration-500 z-0"></div>
+
+      {/* Content Container (z-10) */}
+      <div className="relative z-10 flex flex-col h-full gap-6">
+
       {/* Header (Hari & Tanggal) */}
       <div className="flex items-center justify-between border-b border-white/10 pb-4">
         <h3 className="text-xl font-bold text-white tracking-wide">{data.day}</h3>
@@ -170,7 +196,8 @@ export default function PiketCard({ data, isEditMode }: PiketCardProps) {
           </div>
         )}
       </div>
-
+      
+      </div> {/* Tutup Content Container */}
     </div>
   );
 }

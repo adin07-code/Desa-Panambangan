@@ -11,12 +11,21 @@ export default function PiketPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Generate schedule based on current date
     const currentSchedule = getWeeklySchedule(new Date());
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSchedule(currentSchedule);
+
+    // Real-time clock interval
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
   }, []);
 
   const handleLoginKonsumsi = () => {
@@ -51,8 +60,23 @@ export default function PiketPage() {
               <ArrowLeft className="w-5 h-5 text-white" />
             </Link>
             <div>
-              <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 tracking-tight">Jadwal Piket KKM</h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 tracking-tight">Jadwal Piket KKM</h1>
+                <div className="hidden md:flex items-center gap-2 bg-white/10 border border-white/20 px-3 py-1 rounded-full backdrop-blur-md shadow-lg">
+                  <i className="fa-regular fa-clock text-emerald-400"></i>
+                  <span className="text-sm font-bold text-white tracking-widest w-20 text-center">
+                    {mounted ? currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "..."}
+                  </span>
+                </div>
+              </div>
               <p className="text-gray-400 mt-1 text-sm md:text-base">Rotasi otomatis tugas Masak & Kebersihan Harian</p>
+              {/* Mobile Clock */}
+              <div className="md:hidden flex items-center gap-2 mt-2 bg-white/10 border border-white/20 px-3 py-1 rounded-full backdrop-blur-md shadow-lg w-max">
+                <i className="fa-regular fa-clock text-emerald-400 text-xs"></i>
+                <span className="text-xs font-bold text-white tracking-widest">
+                  {mounted ? currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "..."} WIB
+                </span>
+              </div>
             </div>
           </div>
           
