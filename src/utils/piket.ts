@@ -36,53 +36,31 @@ export function getWeekNumber(d: Date) {
 }
 
 export function getWeeklySchedule(baseDate: Date) {
-  const weekNum = getWeekNumber(baseDate);
-  
-  const regularMen = allMembers.filter(m => m.gender === 'L' && !m.isKaryawan);
-  const regularWomen = allMembers.filter(m => m.gender === 'P' && !m.isKaryawan);
-  const karyawanMen = allMembers.filter(m => m.gender === 'L' && m.isKaryawan);
-  const karyawanWomen = allMembers.filter(m => m.gender === 'P' && m.isKaryawan);
-
-  // Fungsi rotasi agar jadwal adil tiap minggunya
-  const rotateArray = (arr: PiketMember[], offset: number) => {
-    const shift = offset % arr.length;
-    return [...arr.slice(shift), ...arr.slice(0, shift)];
-  };
-
-  const currentMen = rotateArray(regularMen, weekNum);
-  const currentWomen = rotateArray(regularWomen, weekNum);
-
   const days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
   
+  // Hardcoded jadwal kebersihan sesuai gambar
+  const kebersihanSchedule: Record<string, string[]> = {
+    "Senin": ["Aisyah Wulan Sari (Konsumsi)", "Ramadhan Faqih (Humas)", "Puspa Sekar Agustin (Dokumentasi)"],
+    "Selasa": ["Putri Sekar Thaji (Wakil)", "Maisya Siti Fatimiah (Konsumsi)", "Akhmad Ulin Nuha (Dokumentasi)"],
+    "Rabu": ["Nabila Puspitarani", "Rikeu Nirmala Dewi (Bendahara)", "Fauzan Rizky Alifian (Peralatan)"],
+    "Kamis": ["Akhmad Faisal (Acara)", "Anisya Septriyani (Acara)", "Alin Lantria (Sekretaris)"],
+    "Jumat": ["Robbie andreas alfaro (Humas)", "Dea Salsabilla (Peralatan)", "Dini Fitriani (Dokumentasi)"],
+    "Sabtu": ["Muhamad Fauziy Sudrajat (Ketua)", "Adin Nugraha (Acara)", "Indah Amalia"],
+    "Minggu": ["Piket Bersama (Seluruh Anggota KKM)"]
+  };
+
+  // Hardcoded jadwal masak (Pagi & Malam) sesuai gambar
+  const masakSchedule: Record<string, string[]> = {
+    "Senin": ["Pagi: Robbie & Rikeu", "Malam: Adin & Anisya"],
+    "Selasa": ["Pagi: Ulin & Indah", "Malam: Faisal & Dini"],
+    "Rabu": ["Pagi: Putri & Faqih", "Malam: Rikeu & Fauziy"],
+    "Kamis": ["Pagi: Alin & Fauzan", "Malam: Anisya & Robbie"],
+    "Jumat": ["Pagi: Adin & Indah", "Malam: Ulin & Dini"],
+    "Sabtu": ["Pagi: Faisal & Dea", "Malam: Faqih & Puspa"],
+    "Minggu": ["Pagi: Fauziy & Nabila", "Malam: Fauzan & Putri"]
+  };
+
   const schedule = days.map((day, index) => {
-    // Masak: 1 Laki-laki, 2 Perempuan
-    const masakMenIdx = (index * 2) % currentMen.length;
-    const masakWomenIdx = (index * 2) % currentWomen.length;
-    
-    // Kebersihan: 1 Laki-laki, 2 Perempuan
-    const bersihMenIdx = (index * 2 + 1) % currentMen.length;
-    const bersihWomenIdx = (index * 2 + 2) % currentWomen.length; // offset beda agar tidak sama dengan masak
-
-    const masakTeam = [
-      currentMen[masakMenIdx],
-      currentWomen[masakWomenIdx],
-      currentWomen[(masakWomenIdx + 1) % currentWomen.length]
-    ];
-
-    const kebersihanTeam = [
-      currentMen[bersihMenIdx],
-      currentWomen[bersihWomenIdx],
-      currentWomen[(bersihWomenIdx + 1) % currentWomen.length]
-    ];
-
-    // Khusus weekend, Karyawan masuk jadwal
-    if (day === "Sabtu") {
-       masakTeam.push(karyawanWomen[0]);
-    }
-    if (day === "Minggu") {
-       kebersihanTeam.push(karyawanMen[0]);
-    }
-
     // Mendapatkan tanggal aktual minggu ini
     const dayDate = new Date(baseDate);
     const dayOffset = index - (baseDate.getDay() === 0 ? 6 : baseDate.getDay() - 1);
@@ -92,8 +70,8 @@ export function getWeeklySchedule(baseDate: Date) {
     return {
       day,
       date: dateStr,
-      masak: masakTeam.map(m => m.name),
-      kebersihan: kebersihanTeam.map(m => m.name),
+      masak: masakSchedule[day] || [],
+      kebersihan: kebersihanSchedule[day] || [],
     };
   });
 
