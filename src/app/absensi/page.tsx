@@ -17,6 +17,7 @@ type AbsensiData = {
 export default function AbsensiPage() {
   const [data, setData] = useState<AbsensiData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showQR, setShowQR] = useState(false);
 
   useEffect(() => {
     const fetchAbsensi = async () => {
@@ -49,15 +50,57 @@ export default function AbsensiPage() {
       <div className="max-w-4xl mx-auto">
         
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Link href="/" className="p-2 bg-white rounded-full shadow hover:bg-gray-100 transition-colors">
-            <ArrowLeft className="w-5 h-5 text-gray-700" />
-          </Link>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Live Absensi KKM</h1>
-            <p className="text-gray-500 mt-1">Daftar mahasiswa yang sudah melakukan presensi hari ini.</p>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+          <div className="flex items-center gap-4">
+            <Link href="/" className="p-2 bg-white rounded-full shadow hover:bg-gray-100 transition-colors">
+              <ArrowLeft className="w-5 h-5 text-gray-700" />
+            </Link>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Live Absensi KKM</h1>
+              <p className="text-gray-500 mt-1">Daftar mahasiswa yang sudah melakukan presensi hari ini.</p>
+            </div>
           </div>
+          
+          {/* Tombol Tampilkan QR Absensi */}
+          <button 
+            onClick={() => setShowQR(true)}
+            className="flex items-center gap-2 bg-purple-100 text-purple-700 hover:bg-purple-200 px-5 py-2.5 rounded-xl font-medium transition-colors"
+          >
+            <i className="fa-solid fa-qrcode"></i>
+            Tampilkan QR Absensi
+          </button>
         </div>
+
+        {/* Modal QR Code */}
+        {showQR && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity">
+            <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl flex flex-col items-center relative text-center">
+              <button
+                onClick={() => setShowQR(false)}
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors"
+              >
+                <i className="fa-solid fa-xmark text-lg"></i>
+              </button>
+              <h3 className="text-xl font-bold text-gray-900 mb-2 mt-2">QR Code Absensi</h3>
+              <p className="text-gray-500 text-sm mb-6">Scan QR ini untuk mengisi Google Form Absensi Harian KKM.</p>
+              
+              <div className="bg-gray-50 p-2 rounded-2xl w-64 h-64 mb-4 flex items-center justify-center border border-gray-100">
+                <div className="relative w-full h-full">
+                  <img
+                    src="/qr-absensi.png"
+                    alt="QR Code Absensi"
+                    className="w-full h-full object-contain rounded-xl"
+                    onError={(e) => {
+                      // Fallback jika user belum memasukkan gambar qr-absensi.png
+                      (e.target as HTMLImageElement).src = "https://via.placeholder.com/400?text=QR+Absensi+Belum+Ada";
+                    }}
+                  />
+                </div>
+              </div>
+              <p className="text-purple-600 font-semibold text-sm">Pastikan isi form dengan benar!</p>
+            </div>
+          </div>
+        )}
 
         {/* Content */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
