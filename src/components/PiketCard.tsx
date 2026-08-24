@@ -11,6 +11,9 @@ type PiketSchedule = {
 
 type PiketCardProps = {
   data: PiketSchedule;
+  isEditMode: boolean;
+};
+
 export default function PiketCard({ data, isEditMode }: PiketCardProps) {
   const [menu, setMenu] = useState({ pagi: "", siang: "", malam: "" });
   const [isSaving, setIsSaving] = useState(false);
