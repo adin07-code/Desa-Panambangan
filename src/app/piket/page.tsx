@@ -71,15 +71,6 @@ export default function PiketPage() {
                 {mounted ? currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "..."}
               </span>
             </div>
-            
-            <a 
-              href="https://docs.google.com/spreadsheets/d/14tDYF-syuIyBvA2AcZA0wxTTiAokKl2g/edit?usp=sharing" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="mt-4 bg-[#d89f4b] text-[#466651] hover:bg-[#c68e3e] px-5 py-2 rounded-xl text-sm font-bold transition-all shadow-sm"
-            >
-              <i className="fa-solid fa-file-excel mr-2"></i> Buka Google Sheets
-            </a>
           </div>
         </div>
 
