@@ -108,75 +108,47 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
             const phone = message.author || message.from;
             loggedInKonsumsi.add(phone);
             
-            await message.reply('🔓 *Akses Diberikan!*\n\n📝 *Link Edit Jadwal Piket & Menu (Khusus Konsumsi)*\n\nSilakan buka link Google Sheets berikut untuk mengubah jadwal secara manual:\nhttps://docs.google.com/spreadsheets/d/1ZIM8Eq3lQUfnK7kAUK90A-QwQvhCyA4lPbzxlT5j2Uo/edit?usp=sharing\n\nAtau kamu juga bisa mengubahnya langsung dari chat ini:\n\n*1. Ubah Menu Makanan:*\n`!updatemenu [Tanggal] - [Menu Siang] - [Menu Sore]`\nContoh: `!updatemenu 25 Agu 2026 - Nasi Goreng - Telur Dadar`\n\n*2. Ubah Petugas Piket:*\n`!updatepetugas [Tanggal] - [Kebersihan] - [Masak Siang] - [Masak Sore]`\nContoh: `!updatepetugas 25 Agu 2026 - Budi, Andi, Caca - Dede & Euis - Fafa & Gigi`');
+            await message.reply('🔓 *Akses Diberikan!*\n\n📝 *Link Edit Jadwal Piket & Menu (Khusus Konsumsi)*\n\nSilakan buka link Google Sheets berikut untuk mengubah jadwal secara manual:\nhttps://docs.google.com/spreadsheets/d/1ZIM8Eq3lQUfnK7kAUK90A-QwQvhCyA4lPbzxlT5j2Uo/edit?usp=sharing\n\nAtau kamu juga bisa mengubahnya langsung dari chat ini dengan mengetik perintah:\n*!update*');
         } else {
             await message.reply('❌ *Password Salah!* Akses ditolak.');
         }
     }
     
-    // Command: !updatemenu
-    else if (text.startsWith('!updatemenu')) {
+    // Command: !update
+    else if (text === '!update' || text === 'update') {
         const phone = message.author || message.from;
         
-        // Cek apakah nomor WA ini sudah login sebagai Sie Konsumsi
         if (!loggedInKonsumsi.has(phone)) {
             await message.reply('🔒 *Akses Ditolak!*\n\nKamu harus login terlebih dahulu menggunakan perintah:\n*!siekonsumsi [password]*');
             return;
         }
 
-        const input = message.body.substring(11).trim(); // Menghapus "!updatemenu"
-        const parts = input.split('-');
-        
-        if (parts.length < 3) {
-            await message.reply('❌ *Format salah!*\n\nGunakan format:\n*!updatemenu [Tanggal] - [Menu Siang] - [Menu Sore]*\n\nContoh:\n*!updatemenu 25 Agu 2026 - Nasi Goreng - Telur Dadar*');
-            return;
-        }
+        const template = `Pilih data yang ingin diubah dengan membalas (copy-paste & isi) salah satu format di bawah ini. Kosongkan baris yang tidak ingin diubah.
 
-        const tanggal = parts[0].trim();
-        const menuSiang = parts[1].trim();
-        const menuSore = parts[2].trim();
+*1. UPDATE MENU*
+!updatemenu
+Tanggal : 
+Siang : 
+Sore : 
 
-        await message.reply(`⏳ Sedang memperbarui Menu Makanan untuk tanggal *${tanggal}*...`);
+*2. UPDATE KEBERSIHAN*
+!updatekebersihan
+Tanggal : 
+Nama : 
 
-        // Webhook URL dari Google Apps Script
-        const webhookUrl = 'https://script.google.com/macros/s/AKfycbxY4JYjIbtUHgZEI6_DMOD-WruEYxTMTNmGsfZ8e70dqoT2lOwfrRMUCKVnAvaIcVlKXQ/exec';
-        
-        if (webhookUrl === 'INSERT_WEBHOOK_URL_HERE') {
-            await message.reply('⚠️ *Sistem Belum Siap*\nWebhook URL belum dikonfigurasi di dalam sistem bot.');
-            return;
-        }
+*3. UPDATE MASAK*
+!updatemasak
+Tanggal : 
+Siang : 
+Sore : 
 
-        try {
-            const payload = {
-                tanggal: tanggal,
-                menuSiang: menuSiang,
-                menuSore: menuSore
-            };
+*(Format Tanggal contoh: 25 Agu 2026)*`;
 
-            const res = await fetch(webhookUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await res.json();
-
-            if (result.status === 'success') {
-                await message.reply(`✅ *Berhasil Diperbarui!*\n\nMenu untuk tanggal *${tanggal}* telah diubah di Google Sheets dan Website.\n\nSiang: ${menuSiang}\nSore: ${menuSore}`);
-            } else {
-                await message.reply(`❌ *Gagal:* ${result.message}`);
-            }
-
-        } catch (error) {
-            console.error("Gagal mengirim update menu:", error);
-            await message.reply('❌ Terjadi kesalahan saat menghubungi server Google Sheets.');
-        }
+        await message.reply(template);
     }
 
-    // Command: !updatepetugas
-    else if (text.startsWith('!updatepetugas')) {
+    // Command: !updatemenu, !updatekebersihan, !updatemasak
+    else if (text.startsWith('!updatemenu') || text.startsWith('!updatekebersihan') || text.startsWith('!updatemasak')) {
         const phone = message.author || message.from;
         
         if (!loggedInKonsumsi.has(phone)) {
@@ -184,31 +156,42 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
             return;
         }
 
-        const input = message.body.substring(14).trim(); // Menghapus "!updatepetugas"
-        const parts = input.split('-');
+        const lines = message.body.split('\n');
         
-        if (parts.length < 4) {
-            await message.reply('❌ *Format salah!*\n\nGunakan format:\n*!updatepetugas [Tanggal] - [Kebersihan] - [Masak Siang] - [Masak Sore]*\n\nContoh:\n*!updatepetugas 25 Agu 2026 - Budi, Andi, Caca - Dede & Euis - Fafa & Gigi*');
+        const getValue = (key) => {
+            const line = lines.find(l => l.toLowerCase().startsWith(key.toLowerCase()));
+            return line ? line.substring(line.indexOf(':') + 1).trim() : '';
+        };
+
+        const tanggal = getValue('Tanggal');
+        if (!tanggal) {
+            await message.reply('❌ *Gagal:* Baris "Tanggal :" tidak ditemukan atau kosong. Pastikan kamu meng-copy format dengan benar.');
             return;
         }
 
-        const tanggal = parts[0].trim();
-        const kebersihan = parts[1].trim();
-        const masakSiang = parts[2].trim();
-        const masakSore = parts[3].trim();
+        const payload = { tanggal: tanggal };
+        let tipeUpdate = '';
 
-        await message.reply(`⏳ Sedang memperbarui Petugas Piket untuk tanggal *${tanggal}*...`);
+        if (text.startsWith('!updatemenu')) {
+            tipeUpdate = 'Menu Makanan';
+            payload.menuSiang = getValue('Siang');
+            payload.menuSore = getValue('Sore');
+        } 
+        else if (text.startsWith('!updatekebersihan')) {
+            tipeUpdate = 'Petugas Kebersihan';
+            payload.kebersihan = getValue('Nama');
+        }
+        else if (text.startsWith('!updatemasak')) {
+            tipeUpdate = 'Petugas Masak';
+            payload.masakSiang = getValue('Siang');
+            payload.masakSore = getValue('Sore');
+        }
+
+        await message.reply(`⏳ Sedang memperbarui ${tipeUpdate} untuk tanggal *${tanggal}*...`);
 
         const webhookUrl = 'https://script.google.com/macros/s/AKfycbxY4JYjIbtUHgZEI6_DMOD-WruEYxTMTNmGsfZ8e70dqoT2lOwfrRMUCKVnAvaIcVlKXQ/exec';
         
         try {
-            const payload = {
-                tanggal: tanggal,
-                kebersihan: kebersihan,
-                masakSiang: masakSiang,
-                masakSore: masakSore
-            };
-
             const res = await fetch(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -218,13 +201,13 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
             const result = await res.json();
 
             if (result.status === 'success') {
-                await message.reply(`✅ *Berhasil Diperbarui!*\n\nPetugas untuk tanggal *${tanggal}* telah diubah di Google Sheets dan Website.\n\nKebersihan: ${kebersihan}\nMasak Siang: ${masakSiang}\nMasak Sore: ${masakSore}`);
+                await message.reply(`✅ *Berhasil Diperbarui!*\n\n${tipeUpdate} untuk tanggal *${tanggal}* telah diubah di Google Sheets dan Website.`);
             } else {
                 await message.reply(`❌ *Gagal:* ${result.message}`);
             }
 
         } catch (error) {
-            console.error("Gagal mengirim update petugas:", error);
+            console.error(`Gagal mengirim update ${tipeUpdate}:`, error);
             await message.reply('❌ Terjadi kesalahan saat menghubungi server Google Sheets.');
         }
     }
