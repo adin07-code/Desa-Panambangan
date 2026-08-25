@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import KeuanganTable from '@/components/KeuanganTable';
-import { CircleDollarSign, ArrowLeft } from 'lucide-react';
+import { CircleDollarSign, ArrowLeft, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LaporanKeuanganPage() {
@@ -35,7 +35,7 @@ export default function LaporanKeuanganPage() {
           <Link href="/" className="w-12 h-12 flex items-center justify-center bg-white border border-[#466651]/20 rounded-full shadow-md hover:bg-gray-50 hover:scale-105 transition-all shrink-0 mt-1">
             <ArrowLeft className="w-5 h-5 text-[#466651]" />
           </Link>
-          <div className="flex flex-col items-start gap-4">
+          <div className="flex flex-col items-start gap-4 flex-1">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-100/80 text-emerald-700 text-sm font-semibold tracking-wide border border-emerald-200">
               <CircleDollarSign className="w-4 h-4" />
               <span>Rekapitulasi Dana (Live dari Google Sheets)</span>
@@ -46,6 +46,14 @@ export default function LaporanKeuanganPage() {
             <p className="text-lg text-gray-600 max-w-2xl leading-relaxed">
               Rincian seluruh transaksi arus kas (pemasukan dan pengeluaran) KKM Kelompok 14 UMC di Desa Panambangan secara real-time.
             </p>
+          </div>
+
+          {/* Tombol Akses Input */}
+          <div className="mt-2 md:mt-0 pt-2 md:pt-0 self-start md:self-center shrink-0">
+            <Link href="/input-keuangan" className="inline-flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#466651] to-[#3a5643] text-white rounded-2xl font-bold shadow-lg shadow-[#466651]/30 hover:shadow-xl hover:scale-105 transition-all active:scale-95 border border-white/10">
+              <PlusCircle className="w-5 h-5" />
+              <span>Catat Keuangan</span>
+            </Link>
           </div>
         </div>
 
