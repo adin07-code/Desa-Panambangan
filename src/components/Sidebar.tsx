@@ -51,6 +51,9 @@ export default function Sidebar() {
           <li className="flex items-center border-b border-[#567a62]/10 pb-2 hover:text-[#d89f4b] cursor-pointer transition-colors">
             <span className="text-[#a4c1ae] mr-2">»</span> Program Kerja KKM
           </li>
+          <li className="flex items-center border-b border-[#567a62]/10 pb-2 hover:text-[#d89f4b] cursor-pointer transition-colors">
+            <span className="text-[#a4c1ae] mr-2">»</span> <a href="/input-keuangan" className="w-full">Input Keuangan</a>
+          </li>
         </ul>
       </div>
 
