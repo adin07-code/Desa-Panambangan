@@ -108,10 +108,18 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
             return;
         }
 
-        const email = parts[0].trim();
-        const nama = parts[1].trim();
-        const nim = parts[2].trim();
-        const prodi = parts[3].trim();
+        const email = parts[0].replace(/[\[\]]/g, '').trim();
+        const nama = parts[1].replace(/[\[\]]/g, '').trim();
+        const nim = parts[2].replace(/[\[\]]/g, '').trim();
+        let prodi = parts[3].replace(/[\[\]]/g, '').trim();
+        
+        // Perbaiki kapitalisasi prodi agar cocok dengan pilihan di Google Form
+        if (prodi.toLowerCase() === 'pgsd') {
+            prodi = 'PGSD';
+        } else {
+            prodi = prodi.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
+        
         const phone = message.from;
 
         let usersData = {};
@@ -144,11 +152,22 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
         // Kirim HTTP POST ke Google Form
         const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLScHnzihnFInc5wbDFMk3uevPsb2UgymqNFOtWWiIGIxvFv9-w/formResponse';
         
+        const cleanEmail = user.email.replace(/[\[\]]/g, '').trim();
+        const cleanNama = user.nama.replace(/[\[\]]/g, '').trim();
+        const cleanNim = user.nim.replace(/[\[\]]/g, '').trim();
+        let cleanProdi = user.prodi.replace(/[\[\]]/g, '').trim();
+        
+        if (cleanProdi.toLowerCase() === 'pgsd') {
+            cleanProdi = 'PGSD';
+        } else {
+            cleanProdi = cleanProdi.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
+        
         const params = new URLSearchParams();
-        params.append('entry.1673244097', user.email);
-        params.append('entry.250831635', user.nama);
-        params.append('entry.1035893054', user.nim);
-        params.append('entry.2015941125', user.prodi);
+        params.append('entry.1673244097', cleanEmail);
+        params.append('entry.250831635', cleanNama);
+        params.append('entry.1035893054', cleanNim);
+        params.append('entry.2015941125', cleanProdi);
 
         try {
             const res = await fetch(formUrl, {
