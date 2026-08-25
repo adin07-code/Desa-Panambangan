@@ -19,6 +19,8 @@ export default function PiketPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [mounted, setMounted] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
 
   useEffect(() => {
     setMounted(true);
@@ -84,11 +86,36 @@ export default function PiketPage() {
             Belum ada jadwal piket yang tersedia di Google Sheets.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {schedule.map((dayData, idx) => (
-              <PiketCard key={idx} data={dayData} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {schedule.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((dayData, idx) => (
+                <PiketCard key={idx} data={dayData} />
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {schedule.length > itemsPerPage && (
+              <div className="flex justify-center items-center gap-4 mt-12 animate-in fade-in duration-500">
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
+                  disabled={currentPage === 0}
+                  className="px-6 py-2.5 rounded-full bg-[#567a62] text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#466651] transition-all font-semibold shadow-md flex items-center gap-2"
+                >
+                  <i className="fa-solid fa-chevron-left text-sm"></i> Minggu Sebelumnya
+                </button>
+                <span className="font-bold text-[#466651] bg-white/50 px-4 py-2 rounded-full shadow-sm">
+                  Minggu ke-{currentPage + 1}
+                </span>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(schedule.length / itemsPerPage) - 1, p + 1))}
+                  disabled={currentPage === Math.ceil(schedule.length / itemsPerPage) - 1}
+                  className="px-6 py-2.5 rounded-full bg-[#567a62] text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#466651] transition-all font-semibold shadow-md flex items-center gap-2"
+                >
+                  Minggu Selanjutnya <i className="fa-solid fa-chevron-right text-sm"></i>
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
