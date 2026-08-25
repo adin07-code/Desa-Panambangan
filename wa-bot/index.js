@@ -267,7 +267,7 @@ Total Harga :
         await message.reply(`⏳ Sedang menyimpan Pengeluaran sebesar Rp ${totalHarga} untuk tanggal *${tanggal}*...`);
 
         // TODO: Minta URL Webhook Keuangan ke User
-        const webhookKeuangan = 'INSERT_WEBHOOK_KEUANGAN_HERE';
+        const webhookKeuangan = 'https://script.google.com/macros/s/AKfycbyw2NQMoDJ1BVfHTp0T5Yh9l5feT5xb6xvultE-KPwqhKUvsO4TBQsNCY9JJ0RvpahM/exec';
         if (webhookKeuangan === 'INSERT_WEBHOOK_KEUANGAN_HERE') {
             await message.reply('⚠️ *Sistem Belum Siap*\nWebhook URL Keuangan belum dikonfigurasi.');
             return;
@@ -328,7 +328,7 @@ Total Harga :
 
         await message.reply(`⏳ Sedang merekap data Keuangan untuk tanggal *${tanggal}*...`);
 
-        const webhookKeuangan = 'INSERT_WEBHOOK_KEUANGAN_HERE';
+        const webhookKeuangan = 'https://script.google.com/macros/s/AKfycbyw2NQMoDJ1BVfHTp0T5Yh9l5feT5xb6xvultE-KPwqhKUvsO4TBQsNCY9JJ0RvpahM/exec';
         if (webhookKeuangan === 'INSERT_WEBHOOK_KEUANGAN_HERE') {
             await message.reply('⚠️ *Sistem Belum Siap*\nWebhook URL Keuangan belum dikonfigurasi.');
             return;
