@@ -7,6 +7,9 @@ const path = require('path');
 const absensiFile = path.join(__dirname, 'data_absensi.json');
 const usersFile = path.join(__dirname, 'data_users.json');
 
+// Session untuk menyimpan nomor WA yang sudah login sebagai Sie Konsumsi
+const loggedInKonsumsi = new Set();
+
 // Detect if running on Android (Termux)
 
 const isAndroid = os.platform() === 'android';
@@ -102,12 +105,76 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
 
         const password = input[1];
         if (password === 'konsumsi14') {
-            await message.reply('🔓 *Akses Diberikan!*\n\n📝 *Link Edit Jadwal Piket & Menu (Khusus Konsumsi)*\n\nSilakan buka link Google Sheets berikut untuk mengubah jadwal dan menu. Website akan otomatis terupdate:\n\nhttps://docs.google.com/spreadsheets/d/14tDYF-syuIyBvA2AcZA0wxTTiAokKl2g/edit?usp=sharing');
+            const phone = message.author || message.from;
+            loggedInKonsumsi.add(phone);
+            
+            await message.reply('🔓 *Akses Diberikan!*\n\n📝 *Link Edit Jadwal Piket & Menu (Khusus Konsumsi)*\n\nSilakan buka link Google Sheets berikut untuk mengubah jadwal secara manual:\nhttps://docs.google.com/spreadsheets/d/14tDYF-syuIyBvA2AcZA0wxTTiAokKl2g/edit?usp=sharing\n\nAtau kamu juga bisa langsung mengubah *Menu Makanan* dari sini dengan mengetik perintah:\n*!updatemenu [Tanggal] - [Menu Siang] - [Menu Sore]*\n\nContoh:\n*!updatemenu 25 Agu 2026 - Nasi Goreng - Telur Dadar*');
         } else {
             await message.reply('❌ *Password Salah!* Akses ditolak.');
         }
     }
     
+    // Command: !updatemenu
+    else if (text.startsWith('!updatemenu')) {
+        const phone = message.author || message.from;
+        
+        // Cek apakah nomor WA ini sudah login sebagai Sie Konsumsi
+        if (!loggedInKonsumsi.has(phone)) {
+            await message.reply('🔒 *Akses Ditolak!*\n\nKamu harus login terlebih dahulu menggunakan perintah:\n*!siekonsumsi [password]*');
+            return;
+        }
+
+        const input = message.body.substring(11).trim(); // Menghapus "!updatemenu"
+        const parts = input.split('-');
+        
+        if (parts.length < 3) {
+            await message.reply('❌ *Format salah!*\n\nGunakan format:\n*!updatemenu [Tanggal] - [Menu Siang] - [Menu Sore]*\n\nContoh:\n*!updatemenu 25 Agu 2026 - Nasi Goreng - Telur Dadar*');
+            return;
+        }
+
+        const tanggal = parts[0].trim();
+        const menuSiang = parts[1].trim();
+        const menuSore = parts[2].trim();
+
+        await message.reply(`⏳ Sedang memperbarui Menu Makanan untuk tanggal *${tanggal}*...`);
+
+        // Webhook URL dari Google Apps Script
+        const webhookUrl = 'https://script.google.com/macros/s/AKfycbxY4JYjIbtUHgZEI6_DMOD-WruEYxTMTNmGsfZ8e70dqoT2lOwfrRMUCKVnAvaIcVlKXQ/exec';
+        
+        if (webhookUrl === 'INSERT_WEBHOOK_URL_HERE') {
+            await message.reply('⚠️ *Sistem Belum Siap*\nWebhook URL belum dikonfigurasi di dalam sistem bot.');
+            return;
+        }
+
+        try {
+            const payload = {
+                tanggal: tanggal,
+                menuSiang: menuSiang,
+                menuSore: menuSore
+            };
+
+            const res = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await res.json();
+
+            if (result.status === 'success') {
+                await message.reply(`✅ *Berhasil Diperbarui!*\n\nMenu untuk tanggal *${tanggal}* telah diubah di Google Sheets dan Website.\n\nSiang: ${menuSiang}\nSore: ${menuSore}`);
+            } else {
+                await message.reply(`❌ *Gagal:* ${result.message}`);
+            }
+
+        } catch (error) {
+            console.error("Gagal mengirim update menu:", error);
+            await message.reply('❌ Terjadi kesalahan saat menghubungi server Google Sheets.');
+        }
+    }
+
     // Command: halo
     else if (text === 'halo' || text === 'halo bot') {
         await message.reply('Halo! 👋 Saya adalah Bot Asisten KKM 14 Desa Panambangan. Ketik *!bantuan* untuk melihat apa saja yang bisa saya lakukan.');
