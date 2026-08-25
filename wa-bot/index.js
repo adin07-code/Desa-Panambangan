@@ -190,11 +190,23 @@ Total Harga :
             return line ? line.substring(line.indexOf(':') + 1).trim() : '';
         };
 
-        const tanggal = getValue('Tanggal');
+        let tanggal = getValue('Tanggal');
         if (!tanggal) {
             await message.reply('❌ *Gagal:* Baris "Tanggal :" tidak ditemukan atau kosong. Pastikan kamu meng-copy format dengan benar.');
             return;
         }
+
+        // Normalisasi format bulan agar persis seperti di Google Sheets
+        tanggal = tanggal
+            .replace(/\bSep\b/gi, 'September')
+            .replace(/\bOkt\b/gi, 'Oktober')
+            .replace(/\bNov\b/gi, 'November')
+            .replace(/\bDes\b/gi, 'Desember')
+            .replace(/\bJan\b/gi, 'Januari')
+            .replace(/\bFeb\b/gi, 'Februari')
+            .replace(/\bMar\b/gi, 'Maret')
+            .replace(/\bApr\b/gi, 'April')
+            .replace(/\bAgu\b/gi, 'Aug'); // Sheet menggunakan "Aug"
 
         const payload = { tanggal: tanggal };
         let tipeUpdate = '';
@@ -253,9 +265,23 @@ Total Harga :
             return line ? line.substring(line.indexOf(':') + 1).trim() : '';
         };
 
-        const tanggal = getValue('Tanggal');
+        let tanggal = getValue('Tanggal');
         const barang = getValue('Barang');
         let totalHarga = getValue('Total Harga');
+        
+        // Normalisasi format bulan agar persis seperti di Google Sheets
+        if (tanggal) {
+            tanggal = tanggal
+                .replace(/\bSep\b/gi, 'September')
+                .replace(/\bOkt\b/gi, 'Oktober')
+                .replace(/\bNov\b/gi, 'November')
+                .replace(/\bDes\b/gi, 'Desember')
+                .replace(/\bJan\b/gi, 'Januari')
+                .replace(/\bFeb\b/gi, 'Februari')
+                .replace(/\bMar\b/gi, 'Maret')
+                .replace(/\bApr\b/gi, 'April')
+                .replace(/\bAgu\b/gi, 'Aug');
+        }
         
         if (!tanggal || !barang || !totalHarga) {
             await message.reply('❌ *Gagal:* Pastikan Tanggal, Barang, dan Total Harga sudah diisi semua.');
@@ -314,10 +340,24 @@ Total Harga :
             return line ? line.substring(line.indexOf(':') + 1).trim() : '';
         };
 
-        const tanggal = getValue('Tanggal');
+        let tanggal = getValue('Tanggal');
         const keterangan = getValue('Keterangan');
         let pemasukan = getValue('Pemasukan');
         let pengeluaran = getValue('Pengeluaran');
+        
+        // Normalisasi format bulan agar persis seperti di Google Sheets
+        if (tanggal) {
+            tanggal = tanggal
+                .replace(/\bSep\b/gi, 'September')
+                .replace(/\bOkt\b/gi, 'Oktober')
+                .replace(/\bNov\b/gi, 'November')
+                .replace(/\bDes\b/gi, 'Desember')
+                .replace(/\bJan\b/gi, 'Januari')
+                .replace(/\bFeb\b/gi, 'Februari')
+                .replace(/\bMar\b/gi, 'Maret')
+                .replace(/\bApr\b/gi, 'April')
+                .replace(/\bAgu\b/gi, 'Aug');
+        }
         
         if (!tanggal || !keterangan) {
             await message.reply('❌ *Gagal:* Pastikan Tanggal dan Keterangan sudah diisi semua.');
