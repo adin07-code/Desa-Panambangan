@@ -4,7 +4,7 @@ import Papa from "papaparse";
 export const dynamic = 'force-dynamic';
 export const revalidate = 0; // Disable cache
 
-const PIKET_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/14tDYF-syuIyBvA2AcZA0wxTTiAokKl2g/export?format=csv";
+const PIKET_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1ZIM8Eq3lQUfnK7kAUK90A-QwQvhCyA4lPbzxlT5j2Uo/export?format=csv";
 
 export async function GET() {
   try {

@@ -108,7 +108,7 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
             const phone = message.author || message.from;
             loggedInKonsumsi.add(phone);
             
-            await message.reply('🔓 *Akses Diberikan!*\n\n📝 *Link Edit Jadwal Piket & Menu (Khusus Konsumsi)*\n\nSilakan buka link Google Sheets berikut untuk mengubah jadwal secara manual:\nhttps://docs.google.com/spreadsheets/d/14tDYF-syuIyBvA2AcZA0wxTTiAokKl2g/edit?usp=sharing\n\nAtau kamu juga bisa langsung mengubah *Menu Makanan* dari sini dengan mengetik perintah:\n*!updatemenu [Tanggal] - [Menu Siang] - [Menu Sore]*\n\nContoh:\n*!updatemenu 25 Agu 2026 - Nasi Goreng - Telur Dadar*');
+            await message.reply('🔓 *Akses Diberikan!*\n\n📝 *Link Edit Jadwal Piket & Menu (Khusus Konsumsi)*\n\nSilakan buka link Google Sheets berikut untuk mengubah jadwal secara manual:\nhttps://docs.google.com/spreadsheets/d/1ZIM8Eq3lQUfnK7kAUK90A-QwQvhCyA4lPbzxlT5j2Uo/edit?usp=sharing\n\nAtau kamu juga bisa langsung mengubah *Menu Makanan* dari sini dengan mengetik perintah:\n*!updatemenu [Tanggal] - [Menu Siang] - [Menu Sore]*\n\nContoh:\n*!updatemenu 25 Agu 2026 - Nasi Goreng - Telur Dadar*');
         } else {
             await message.reply('❌ *Password Salah!* Akses ditolak.');
         }
