@@ -120,7 +120,8 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
             prodi = prodi.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
         
-        const phone = message.from;
+        // Gunakan message.author jika di grup, atau message.from jika di DM
+        const phone = message.author || message.from;
 
         let usersData = {};
         if (fs.existsSync(usersFile)) {
@@ -135,7 +136,8 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
 
     // Command: !hadir
     else if (text === '!hadir' || text === 'hadir') {
-        const phone = message.from;
+        // Gunakan message.author jika di grup, atau message.from jika di DM
+        const phone = message.author || message.from;
         let usersData = {};
         if (fs.existsSync(usersFile)) {
             try { usersData = JSON.parse(fs.readFileSync(usersFile, 'utf8')); } catch (e) {}
