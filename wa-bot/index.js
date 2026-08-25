@@ -89,6 +89,11 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply('📄 *Rundown 1 Bulan KKM 14*\n\nSilakan cek detail rundown kegiatan kita selama 1 bulan penuh melalui link berikut:\nhttps://docs.google.com/document/d/1vO67-m_gBJYlS53Yn8OAhs6c5OheWpMsyWQm2kVuBfQ/edit?tab=t.0');
     }
     
+    // Command: !editpiket (Rahasia untuk Divisi Konsumsi)
+    else if (text === '!editpiket' || text === 'editpiket') {
+        await message.reply('📝 *Link Edit Jadwal Piket & Menu (Khusus Konsumsi)*\n\nSilakan buka link Google Sheets berikut untuk mengubah jadwal dan menu. Website akan otomatis terupdate:\n\nhttps://docs.google.com/spreadsheets/d/14tDYF-syuIyBvA2AcZA0wxTTiAokKl2g/edit?usp=sharing');
+    }
+    
     // Command: halo
     else if (text === 'halo' || text === 'halo bot') {
         await message.reply('Halo! 👋 Saya adalah Bot Asisten KKM 14 Desa Panambangan. Ketik *!bantuan* untuk melihat apa saja yang bisa saya lakukan.');
