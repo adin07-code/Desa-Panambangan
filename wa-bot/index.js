@@ -228,7 +228,7 @@ Total Harga :
 
         await message.reply(`⏳ Sedang memperbarui ${tipeUpdate} untuk tanggal *${tanggal}*...`);
 
-        const webhookUrl = 'https://script.google.com/macros/s/AKfycbxY4JYjIbtUHgZEI6_DMOD-WruEYxTMTNmGsfZ8e70dqoT2lOwfrRMUCKVnAvaIcVlKXQ/exec';
+        const webhookUrl = 'https://script.google.com/macros/s/AKfycbxBPIIDHLGoYUvxONI1m0re8dpgMggBNXiABW2bnecTq2j-IVviCG91ZRBsla-dUtD1Kg/exec';
         
         try {
             const res = await fetch(webhookUrl, {
