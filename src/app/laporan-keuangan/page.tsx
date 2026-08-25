@@ -41,10 +41,10 @@ export default function LaporanKeuanganPage() {
               <span>Rekapitulasi Dana (Live dari Google Sheets)</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
-              Laporan Keuangan <span className="text-[#466651]">Harian</span>
+              Laporan Keuangan
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl leading-relaxed">
-              Rincian seluruh transaksi arus kas harian (pemasukan dan pengeluaran) KKM Kelompok 14 UMC di Desa Panambangan secara real-time.
+              Rincian seluruh transaksi arus kas (pemasukan dan pengeluaran) KKM Kelompok 14 UMC di Desa Panambangan secara real-time.
             </p>
           </div>
         </div>

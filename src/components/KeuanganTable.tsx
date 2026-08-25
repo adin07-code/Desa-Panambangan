@@ -104,7 +104,7 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
           <div className="bg-[#b2d5bb]/30 p-2.5 rounded-2xl text-[#466651]">
             <CheckCircle2 className="w-5 h-5" />
           </div>
-          <h3 className="text-lg font-bold text-[#466651] tracking-tight">Rincian Transaksi Harian</h3>
+          <h3 className="text-lg font-bold text-[#466651] tracking-tight">Rincian Transaksi</h3>
         </div>
 
         <div className="overflow-x-auto">
