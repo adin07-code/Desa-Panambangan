@@ -108,7 +108,7 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
             const phone = message.author || message.from;
             loggedInKonsumsi.add(phone);
             
-            await message.reply('🔓 *Akses Diberikan!*\n\n📝 *Link Edit Jadwal Piket & Menu (Khusus Konsumsi)*\n\nSilakan buka link Google Sheets berikut untuk mengubah jadwal secara manual:\nhttps://docs.google.com/spreadsheets/d/1ZIM8Eq3lQUfnK7kAUK90A-QwQvhCyA4lPbzxlT5j2Uo/edit?usp=sharing\n\nAtau kamu juga bisa langsung mengubah *Menu Makanan* dari sini dengan mengetik perintah:\n*!updatemenu [Tanggal] - [Menu Siang] - [Menu Sore]*\n\nContoh:\n*!updatemenu 25 Agu 2026 - Nasi Goreng - Telur Dadar*');
+            await message.reply('🔓 *Akses Diberikan!*\n\n📝 *Link Edit Jadwal Piket & Menu (Khusus Konsumsi)*\n\nSilakan buka link Google Sheets berikut untuk mengubah jadwal secara manual:\nhttps://docs.google.com/spreadsheets/d/1ZIM8Eq3lQUfnK7kAUK90A-QwQvhCyA4lPbzxlT5j2Uo/edit?usp=sharing\n\nAtau kamu juga bisa mengubahnya langsung dari chat ini:\n\n*1. Ubah Menu Makanan:*\n`!updatemenu [Tanggal] - [Menu Siang] - [Menu Sore]`\nContoh: `!updatemenu 25 Agu 2026 - Nasi Goreng - Telur Dadar`\n\n*2. Ubah Petugas Piket:*\n`!updatepetugas [Tanggal] - [Kebersihan] - [Masak Siang] - [Masak Sore]`\nContoh: `!updatepetugas 25 Agu 2026 - Budi, Andi, Caca - Dede & Euis - Fafa & Gigi`');
         } else {
             await message.reply('❌ *Password Salah!* Akses ditolak.');
         }
@@ -171,6 +171,60 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
 
         } catch (error) {
             console.error("Gagal mengirim update menu:", error);
+            await message.reply('❌ Terjadi kesalahan saat menghubungi server Google Sheets.');
+        }
+    }
+
+    // Command: !updatepetugas
+    else if (text.startsWith('!updatepetugas')) {
+        const phone = message.author || message.from;
+        
+        if (!loggedInKonsumsi.has(phone)) {
+            await message.reply('🔒 *Akses Ditolak!*\n\nKamu harus login terlebih dahulu menggunakan perintah:\n*!siekonsumsi [password]*');
+            return;
+        }
+
+        const input = message.body.substring(14).trim(); // Menghapus "!updatepetugas"
+        const parts = input.split('-');
+        
+        if (parts.length < 4) {
+            await message.reply('❌ *Format salah!*\n\nGunakan format:\n*!updatepetugas [Tanggal] - [Kebersihan] - [Masak Siang] - [Masak Sore]*\n\nContoh:\n*!updatepetugas 25 Agu 2026 - Budi, Andi, Caca - Dede & Euis - Fafa & Gigi*');
+            return;
+        }
+
+        const tanggal = parts[0].trim();
+        const kebersihan = parts[1].trim();
+        const masakSiang = parts[2].trim();
+        const masakSore = parts[3].trim();
+
+        await message.reply(`⏳ Sedang memperbarui Petugas Piket untuk tanggal *${tanggal}*...`);
+
+        const webhookUrl = 'https://script.google.com/macros/s/AKfycbxY4JYjIbtUHgZEI6_DMOD-WruEYxTMTNmGsfZ8e70dqoT2lOwfrRMUCKVnAvaIcVlKXQ/exec';
+        
+        try {
+            const payload = {
+                tanggal: tanggal,
+                kebersihan: kebersihan,
+                masakSiang: masakSiang,
+                masakSore: masakSore
+            };
+
+            const res = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await res.json();
+
+            if (result.status === 'success') {
+                await message.reply(`✅ *Berhasil Diperbarui!*\n\nPetugas untuk tanggal *${tanggal}* telah diubah di Google Sheets dan Website.\n\nKebersihan: ${kebersihan}\nMasak Siang: ${masakSiang}\nMasak Sore: ${masakSore}`);
+            } else {
+                await message.reply(`❌ *Gagal:* ${result.message}`);
+            }
+
+        } catch (error) {
+            console.error("Gagal mengirim update petugas:", error);
             await message.reply('❌ Terjadi kesalahan saat menghubungi server Google Sheets.');
         }
     }
