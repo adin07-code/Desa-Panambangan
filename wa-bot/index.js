@@ -9,6 +9,7 @@ const usersFile = path.join(__dirname, 'data_users.json');
 
 // Session untuk menyimpan nomor WA yang sudah login sebagai Sie Konsumsi
 const loggedInKonsumsi = new Set();
+const loggedInBendahara = new Set();
 
 // Detect if running on Android (Termux)
 
@@ -113,6 +114,25 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
             await message.reply('❌ *Password Salah!* Akses ditolak.');
         }
     }
+
+    // Command: !bendahara
+    else if (text.startsWith('!bendahara')) {
+        const input = text.split(' ');
+        if (input.length < 2) {
+            await message.reply('🔒 *Menu Terkunci!*\n\nIni adalah menu khusus Bendahara. Silakan masukkan password untuk mengaksesnya.\n\nFormat:\n*!bendahara [password]*');
+            return;
+        }
+
+        const password = input[1];
+        if (password === 'bendahara14') {
+            const phone = message.author || message.from;
+            loggedInBendahara.add(phone);
+            
+            await message.reply('🔓 *Akses Diberikan!*\n\nHalo Bendahara! Kamu sekarang bisa memasukkan Pemasukan atau Pengeluaran kapan saja dengan mengirimkan format berikut:\n\n*INPUT KEUANGAN*\n`!inputkeuangan`\n`Tanggal : `\n`Keterangan : `\n`Pemasukan : `\n`Pengeluaran : `\n\nContoh:\n`!inputkeuangan`\n`Tanggal : 25 Agu 2026`\n`Keterangan : Kas Masuk dari Desa`\n`Pemasukan : 500000`\n`Pengeluaran : 0`');
+        } else {
+            await message.reply('❌ *Password Salah!* Akses ditolak.');
+        }
+    }
     
     // Command: !update
     else if (text === '!update' || text === 'update') {
@@ -141,6 +161,12 @@ Nama :
 Tanggal : 
 Siang : 
 Sore : 
+
+*4. INPUT PENGELUARAN (KONSUMSI)*
+!pengeluaran
+Tanggal : 
+Barang : 
+Total Harga : 
 
 *(Format Tanggal contoh: 25 Agu 2026)*`;
 
@@ -209,6 +235,128 @@ Sore :
         } catch (error) {
             console.error(`Gagal mengirim update ${tipeUpdate}:`, error);
             await message.reply('❌ Terjadi kesalahan saat menghubungi server Google Sheets.');
+        }
+    }
+
+    // Command: !pengeluaran
+    else if (text.startsWith('!pengeluaran')) {
+        const phone = message.author || message.from;
+        if (!loggedInKonsumsi.has(phone)) {
+            await message.reply('🔒 *Akses Ditolak!*\n\nKamu harus login terlebih dahulu menggunakan perintah:\n*!siekonsumsi [password]*');
+            return;
+        }
+
+        const lines = message.body.split('\n');
+        const getValue = (key) => {
+            const line = lines.find(l => l.toLowerCase().startsWith(key.toLowerCase()));
+            return line ? line.substring(line.indexOf(':') + 1).trim() : '';
+        };
+
+        const tanggal = getValue('Tanggal');
+        const barang = getValue('Barang');
+        let totalHarga = getValue('Total Harga');
+        
+        if (!tanggal || !barang || !totalHarga) {
+            await message.reply('❌ *Gagal:* Pastikan Tanggal, Barang, dan Total Harga sudah diisi semua.');
+            return;
+        }
+        
+        // Hapus titik atau koma dari totalHarga agar jadi angka murni
+        totalHarga = totalHarga.replace(/[^0-9]/g, '');
+
+        await message.reply(`⏳ Sedang menyimpan Pengeluaran sebesar Rp ${totalHarga} untuk tanggal *${tanggal}*...`);
+
+        // TODO: Minta URL Webhook Keuangan ke User
+        const webhookKeuangan = 'INSERT_WEBHOOK_KEUANGAN_HERE';
+        if (webhookKeuangan === 'INSERT_WEBHOOK_KEUANGAN_HERE') {
+            await message.reply('⚠️ *Sistem Belum Siap*\nWebhook URL Keuangan belum dikonfigurasi.');
+            return;
+        }
+
+        try {
+            const payload = {
+                tanggal: tanggal,
+                keterangan: barang,
+                pemasukan: 0,
+                pengeluaran: totalHarga
+            };
+
+            const res = await fetch(webhookKeuangan, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await res.json();
+            if (result.status === 'success') {
+                await message.reply(`✅ *Berhasil Disimpan!*\n\nPengeluaran Konsumsi untuk tanggal *${tanggal}* telah dimasukkan ke Laporan Keuangan di Website.`);
+            } else {
+                await message.reply(`❌ *Gagal:* ${result.message}`);
+            }
+        } catch (error) {
+            console.error('Gagal mengirim pengeluaran:', error);
+            await message.reply('❌ Terjadi kesalahan saat menghubungi server Google Sheets Keuangan.');
+        }
+    }
+
+    // Command: !inputkeuangan (Bendahara)
+    else if (text.startsWith('!inputkeuangan')) {
+        const phone = message.author || message.from;
+        if (!loggedInBendahara.has(phone)) {
+            await message.reply('🔒 *Akses Ditolak!*\n\nKamu harus login terlebih dahulu menggunakan perintah:\n*!bendahara [password]*');
+            return;
+        }
+
+        const lines = message.body.split('\n');
+        const getValue = (key) => {
+            const line = lines.find(l => l.toLowerCase().startsWith(key.toLowerCase()));
+            return line ? line.substring(line.indexOf(':') + 1).trim() : '';
+        };
+
+        const tanggal = getValue('Tanggal');
+        const keterangan = getValue('Keterangan');
+        let pemasukan = getValue('Pemasukan');
+        let pengeluaran = getValue('Pengeluaran');
+        
+        if (!tanggal || !keterangan) {
+            await message.reply('❌ *Gagal:* Pastikan Tanggal dan Keterangan sudah diisi semua.');
+            return;
+        }
+        
+        pemasukan = pemasukan ? pemasukan.replace(/[^0-9]/g, '') : "0";
+        pengeluaran = pengeluaran ? pengeluaran.replace(/[^0-9]/g, '') : "0";
+
+        await message.reply(`⏳ Sedang merekap data Keuangan untuk tanggal *${tanggal}*...`);
+
+        const webhookKeuangan = 'INSERT_WEBHOOK_KEUANGAN_HERE';
+        if (webhookKeuangan === 'INSERT_WEBHOOK_KEUANGAN_HERE') {
+            await message.reply('⚠️ *Sistem Belum Siap*\nWebhook URL Keuangan belum dikonfigurasi.');
+            return;
+        }
+
+        try {
+            const payload = {
+                tanggal: tanggal,
+                keterangan: keterangan,
+                pemasukan: pemasukan,
+                pengeluaran: pengeluaran
+            };
+
+            const res = await fetch(webhookKeuangan, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await res.json();
+            if (result.status === 'success') {
+                await message.reply(`✅ *Berhasil Disimpan!*\n\nData Keuangan untuk tanggal *${tanggal}* telah ditambahkan ke Laporan Keuangan di Website.`);
+            } else {
+                await message.reply(`❌ *Gagal:* ${result.message}`);
+            }
+        } catch (error) {
+            console.error('Gagal mengirim keuangan:', error);
+            await message.reply('❌ Terjadi kesalahan saat menghubungi server Google Sheets Keuangan.');
         }
     }
 
