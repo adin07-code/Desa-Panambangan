@@ -174,8 +174,8 @@ Total Harga :
         await message.reply(template);
     }
 
-    // Command: !updatemenu, !updatekebersihan, !updatemasak
-    else if (text.startsWith('!updatemenu') || text.startsWith('!updatekebersihan') || text.startsWith('!updatemasak')) {
+    // Command: !updatemenu, !updatekebersihan, !updatemasak (Bisa Digabung)
+    else if (text.includes('!updatemenu') || text.includes('!updatekebersihan') || text.includes('!updatemasak')) {
         const phone = message.author || message.from;
         
         if (!loggedInKonsumsi.has(phone)) {
@@ -183,71 +183,90 @@ Total Harga :
             return;
         }
 
-        const lines = message.body.split('\n');
+        // Split pesan berdasarkan kata !update
+        const blocks = message.body.split(/(?=!update)/i).map(b => b.trim()).filter(b => b.length > 0);
         
-        const getValue = (key) => {
-            const line = lines.find(l => l.toLowerCase().startsWith(key.toLowerCase()));
-            return line ? line.substring(line.indexOf(':') + 1).trim() : '';
-        };
+        let replyMsg = '';
+        let successCount = 0;
+        let failCount = 0;
 
-        let tanggal = getValue('Tanggal');
-        if (!tanggal) {
-            await message.reply('❌ *Gagal:* Baris "Tanggal :" tidak ditemukan atau kosong. Pastikan kamu meng-copy format dengan benar.');
-            return;
-        }
+        await message.reply(`⏳ Sedang memproses ${blocks.length} perintah update...`);
 
-        // Normalisasi format bulan agar persis seperti di Google Sheets
-        tanggal = tanggal
-            .replace(/\bSep\b/gi, 'September')
-            .replace(/\bOkt\b/gi, 'Oktober')
-            .replace(/\bNov\b/gi, 'November')
-            .replace(/\bDes\b/gi, 'Desember')
-            .replace(/\bJan\b/gi, 'Januari')
-            .replace(/\bFeb\b/gi, 'Februari')
-            .replace(/\bMar\b/gi, 'Maret')
-            .replace(/\bApr\b/gi, 'April')
-            .replace(/\bAgu\b/gi, 'Aug'); // Sheet menggunakan "Aug"
-
-        const payload = { tanggal: tanggal };
-        let tipeUpdate = '';
-
-        if (text.startsWith('!updatemenu')) {
-            tipeUpdate = 'Menu Makanan';
-            payload.menuSiang = getValue('Siang');
-            payload.menuSore = getValue('Sore');
-        } 
-        else if (text.startsWith('!updatekebersihan')) {
-            tipeUpdate = 'Petugas Kebersihan';
-            payload.kebersihan = getValue('Nama');
-        }
-        else if (text.startsWith('!updatemasak')) {
-            tipeUpdate = 'Yang Memasak';
-            payload.masakSiang = getValue('Siang');
-            payload.masakSore = getValue('Sore');
-        }
-
-        await message.reply(`⏳ Sedang memperbarui ${tipeUpdate} untuk tanggal *${tanggal}*...`);
-
-        const webhookUrl = 'https://script.google.com/macros/s/AKfycbxBPIIDHLGoYUvxONI1m0re8dpgMggBNXiABW2bnecTq2j-IVviCG91ZRBsla-dUtD1Kg/exec';
-        
-        try {
-            const res = await fetch(webhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await res.json();
-
-            if (result.status === 'success') {
-                await message.reply(`✅ *Berhasil Diperbarui!*\n\n${tipeUpdate} untuk tanggal *${tanggal}* telah diubah di Google Sheets dan Website.\n\nKetik *!update* lagi jika ingin mengubah data lainnya.`);
-            } else {
-                await message.reply(`❌ *Gagal:* ${result.message}`);
+        for (const block of blocks) {
+            const lines = block.split('\n');
+            const cmd = lines[0].toLowerCase().trim();
+            
+            if (!cmd.startsWith('!updatemenu') && !cmd.startsWith('!updatekebersihan') && !cmd.startsWith('!updatemasak')) {
+                continue;
             }
 
-        } catch (error) {
-            console.error(`Gagal mengirim update ${tipeUpdate}:`, error);
-            await message.reply('❌ Terjadi kesalahan saat menghubungi server Google Sheets.');
+            const getValue = (key) => {
+                const line = lines.find(l => l.toLowerCase().startsWith(key.toLowerCase()));
+                return line ? line.substring(line.indexOf(':') + 1).trim() : '';
+            };
+
+            let tanggal = getValue('Tanggal');
+            if (!tanggal) {
+                replyMsg += `❌ *Gagal (${cmd}):* Baris "Tanggal :" tidak ditemukan.\n`;
+                failCount++;
+                continue;
+            }
+
+            // Normalisasi format bulan agar persis seperti di Google Sheets
+            tanggal = tanggal
+                .replace(/\bSep\b/gi, 'September')
+                .replace(/\bOkt\b/gi, 'Oktober')
+                .replace(/\bNov\b/gi, 'November')
+                .replace(/\bDes\b/gi, 'Desember')
+                .replace(/\bJan\b/gi, 'Januari')
+                .replace(/\bFeb\b/gi, 'Februari')
+                .replace(/\bMar\b/gi, 'Maret')
+                .replace(/\bApr\b/gi, 'April')
+                .replace(/\bAgu\b/gi, 'Aug'); // Sheet menggunakan "Aug"
+
+            const payload = { tanggal: tanggal };
+            let tipeUpdate = '';
+
+            if (cmd.startsWith('!updatemenu')) {
+                tipeUpdate = 'Menu Makanan';
+                payload.menuSiang = getValue('Siang');
+                payload.menuSore = getValue('Sore');
+            } 
+            else if (cmd.startsWith('!updatekebersihan')) {
+                tipeUpdate = 'Petugas Kebersihan';
+                payload.kebersihan = getValue('Nama');
+            }
+            else if (cmd.startsWith('!updatemasak')) {
+                tipeUpdate = 'Yang Memasak';
+                payload.masakSiang = getValue('Siang');
+                payload.masakSore = getValue('Sore');
+            }
+
+            const webhookUrl = 'https://script.google.com/macros/s/AKfycbxBPIIDHLGoYUvxONI1m0re8dpgMggBNXiABW2bnecTq2j-IVviCG91ZRBsla-dUtD1Kg/exec';
+            
+            try {
+                const res = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+
+                if (result.status === 'success') {
+                    replyMsg += `✅ *Sukses:* ${tipeUpdate} (${tanggal})\n`;
+                    successCount++;
+                } else {
+                    replyMsg += `❌ *Gagal:* ${tipeUpdate} (${tanggal}) - ${result.message}\n`;
+                    failCount++;
+                }
+            } catch (error) {
+                replyMsg += `❌ *Error Server:* ${tipeUpdate} (${tanggal})\n`;
+                failCount++;
+            }
+        }
+
+        if (successCount > 0 || failCount > 0) {
+            await message.reply(`*Hasil Update:*\n\n${replyMsg}`);
         }
     }
 
