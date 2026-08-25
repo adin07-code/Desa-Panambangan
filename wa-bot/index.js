@@ -136,7 +136,7 @@ Sore :
 Tanggal : 
 Nama : 
 
-*3. UPDATE MASAK*
+*3. UPDATE YANG MEMASAK*
 !updatemasak
 Tanggal : 
 Siang : 
@@ -182,7 +182,7 @@ Sore :
             payload.kebersihan = getValue('Nama');
         }
         else if (text.startsWith('!updatemasak')) {
-            tipeUpdate = 'Petugas Masak';
+            tipeUpdate = 'Yang Memasak';
             payload.masakSiang = getValue('Siang');
             payload.masakSore = getValue('Sore');
         }
