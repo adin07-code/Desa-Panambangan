@@ -17,27 +17,28 @@ export async function GET() {
     const { data } = Papa.parse(csvText, {
       header: true,
       skipEmptyLines: true,
+      transformHeader: (header) => header.trim().toUpperCase()
     });
 
     const scheduleList = data.map((row: any) => {
       // Split kebersihan comma-separated string into array
-      const kebersihanStr = row["Tim Kebersihan"] || "";
+      const kebersihanStr = row["TIM KEBERSIHAN"] || "";
       const kebersihan = kebersihanStr.split(",").map((s: string) => s.trim()).filter(Boolean);
 
-      const masakSiang = row["Masak Siang"] || "-";
-      const masakSore = row["Masak Sore"] || "-";
+      const masakSiang = row["TIM KONSUMSI SIANG"] || "-";
+      const masakSore = row["TIM KONSUMSI MALAM"] || "-";
       
       const masak = [];
       if (masakSiang !== "-") masak.push(`Siang: ${masakSiang}`);
       if (masakSore !== "-") masak.push(`Sore: ${masakSore}`);
 
       return {
-        day: row["Hari"] || "",
-        date: row["Tanggal"] || "",
+        day: row["HARI"] || "",
+        date: row["TANGGAL"] || "",
         kebersihan: kebersihan,
         masak: masak,
-        menuSiang: row["Menu Siang"] || "-",
-        menuSore: row["Menu Sore"] || "-",
+        menuSiang: row["MENU SIANG HARI"] || "-",
+        menuSore: row["MENU MALAM HARI"] || "-",
       };
     });
 
