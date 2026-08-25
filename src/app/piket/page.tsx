@@ -3,22 +3,42 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { getWeeklySchedule } from "@/utils/piket";
 import PiketCard from "@/components/PiketCard";
 
+type PiketSchedule = {
+  day: string;
+  date: string;
+  masak: string[];
+  kebersihan: string[];
+  menuSiang: string;
+  menuSore: string;
+};
+
 export default function PiketPage() {
-  const [schedule, setSchedule] = useState<ReturnType<typeof getWeeklySchedule>>([]);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
-  const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [schedule, setSchedule] = useState<PiketSchedule[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Generate schedule based on current date
-    const currentSchedule = getWeeklySchedule(new Date());
-    setSchedule(currentSchedule);
+    
+    // Fetch schedule from Google Sheets via API
+    const fetchSchedule = async () => {
+      try {
+        const res = await fetch("/api/piket");
+        if (res.ok) {
+          const result = await res.json();
+          setSchedule(result.data || []);
+        }
+      } catch (error) {
+        console.error("Gagal memuat jadwal piket", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchSchedule();
 
     // Real-time clock interval
     const timer = setInterval(() => {
@@ -28,24 +48,8 @@ export default function PiketPage() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleLoginKonsumsi = () => {
-    if (showPasswordInput) {
-      // Mock password untuk demo
-      if (passwordInput === "konsumsi14") {
-        setIsEditMode(true);
-        setShowPasswordInput(false);
-        setPasswordInput("");
-      } else {
-        alert("Password salah!");
-      }
-    } else {
-      setShowPasswordInput(true);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-grid-paper text-gray-800 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-
       <div className="max-w-7xl mx-auto">
         
         {/* Header Section */}
@@ -67,47 +71,34 @@ export default function PiketPage() {
                 {mounted ? currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "..."}
               </span>
             </div>
-          </div>
-          
-          {/* Mode Konsumsi (Mini CMS Toggle) */}
-          <div className="flex items-center justify-center gap-2 mt-4">
-            {!isEditMode ? (
-              <div className="flex items-center gap-2">
-                {showPasswordInput && (
-                  <input
-                    type="password"
-                    placeholder="Password Konsumsi"
-                    value={passwordInput}
-                    onChange={(e) => setPasswordInput(e.target.value)}
-                    className="text-sm px-4 py-2 rounded-xl bg-white border-2 border-[#466651] text-[#466651] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#567a62] w-44 transition-all font-semibold"
-                  />
-                )}
-                <button 
-                  onClick={handleLoginKonsumsi}
-                  className="bg-[#567a62] text-[#FDFBF5] hover:bg-[#466651] px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-sm"
-                >
-                  <i className="fa-solid fa-lock"></i>
-                  {showPasswordInput ? "Login" : "Edit Menu"}
-                </button>
-              </div>
-            ) : (
-              <button 
-                onClick={() => setIsEditMode(false)}
-                className="bg-red-500 text-white hover:bg-red-600 px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-sm"
-              >
-                <i className="fa-solid fa-lock-open"></i> Selesai Edit
-              </button>
-            )}
+            
+            <a 
+              href="https://docs.google.com/spreadsheets/d/14tDYF-syuIyBvA2AcZA0wxTTiAokKl2g/edit?usp=sharing" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="mt-4 bg-[#d89f4b] text-[#466651] hover:bg-[#c68e3e] px-5 py-2 rounded-xl text-sm font-bold transition-all shadow-sm"
+            >
+              <i className="fa-solid fa-file-excel mr-2"></i> Buka Google Sheets
+            </a>
           </div>
         </div>
 
-        {/* Schedule Grid - Dikurangi kolomnya agar card lebih lebar dan lega */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {schedule.map((dayData, idx) => (
-            <PiketCard key={idx} data={dayData} isEditMode={isEditMode} />
-          ))}
-        </div>
-
+        {/* Schedule Grid */}
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#567a62]"></div>
+          </div>
+        ) : schedule.length === 0 ? (
+          <div className="text-center py-20 text-[#466651] font-semibold">
+            Belum ada jadwal piket yang tersedia di Google Sheets.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {schedule.map((dayData, idx) => (
+              <PiketCard key={idx} data={dayData} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
