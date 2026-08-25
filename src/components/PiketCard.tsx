@@ -18,6 +18,23 @@ export default function PiketCard({ data }: PiketCardProps) {
   // Di CSV formatnya "24 Agu 2026", kita tampilkan langsung saja
   const displayDate = data.date;
 
+  const permanentKebersihan: Record<string, string[]> = {
+    'Senin': ['Ais', 'Faqih', 'Puspa'],
+    'Selasa': ['Putri', 'Maisya', 'Ulin'],
+    'Rabu': ['Nabila', 'Rikeu', 'Iki'],
+    'Kamis': ['Faisal', 'Anisa', 'Alin'],
+    'Jumat': ['Robi', 'Dea', 'Dini'],
+    'Sabtu': ['Fauzy', 'Adin', 'Indah'],
+    'Minggu': ['Libur / Bersama']
+  };
+
+  const dayName = data.day ? data.day.charAt(0).toUpperCase() + data.day.slice(1).toLowerCase() : '';
+  const isKebersihanEmpty = !data.kebersihan || data.kebersihan.length === 0 || data.kebersihan[0] === "" || data.kebersihan[0] === "-";
+  
+  const kebersihanNames = isKebersihanEmpty 
+    ? (permanentKebersihan[dayName] || ['-'])
+    : data.kebersihan;
+
   return (
     <div className="bg-[#567a62] rounded-3xl p-5 flex flex-col gap-4 shadow-lg hover:-translate-y-1 transition-transform duration-300 relative">
       {/* Decorative Tapes */}
@@ -39,7 +56,7 @@ export default function PiketCard({ data }: PiketCardProps) {
           <div>
             <h4 className="font-cute font-bold text-[#466651] text-xl border-b-2 border-[#567a62]/20 mb-2">Kebersihan</h4>
             <ol className="text-sm font-semibold text-[#567a62] space-y-1 ml-4 list-decimal marker:text-[#8ea596]">
-              {data.kebersihan.map((name, i) => (
+              {kebersihanNames.map((name, i) => (
                 <li key={i}>{name}</li>
               ))}
             </ol>
