@@ -65,6 +65,9 @@ Berikut adalah beberapa perintah yang bisa Anda gunakan:
 8. *!hadir* - Mengisi absensi otomatis jika sudah terdaftar
 9. *!rekapan* - Melihat daftar rekapan absensi yang sudah diinput
 
+*Khusus Pengurus:*
+10. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
+
 _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply(helpText);
     }
@@ -89,9 +92,20 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply('📄 *Rundown 1 Bulan KKM 14*\n\nSilakan cek detail rundown kegiatan kita selama 1 bulan penuh melalui link berikut:\nhttps://docs.google.com/document/d/1vO67-m_gBJYlS53Yn8OAhs6c5OheWpMsyWQm2kVuBfQ/edit?tab=t.0');
     }
     
-    // Command: !editpiket (Rahasia untuk Divisi Konsumsi)
-    else if (text === '!editpiket' || text === 'editpiket') {
-        await message.reply('📝 *Link Edit Jadwal Piket & Menu (Khusus Konsumsi)*\n\nSilakan buka link Google Sheets berikut untuk mengubah jadwal dan menu. Website akan otomatis terupdate:\n\nhttps://docs.google.com/spreadsheets/d/14tDYF-syuIyBvA2AcZA0wxTTiAokKl2g/edit?usp=sharing');
+    // Command: !siekonsumsi (Terkunci dengan password)
+    else if (text.startsWith('!siekonsumsi')) {
+        const input = text.split(' ');
+        if (input.length < 2) {
+            await message.reply('🔒 *Menu Terkunci!*\n\nIni adalah menu khusus Sie Konsumsi. Silakan masukkan password untuk mengaksesnya.\n\nFormat:\n*!siekonsumsi [password]*');
+            return;
+        }
+
+        const password = input[1];
+        if (password === 'konsumsi14') {
+            await message.reply('🔓 *Akses Diberikan!*\n\n📝 *Link Edit Jadwal Piket & Menu (Khusus Konsumsi)*\n\nSilakan buka link Google Sheets berikut untuk mengubah jadwal dan menu. Website akan otomatis terupdate:\n\nhttps://docs.google.com/spreadsheets/d/14tDYF-syuIyBvA2AcZA0wxTTiAokKl2g/edit?usp=sharing');
+        } else {
+            await message.reply('❌ *Password Salah!* Akses ditolak.');
+        }
     }
     
     // Command: halo
