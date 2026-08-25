@@ -79,7 +79,68 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
 
     // Command: !jadwal
     else if (text === '!jadwal' || text === 'jadwal') {
-        await message.reply('📅 *Jadwal Piket KKM 14*\n\nSilakan cek jadwal piket (Kebersihan & Masak) hari ini melalui link berikut:\nhttps://desa-panambangan.vercel.app/piket');
+        await message.reply('⏳ Sedang menarik jadwal dari website...');
+        try {
+            const res = await fetch(`https://desa-panambangan.vercel.app/api/piket?t=${new Date().getTime()}`);
+            if (!res.ok) throw new Error('Gagal memuat API');
+            
+            const result = await res.json();
+            const scheduleData = result.data || [];
+            
+            // Dapatkan tanggal hari ini di zona waktu WIB
+            const today = new Date();
+            const wibTime = new Date(today.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+            const d = wibTime.getDate();
+            const y = wibTime.getFullYear();
+            const m = wibTime.getMonth();
+            
+            const monthsShort = ["jan", "feb", "mar", "apr", "mei", "jun", "jul", "agu", "sep", "okt", "nov", "des"];
+            const monthsLong = ["januari", "februari", "maret", "april", "mei", "juni", "juli", "agustus", "september", "oktober", "november", "desember"];
+
+            // Cari jadwal yang cocok dengan hari ini
+            const todaySchedule = scheduleData.find(item => {
+                const dateStr = (item.date || '').toLowerCase();
+                // Beberapa penulisan mungkin "26", "26 ", "026" (typo) - kita cek awalan
+                const dayMatch = dateStr.startsWith(d.toString() + ' ') || dateStr.startsWith('0' + d.toString() + ' ');
+                const monthMatch = dateStr.includes(monthsShort[m]) || 
+                                   dateStr.includes(monthsLong[m]) ||
+                                   (m === 7 && dateStr.includes('aug')); // Special case untuk Agustus di sheet
+                const yearMatch = dateStr.includes(y.toString());
+                return dayMatch && monthMatch && yearMatch;
+            });
+
+            if (!todaySchedule) {
+                await message.reply(`📅 *Jadwal Piket KKM 14*\n\nBelum ada jadwal untuk hari ini di sistem.\nCek selengkapnya di: https://desa-panambangan.vercel.app/piket`);
+                return;
+            }
+
+            let reply = `📅 *Jadwal Piket Hari Ini*\n*${todaySchedule.day}, ${todaySchedule.date}*\n\n`;
+            
+            reply += `🧹 *TIM KEBERSIHAN:*\n`;
+            if (todaySchedule.kebersihan && todaySchedule.kebersihan.length > 0) {
+                todaySchedule.kebersihan.forEach(p => reply += `- ${p}\n`);
+            } else {
+                reply += `- (Kosong)\n`;
+            }
+            
+            reply += `\n🍳 *TIM MEMASAK:*\n`;
+            if (todaySchedule.masak && todaySchedule.masak.length > 0) {
+                todaySchedule.masak.forEach(p => reply += `- ${p}\n`);
+            } else {
+                reply += `- (Kosong)\n`;
+            }
+
+            reply += `\n🍽️ *MENU HARI INI:*\n`;
+            reply += `- Siang: ${todaySchedule.menuSiang || '-'}\n`;
+            reply += `- Malam: ${todaySchedule.menuSore || '-'}\n`;
+            
+            reply += `\n_Cek selengkapnya: https://desa-panambangan.vercel.app/piket_`;
+            
+            await message.reply(reply);
+        } catch (e) {
+            await message.reply('❌ Terjadi kesalahan saat menarik jadwal dari website.\n\nSilakan cek manual: https://desa-panambangan.vercel.app/piket');
+            console.error(e);
+        }
     }
 
     // Command: !absensi
@@ -511,11 +572,15 @@ Total Harga :
                 }
             });
             
+            if (!res.ok) {
+                throw new Error(`Google Form menolak data (Status ${res.status}). Kemungkinan ada format data yang salah (misal email typo).`);
+            }
+            
             // Google form redirects on success or returns 200
             await message.reply(`✅ *Absensi Sukses!*\n\nTerima kasih *${user.nama}*, absensi kamu telah berhasil masuk ke sistem web/Google Sheet.`);
         } catch (error) {
-            console.error(error);
-            await message.reply('❌ *Gagal mengirim absensi.* Coba lagi nanti atau gunakan QR code di web.');
+            console.error('Fetch error:', error);
+            await message.reply(`❌ *Gagal mengirim absensi.*\n${error.message}\nSilakan *!daftar* ulang dengan data yang benar, atau absen manual di web.`);
         }
     }
 
