@@ -103,9 +103,6 @@ export default function PiketPage() {
                 >
                   <i className="fa-solid fa-chevron-left text-sm"></i> Minggu Sebelumnya
                 </button>
-                <span className="font-bold text-[#466651] bg-white/50 px-4 py-2 rounded-full shadow-sm">
-                  Minggu ke-{currentPage + 1}
-                </span>
                 <button 
                   onClick={() => setCurrentPage(p => Math.min(Math.ceil(schedule.length / itemsPerPage) - 1, p + 1))}
                   disabled={currentPage === Math.ceil(schedule.length / itemsPerPage) - 1}
