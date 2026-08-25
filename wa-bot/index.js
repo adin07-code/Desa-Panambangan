@@ -71,6 +71,7 @@ Berikut adalah beberapa perintah yang bisa Anda gunakan:
 
 *Khusus Pengurus:*
 10. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
+11. *!bendahara* - Menu khusus Edit Laporan Keuangan (Terkunci 🔒)
 
 _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply(helpText);
