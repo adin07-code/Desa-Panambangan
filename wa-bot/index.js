@@ -201,7 +201,7 @@ Sore :
             const result = await res.json();
 
             if (result.status === 'success') {
-                await message.reply(`✅ *Berhasil Diperbarui!*\n\n${tipeUpdate} untuk tanggal *${tanggal}* telah diubah di Google Sheets dan Website.`);
+                await message.reply(`✅ *Berhasil Diperbarui!*\n\n${tipeUpdate} untuk tanggal *${tanggal}* telah diubah di Google Sheets dan Website.\n\nKetik *!update* lagi jika ingin mengubah data lainnya.`);
             } else {
                 await message.reply(`❌ *Gagal:* ${result.message}`);
             }
