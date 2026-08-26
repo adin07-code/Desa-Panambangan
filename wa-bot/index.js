@@ -70,13 +70,9 @@ Berikut adalah beberapa perintah yang bisa Anda gunakan:
 5. *!logbook* - Menampilkan link ke pengisian logbook harian
 6. *!rundown* - Menampilkan rundown kegiatan 1 bulan
 
-*Fitur Input WA:*
-7. *!daftar [Email] - [Nama] - [NIM] - [Prodi]* (Contoh: !daftar budi@gmail.com - Budi - 12345 - Teknik Informatika)
-8. *!hadir* - Mengisi absensi otomatis jika sudah terdaftar
-
 *Khusus Pengurus:*
-9. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
-10. *!bendahara* - Menu khusus Edit Laporan Keuangan (Terkunci 🔒)
+7. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
+8. *!bendahara* - Menu khusus Edit Laporan Keuangan (Terkunci 🔒)
 
 _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply(helpText);
