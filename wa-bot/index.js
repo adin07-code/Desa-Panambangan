@@ -169,7 +169,8 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
 
             reply += '\n---\n💡 *CARA MENGISI ABSENSI:*\n';
             reply += '1️⃣ Jika belum terdaftar, daftar dulu dengan perintah:\n';
-            reply += '*!daftar [Email] - [Nama] - [NIM] - [Prodi]*\n\n';
+            reply += '*!daftar [Email] - [Nama] - [NIM] - [Prodi]*\n';
+            reply += '_(Contoh: !daftar budi@gmail.com - Budi - 12345 - Teknik Informatika)_\n\n';
             reply += '2️⃣ Jika sudah terdaftar, ketik perintah:\n';
             reply += '*!hadir*\n\n';
             reply += '_Isi absen manual:_ https://desa-panambangan.vercel.app/absensi';
