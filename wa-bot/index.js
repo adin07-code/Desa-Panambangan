@@ -66,18 +66,17 @@ Berikut adalah beberapa perintah yang bisa Anda gunakan:
 1. *!ping* - Mengecek status bot
 2. *!bantuan* - Menampilkan menu ini
 3. *!jadwal* - Menampilkan link ke website jadwal piket
-4. *!absensi* - Menampilkan link ke website absensi harian
+4. *!absensi* - Menampilkan menu absensi & rekapan kehadiran hari ini
 5. *!logbook* - Menampilkan link ke pengisian logbook harian
 6. *!rundown* - Menampilkan rundown kegiatan 1 bulan
 
 *Fitur Input WA:*
 7. *!daftar [Email] - [Nama] - [NIM] - [Prodi]* (Contoh: !daftar budi@gmail.com - Budi - 12345 - Teknik Informatika)
 8. *!hadir* - Mengisi absensi otomatis jika sudah terdaftar
-9. *!rekapan* - Melihat daftar rekapan absensi yang sudah diinput
 
 *Khusus Pengurus:*
-10. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
-11. *!bendahara* - Menu khusus Edit Laporan Keuangan (Terkunci 🔒)
+9. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
+10. *!bendahara* - Menu khusus Edit Laporan Keuangan (Terkunci 🔒)
 
 _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply(helpText);
@@ -151,7 +150,39 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
 
     // Command: !absensi
     else if (text === '!absensi' || text === 'absensi') {
-        await message.reply('📝 *Absensi Harian KKM 14*\n\nJangan lupa isi absensi harian Anda melalui link berikut:\nhttps://desa-panambangan.vercel.app/absensi');
+        await message.reply('⏳ Sedang memuat data absensi hari ini...');
+        try {
+            const res = await fetch(`https://desa-panambangan.vercel.app/api/absensi?t=${new Date().getTime()}`);
+            if (!res.ok) throw new Error('Gagal memuat API');
+            
+            const result = await res.json();
+            const absensiData = result.data || [];
+            
+            let reply = '📝 *SISTEM ABSENSI KKM 14*\n\n';
+            reply += '📋 *Rekapan Kehadiran Hari Ini:*\n';
+            
+            if (absensiData.length === 0) {
+                reply += '_Belum ada yang absen hari ini._\n';
+            } else {
+                absensiData.forEach((item, index) => {
+                    const time = new Date(item.receivedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    const namaBersih = item.nama_lengkap.trim().toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                    reply += `${index + 1}. *${namaBersih}* - _${time}_\n`;
+                });
+            }
+
+            reply += '\n---\n💡 *CARA MENGISI ABSENSI:*\n';
+            reply += '1️⃣ Jika belum terdaftar, daftar dulu dengan perintah:\n';
+            reply += '`!daftar [Email] - [Nama] - [NIM] - [Prodi]`\n\n';
+            reply += '2️⃣ Jika sudah terdaftar, ketik perintah:\n';
+            reply += '`!hadir`\n\n';
+            reply += '_Isi absen manual:_ https://desa-panambangan.vercel.app/absensi';
+
+            await message.reply(reply);
+        } catch (e) {
+            await message.reply('❌ Terjadi kesalahan saat menarik data.\n\n_Isi absen manual melalui website:_ https://desa-panambangan.vercel.app/absensi');
+            console.error(e);
+        }
     }
 
     // Command: !logbook
@@ -649,42 +680,7 @@ Total Harga :
         }
     }
 
-    // Command: !rekapan
-    else if (text === '!rekapan' || text === 'rekapan') {
-        await message.reply('⏳ Sedang menarik data dari website...');
-        try {
-            const res = await fetch(`https://desa-panambangan.vercel.app/api/absensi?t=${new Date().getTime()}`);
-            if (!res.ok) throw new Error('Gagal memuat API');
-            
-            const result = await res.json();
-            const absensiData = result.data || [];
-            
-            if (absensiData.length === 0) {
-                await message.reply('Belum ada data absensi hari ini di website.');
-                return;
-            }
-
-            let reply = '*📋 Rekapan Absensi (Live dari Web)*\n\n';
-            absensiData.forEach((item, index) => {
-                const time = new Date(item.receivedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                
-                // Bersihkan spasi berlebih dan ubah ke Title Case (Awal Kata Kapital)
-                const namaBersih = item.nama_lengkap
-                    .trim()
-                    .toLowerCase()
-                    .split(' ')
-                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                    .join(' ');
-                    
-                reply += `${index + 1}. *${namaBersih}* - _${time}_\n`;
-            });
-            
-            await message.reply(reply);
-        } catch (e) {
-            await message.reply('❌ Terjadi kesalahan saat menarik data dari website.');
-            console.error(e);
-        }
-    }
+    // Note: !rekapan has been merged into !absensi
 });
 
 // Start the client
