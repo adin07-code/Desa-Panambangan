@@ -574,6 +574,27 @@ Total Harga :
             return;
         }
 
+        try {
+            await message.reply('⏳ Sedang mengecek status absensi...');
+            
+            // Cek apakah sudah absen hari ini
+            const checkRes = await fetch(`https://desa-panambangan.vercel.app/api/absensi?t=${new Date().getTime()}`);
+            if (checkRes.ok) {
+                const checkResult = await checkRes.json();
+                const absensiData = checkResult.data || [];
+                
+                // Cari apakah NIM user sudah ada di data absensi hari ini
+                const sudahAbsen = absensiData.find(item => item.nim === user.nim);
+                if (sudahAbsen) {
+                    await message.reply(`✅ *Anda sudah hadir hari ini!*\n\nData absensi atas nama *${user.nama}* sudah tercatat pada sistem.`);
+                    return; // Stop eksekusi agar tidak mengirim form lagi
+                }
+            }
+        } catch (err) {
+            console.error("Gagal mengecek status absensi:", err);
+            // Abaikan error pengecekan dan lanjut submit form saja jika API error
+        }
+
         await message.reply('⏳ Sedang mengirim data absensi ke Google Form...');
 
         // Kirim HTTP POST ke Google Form
