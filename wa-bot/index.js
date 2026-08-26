@@ -69,10 +69,11 @@ Berikut adalah beberapa perintah yang bisa Anda gunakan:
 4. *!absensi* - Menampilkan menu absensi & rekapan kehadiran hari ini
 5. *!logbook* - Menampilkan link ke pengisian logbook harian
 6. *!rundown* - Menampilkan rundown kegiatan 1 bulan
+7. *!mandi* - Menampilkan urutan mandi harian
 
 *Khusus Pengurus:*
-7. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
-8. *!bendahara* - Menu khusus Edit Laporan Keuangan (Terkunci 🔒)
+8. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
+9. *!bendahara* - Menu khusus Edit Laporan Keuangan (Terkunci 🔒)
 
 _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply(helpText);
@@ -192,6 +193,30 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply('📄 *Rundown 1 Bulan KKM 14*\n\nSilakan cek detail rundown kegiatan kita selama 1 bulan penuh melalui link berikut:\nhttps://docs.google.com/document/d/1vO67-m_gBJYlS53Yn8OAhs6c5OheWpMsyWQm2kVuBfQ/edit?tab=t.0');
     }
     
+    // Command: !mandi
+    else if (text === '!mandi' || text === 'mandi') {
+        const reply = `🚿 *Jadwal Urutan Mandi (Mulai 05.00)* 🚿
+
+1. Ulin 05.00
+2. Anis 05.10
+3. Indah 05.20
+4. Alin 05.30
+5. Rikeu 05.40
+6. Dini 05.50
+7. Nabila & Dea 06.00
+8. Faisal 06.10
+9. Puspa 06.20
+10. Adin 06.30
+11. Robi 06.40
+12. Putri 06.50
+13. Faqih 07.00
+14. Aisy 07.10
+15. Iky 07.20
+16. Maisya 07.30
+17. Fauzi 07.40`;
+        await message.reply(reply);
+    }
+
     // Command: !siekonsumsi (Terkunci dengan password)
     else if (text.startsWith('!siekonsumsi')) {
         const input = text.split(' ');
