@@ -3,6 +3,12 @@ const qrcode = require('qrcode-terminal');
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
+
+// Menggunakan koneksi Supabase dari .env.local website (bisa disesuaikan jika perlu)
+const supabaseUrl = 'https://ezpeubdupglrvoauwooh.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6cGV1YmR1cGdscnZvYXV3b29oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3NTY0MjcsImV4cCI6MjEwMzMzMjQyN30.0D0QfRlTsSwSi3bZTO9HGFYyXDOk474S6L4yEfH3YKQ';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const absensiFile = path.join(__dirname, 'data_absensi.json');
 const usersFile = path.join(__dirname, 'data_users.json');
@@ -506,7 +512,18 @@ Total Harga :
         let prodi = parts[3].replace(/[\[\]]/g, '').trim();
         
         // Perbaiki kapitalisasi prodi agar cocok dengan pilihan di Google Form
-        if (prodi.toLowerCase() === 'pgsd') {
+        const validProdi = [
+            'Teknik Informatika', 'Ilmu Gizi', 'Manajemen', 'Ilmu Komunikasi',
+            'Akuntansi', 'Ilmu Keperawatan', 'PGSD', 'Ilmu Hukum',
+            'Tasawuf dan Psikoterapi', 'Pend. Bahasa Inggris', 'Ilmu Pemerintahan', 'Peternakan'
+        ];
+        
+        const searchProdi = prodi.toLowerCase().replace(/&/g, 'dan').replace(/pendidikan/g, 'pend.');
+        let matchedProdi = validProdi.find(p => p.toLowerCase() === searchProdi || searchProdi.includes(p.toLowerCase()));
+        
+        if (matchedProdi) {
+            prodi = matchedProdi;
+        } else if (prodi.toLowerCase() === 'pgsd') {
             prodi = 'PGSD';
         } else {
             prodi = prodi.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -515,29 +532,45 @@ Total Harga :
         // Gunakan message.author jika di grup, atau message.from jika di DM
         const phone = message.author || message.from;
 
-        let usersData = {};
-        if (fs.existsSync(usersFile)) {
-            try { usersData = JSON.parse(fs.readFileSync(usersFile, 'utf8')); } catch (e) {}
-        }
-        
-        usersData[phone] = { email, nama, nim, prodi };
-        fs.writeFileSync(usersFile, JSON.stringify(usersData, null, 2));
+        try {
+            const { error } = await supabase
+                .from('wa_users')
+                .upsert({ phone, email, nama, nim, prodi }, { onConflict: 'phone' });
+            
+            if (error) {
+                console.error("Supabase Error:", error);
+                await message.reply('❌ Terjadi kesalahan saat menyimpan data ke database. Pastikan tabel `wa_users` sudah dibuat di Supabase.');
+                return;
+            }
 
-        await message.reply(`✅ *Pendaftaran Berhasil!*\n\nNomor WA kamu sudah terhubung dengan data:\n*Nama:* ${nama}\n*NIM:* ${nim}\n*Prodi:* ${prodi}\n\nSekarang kamu cukup ketik *!hadir* setiap hari untuk absen otomatis!`);
+            await message.reply(`✅ *Pendaftaran Berhasil!*\n\nNomor WA kamu sudah terhubung dengan data:\n*Nama:* ${nama}\n*NIM:* ${nim}\n*Prodi:* ${prodi}\n\nSekarang kamu cukup ketik *!hadir* setiap hari untuk absen otomatis!`);
+        } catch (e) {
+            console.error(e);
+            await message.reply('❌ Terjadi kesalahan internal saat mencoba menyimpan pendaftaran.');
+        }
     }
 
     // Command: !hadir
     else if (text === '!hadir' || text === 'hadir') {
         // Gunakan message.author jika di grup, atau message.from jika di DM
         const phone = message.author || message.from;
-        let usersData = {};
-        if (fs.existsSync(usersFile)) {
-            try { usersData = JSON.parse(fs.readFileSync(usersFile, 'utf8')); } catch (e) {}
-        }
-
-        const user = usersData[phone];
-        if (!user) {
-            await message.reply('❌ *Nomor WA belum terdaftar!*\nSilakan daftar dulu dengan perintah:\n*!daftar [Email] - [Nama] - [NIM] - [Prodi]*');
+        
+        let user;
+        try {
+            const { data, error } = await supabase
+                .from('wa_users')
+                .select('*')
+                .eq('phone', phone)
+                .single();
+                
+            if (error || !data) {
+                await message.reply('❌ *Nomor WA belum terdaftar!*\nSilakan daftar dulu dengan perintah:\n*!daftar [Email] - [Nama] - [NIM] - [Prodi]*\n\n_(Jika sudah daftar namun muncul pesan ini, admin perlu mengecek tabel `wa_users` di Supabase)_');
+                return;
+            }
+            user = data;
+        } catch (e) {
+            console.error(e);
+            await message.reply('❌ Gagal memeriksa database pendaftaran.');
             return;
         }
 
@@ -551,7 +584,18 @@ Total Harga :
         const cleanNim = user.nim.replace(/[\[\]]/g, '').trim();
         let cleanProdi = user.prodi.replace(/[\[\]]/g, '').trim();
         
-        if (cleanProdi.toLowerCase() === 'pgsd') {
+        const validProdi = [
+            'Teknik Informatika', 'Ilmu Gizi', 'Manajemen', 'Ilmu Komunikasi',
+            'Akuntansi', 'Ilmu Keperawatan', 'PGSD', 'Ilmu Hukum',
+            'Tasawuf dan Psikoterapi', 'Pend. Bahasa Inggris', 'Ilmu Pemerintahan', 'Peternakan'
+        ];
+        
+        const searchProdi = cleanProdi.toLowerCase().replace(/&/g, 'dan').replace(/pendidikan/g, 'pend.');
+        let matchedProdi = validProdi.find(p => p.toLowerCase() === searchProdi || searchProdi.includes(p.toLowerCase()));
+        
+        if (matchedProdi) {
+            cleanProdi = matchedProdi;
+        } else if (cleanProdi.toLowerCase() === 'pgsd') {
             cleanProdi = 'PGSD';
         } else {
             cleanProdi = cleanProdi.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
