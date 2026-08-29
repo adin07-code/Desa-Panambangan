@@ -71,8 +71,7 @@ Berikut adalah beberapa perintah yang bisa Anda gunakan:
 5. *!logbook* - Menampilkan link ke pengisian logbook harian
 6. *!rundown* - Menampilkan rundown kegiatan 1 bulan
 7. *!mandi* - Menampilkan urutan mandi harian
-8. *!keuangan* - Menampilkan ringkasan laporan keuangan
-9. *!pengeluaran* - Menginput data pengeluaran baru (Untuk Semua)
+8. *!keuangan* - Laporan keuangan & link input data pengeluaran
 
 *Khusus Pengurus:*
 9. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
@@ -196,8 +195,8 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply('📄 *Rundown 1 Bulan KKM 14*\n\nSilakan cek detail rundown kegiatan kita selama 1 bulan penuh melalui link berikut:\nhttps://docs.google.com/document/d/1vO67-m_gBJYlS53Yn8OAhs6c5OheWpMsyWQm2kVuBfQ/edit?tab=t.0');
     }
     
-    // Command: !keuangan
-    else if (text === '!keuangan' || text === 'keuangan') {
+    // Command: !keuangan atau !pengeluaran
+    else if (text === '!keuangan' || text === 'keuangan' || text === '!pengeluaran' || text === 'pengeluaran' || text === '!inputkeuangan') {
         await message.reply('⏳ Sedang memuat rekapan laporan keuangan...');
         try {
             const res = await fetch(`https://desa-panambangan.vercel.app/api/keuangan?t=${new Date().getTime()}`);
@@ -264,6 +263,7 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
                 reply += `_Belum ada data pengeluaran hari ini._\n\n`;
             }
             
+            reply += `\n📝 *CATAT PENGELUARAN BARU:*\n👉 https://desa-panambangan.vercel.app/input-keuangan\n\n`;
             reply += `_Cek rincian buku kas selengkapnya:_\nhttps://desa-panambangan.vercel.app/laporan-keuangan`;
             
             await message.reply(reply);
@@ -473,10 +473,7 @@ Kas : (KKM / Pribadi)
         }
     }
 
-    // Command: !pengeluaran atau !inputkeuangan
-    else if (text.startsWith('!pengeluaran') || text.startsWith('!inputkeuangan')) {
-        await message.reply('📝 *CATAT KEUANGAN KKM*\n\nSekarang pencatatan keuangan (Pemasukan, Pengeluaran, Kas Pribadi/KKM) sudah dipindahkan ke Website agar lebih mudah & rapi!\n\nSilakan langsung isi form-nya melalui tautan berikut:\n👉 https://desa-panambangan.vercel.app/input-keuangan');
-    }
+
 
 
     // Command: halo
