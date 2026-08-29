@@ -2,10 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const inter = {
   variable: "--font-inter",
-  subsets: ["latin"],
-});
+};
 
 export const viewport: Viewport = {
   width: "device-width",
