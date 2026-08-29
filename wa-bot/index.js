@@ -483,7 +483,6 @@ Kas : (KKM / Pribadi)
             return;
         }
 
-        const lines = message.body.split('\n');
         const getValue = (key) => {
             const line = lines.find(l => l.toLowerCase().startsWith(key.toLowerCase()));
             return line ? line.substring(line.indexOf(':') + 1).trim() : '';
