@@ -14,20 +14,20 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Desa Panambangan Berkarya",
-  applicationName: "Desa Panambangan",
-  description: "Web Portal dan Blog Edukasi Ketahanan Pangan Desa Panambangan. Menyajikan informasi UMKM Kembang Tahu, pemetaan desa, budidaya Maggot BSF, dan tanaman TOGA.",
-  keywords: ["Desa Panambangan", "Ketahanan Pangan", "UMKM Kembang Tahu", "Maggot BSF", "TOGA", "Pemetaan Desa", "KKM UMC 2026"],
+  title: "KKM 14 PANAMBANGAN",
+  applicationName: "KKM 14 PANAMBANGAN",
+  description: "Web Portal dan Sistem Informasi KKM 14 UMC Desa Panambangan.",
+  keywords: ["Desa Panambangan", "Ketahanan Pangan", "UMKM Kembang Tahu", "Maggot BSF", "TOGA", "Pemetaan Desa", "KKM UMC 2026", "KKM 14"],
   authors: [{ name: "KKM UMC 2026" }],
   openGraph: {
-    title: "Desa Panambangan Berkarya",
-    siteName: "Desa Panambangan",
-    description: "Pusat informasi, potensi desa, dan edukasi ketahanan pangan Desa Panambangan.",
+    title: "KKM 14 PANAMBANGAN",
+    siteName: "KKM 14 PANAMBANGAN",
+    description: "Web Portal dan Sistem Informasi KKM 14 UMC Desa Panambangan.",
     type: "website",
     locale: "id_ID",
   },
   appleWebApp: {
-    title: "Desa Panambangan",
+    title: "KKM 14 PANAMBANGAN",
   }
 };
 
