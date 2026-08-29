@@ -27,15 +27,20 @@ export async function GET() {
 export async function PATCH(req: Request) {
   try {
     const body = await req.json();
-    const { id, is_rembes } = body;
+    const { id, is_rembes, pengeluaranKkm, pengeluaranPribadi } = body;
 
     if (!id) {
       return NextResponse.json({ error: "ID dibutuhkan", success: false }, { status: 400 });
     }
 
+    // Build update object based on what's provided
+    const updateData: any = { is_rembes };
+    if (pengeluaranKkm !== undefined) updateData.pengeluaranKkm = pengeluaranKkm;
+    if (pengeluaranPribadi !== undefined) updateData.pengeluaranPribadi = pengeluaranPribadi;
+
     const { data, error } = await supabase
       .from('keuangan_konsumsi')
-      .update({ is_rembes })
+      .update(updateData)
       .eq('id', id)
       .select();
 

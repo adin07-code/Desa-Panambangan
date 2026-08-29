@@ -19,27 +19,48 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
     setLocalData(data);
   }, [data]);
 
-  const toggleRembes = async (id: string, currentStatus: boolean | undefined) => {
-    const newStatus = !currentStatus;
+  const toggleRembes = async (item: KeuanganItem) => {
+    const newStatus = !item.is_rembes;
     
-    // Optimistic update
-    setLocalData(prev => prev.map(item => 
-      item.id === id ? { ...item, is_rembes: newStatus } : item
-    ));
+    let newKkm = item.pengeluaranKkm;
+    let newPribadi = item.pengeluaranPribadi;
+
+    if (newStatus) {
+      if (item.pengeluaranPribadi) {
+        newKkm = item.pengeluaranPribadi;
+        newPribadi = null;
+      }
+    } else {
+      if (item.pengeluaranKkm) {
+         newPribadi = item.pengeluaranKkm;
+         newKkm = null;
+      }
+    }
+
+    const updatedItem = {
+      ...item,
+      is_rembes: newStatus,
+      pengeluaranKkm: newKkm,
+      pengeluaranPribadi: newPribadi
+    };
+
+    setLocalData(prev => prev.map(t => t.id === item.id ? updatedItem : t));
 
     try {
       const res = await fetch('/api/keuangan', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, is_rembes: newStatus })
+        body: JSON.stringify({ 
+          id: item.id, 
+          is_rembes: newStatus,
+          pengeluaranKkm: newKkm,
+          pengeluaranPribadi: newPribadi
+        })
       });
       if (!res.ok) throw new Error('Gagal update status');
     } catch (err) {
       console.error(err);
-      // Revert if failed
-      setLocalData(prev => prev.map(item => 
-        item.id === id ? { ...item, is_rembes: currentStatus } : item
-      ));
+      setLocalData(prev => prev.map(t => t.id === item.id ? item : t));
       alert('Gagal mengubah status rembes. Coba lagi.');
     }
   };
@@ -275,9 +296,9 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
                     <td className="py-3 px-4 border-r border-gray-100 text-right text-rose-700 bg-rose-50/30">{item.pengeluaranPribadi ? formatRupiah(item.pengeluaranPribadi) : 'Rp -'}</td>
                     
                     <td className="py-3 px-4 border-r border-gray-100 text-center">
-                      {(item.pengeluaranPribadi || item.pengeluaranKkm) ? (
+                      {(item.pengeluaranPribadi || item.is_rembes) ? (
                         <button 
-                          onClick={() => toggleRembes(item.id, item.is_rembes)}
+                          onClick={() => toggleRembes(item)}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold mx-auto transition-colors ${
                             item.is_rembes 
                               ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' 
