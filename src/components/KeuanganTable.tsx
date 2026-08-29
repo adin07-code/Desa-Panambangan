@@ -332,7 +332,6 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
             </tbody>
           </table>
         </div>
-        </div>
       </div>
       
       {/* Edit Modal */}
