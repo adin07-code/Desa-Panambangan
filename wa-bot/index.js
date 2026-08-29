@@ -363,11 +363,14 @@ Sore :
 
 *4. INPUT PENGELUARAN (KONSUMSI)*
 !pengeluaran
-Tanggal : 
-Barang : 
-Total Harga : 
+Tanggal : (YYYY-MM-DD, cth: 2026-08-29)
+Nama Barang : 
+Siapa Beli : 
+Pcs : 
+Harga Satuan : 
+Kas : (KKM / Pribadi)
 
-*(Format Tanggal contoh: 25 Agu 2026)*`;
+*(Pastikan mengetik Tanggal dengan format YYYY-MM-DD)*`;
 
         await message.reply(template);
     }
@@ -483,63 +486,60 @@ Total Harga :
         };
 
         let tanggal = getValue('Tanggal');
-        const barang = getValue('Barang');
-        let totalHarga = getValue('Total Harga');
+        const namaBarang = getValue('Nama Barang');
+        const siapaBeli = getValue('Siapa Beli');
+        let pcsStr = getValue('Pcs');
+        let hargaSatuanStr = getValue('Harga Satuan');
+        const kas = getValue('Kas');
         
-        // Normalisasi format bulan agar persis seperti di Google Sheets
-        if (tanggal) {
-            tanggal = tanggal
-                .replace(/\bSep\b/gi, 'September')
-                .replace(/\bOkt\b/gi, 'Oktober')
-                .replace(/\bNov\b/gi, 'November')
-                .replace(/\bDes\b/gi, 'Desember')
-                .replace(/\bJan\b/gi, 'Januari')
-                .replace(/\bFeb\b/gi, 'Februari')
-                .replace(/\bMar\b/gi, 'Maret')
-                .replace(/\bApr\b/gi, 'April')
-                .replace(/\bAgu\b/gi, 'Aug');
+        // Coba parsing tanggal jika format DD MMM YYYY
+        if (tanggal && !tanggal.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            const dMatch = tanggal.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
+            if (dMatch) {
+                const dd = dMatch[1].padStart(2, '0');
+                const mmm = dMatch[2].toLowerCase();
+                const yyyy = dMatch[3];
+                const months = {jan:'01',feb:'02',mar:'03',apr:'04',mei:'05',jun:'06',jul:'07',agu:'08',sep:'09',okt:'10',nov:'11',des:'12'};
+                const mm = months[mmm.substring(0,3)] || '01';
+                tanggal = `${yyyy}-${mm}-${dd}`;
+            }
         }
         
-        if (!tanggal || !barang || !totalHarga) {
-            await message.reply('❌ *Gagal:* Pastikan Tanggal, Barang, dan Total Harga sudah diisi semua.');
+        if (!tanggal || !namaBarang || !kas || !hargaSatuanStr) {
+            await message.reply('❌ *Gagal:* Pastikan Tanggal, Nama Barang, Harga Satuan, dan Kas sudah diisi.');
             return;
         }
+
+        const pcs = pcsStr ? parseInt(pcsStr.replace(/[^0-9]/g, '')) || 1 : 1;
+        const hargaSatuan = parseInt(hargaSatuanStr.replace(/[^0-9]/g, '')) || 0;
+        const totalBarang = pcs * hargaSatuan;
         
-        // Hapus titik atau koma dari totalHarga agar jadi angka murni
-        totalHarga = totalHarga.replace(/[^0-9]/g, '');
+        const isKkm = kas.toLowerCase().includes('kkm');
+        const pengeluaranKkm = isKkm ? totalBarang : null;
+        const pengeluaranPribadi = !isKkm ? totalBarang : null;
 
-        await message.reply(`⏳ Sedang menyimpan Pengeluaran sebesar Rp ${totalHarga} untuk tanggal *${tanggal}*...`);
-
-        // TODO: Minta URL Webhook Keuangan ke User
-        const webhookKeuangan = 'https://script.google.com/macros/s/AKfycbyw2NQMoDJ1BVfHTp0T5Yh9l5feT5xb6xvultE-KPwqhKUvsO4TBQsNCY9JJ0RvpahM/exec';
-        if (webhookKeuangan === 'INSERT_WEBHOOK_KEUANGAN_HERE') {
-            await message.reply('⚠️ *Sistem Belum Siap*\nWebhook URL Keuangan belum dikonfigurasi.');
-            return;
-        }
+        await message.reply(`⏳ Sedang menyimpan pengeluaran *${namaBarang}*...`);
 
         try {
-            const payload = {
-                tanggal: tanggal,
-                keterangan: barang,
-                pemasukan: 0,
-                pengeluaran: totalHarga
-            };
+            const { error } = await supabase
+                .from('keuangan_konsumsi')
+                .insert({
+                    tanggal: tanggal,
+                    namaBarang: namaBarang,
+                    siapaBeli: siapaBeli || 'Sie Konsumsi',
+                    pcs: pcs,
+                    hargaSatuan: hargaSatuan,
+                    totalBarang: totalBarang,
+                    pengeluaranKkm: pengeluaranKkm,
+                    pengeluaranPribadi: pengeluaranPribadi,
+                    sisaBarang: '-'
+                });
 
-            const res = await fetch(webhookKeuangan, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await res.json();
-            if (result.status === 'success') {
-                await message.reply(`✅ *Berhasil Disimpan!*\n\nPengeluaran Konsumsi untuk tanggal *${tanggal}* telah dimasukkan ke Laporan Keuangan di Website.`);
-            } else {
-                await message.reply(`❌ *Gagal:* ${result.message}`);
-            }
+            if (error) throw error;
+            await message.reply(`✅ *Berhasil Disimpan!*\n\nPengeluaran Konsumsi untuk tanggal *${tanggal}* telah dimasukkan ke Database Supabase dan langsung tampil di website.`);
         } catch (error) {
             console.error('Gagal mengirim pengeluaran:', error);
-            await message.reply('❌ Terjadi kesalahan saat menghubungi server Google Sheets Keuangan.');
+            await message.reply('❌ Terjadi kesalahan saat menghubungi Database Supabase.');
         }
     }
 
