@@ -474,75 +474,85 @@ Kas : (KKM / Pribadi)
 
     // Command: !pengeluaran
     else if (text.startsWith('!pengeluaran')) {
-        const lines = message.body.split('\n');
+        const blocks = message.body.split(/(?=!pengeluaran)/i).map(b => b.trim()).filter(b => b.length > 0);
         
         // Jika hanya memanggil !pengeluaran tanpa argumen, kirimkan template
-        if (lines.length === 1) {
-            const template = `🛒 *INPUT PENGELUARAN*\nSilakan copy-paste pesan ini, isi, lalu kirimkan kembali:\n\n!pengeluaran\nTanggal : (YYYY-MM-DD, cth: 2026-08-29)\nNama Barang : \nSiapa Beli : \nPcs : \nHarga Satuan : \nKas : (KKM / Pribadi)`;
-            await message.reply(template);
-            return;
-        }
-
-        const getValue = (key) => {
-            const line = lines.find(l => l.toLowerCase().startsWith(key.toLowerCase()));
-            return line ? line.substring(line.indexOf(':') + 1).trim() : '';
-        };
-
-        let tanggal = getValue('Tanggal');
-        const namaBarang = getValue('Nama Barang');
-        const siapaBeli = getValue('Siapa Beli');
-        let pcsStr = getValue('Pcs');
-        let hargaSatuanStr = getValue('Harga Satuan');
-        const kas = getValue('Kas');
-        
-        // Coba parsing tanggal jika format DD MMM YYYY
-        if (tanggal && !tanggal.match(/^\d{4}-\d{2}-\d{2}$/)) {
-            const dMatch = tanggal.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
-            if (dMatch) {
-                const dd = dMatch[1].padStart(2, '0');
-                const mmm = dMatch[2].toLowerCase();
-                const yyyy = dMatch[3];
-                const months = {jan:'01',feb:'02',mar:'03',apr:'04',mei:'05',jun:'06',jul:'07',agu:'08',sep:'09',okt:'10',nov:'11',des:'12'};
-                const mm = months[mmm.substring(0,3)] || '01';
-                tanggal = `${yyyy}-${mm}-${dd}`;
+        if (blocks.length === 1) {
+            const lines = blocks[0].split('\n');
+            if (lines.length === 1) {
+                const template = `🛒 *INPUT PENGELUARAN*\nSilakan copy-paste pesan ini, isi, lalu kirimkan kembali:\n*(Bisa di-copy-paste beberapa kali dalam satu pesan jika ada banyak barang)*\n\n!pengeluaran\nTanggal : (YYYY-MM-DD, cth: 2026-08-29)\nNama Barang : \nSiapa Beli : \nPcs : \nHarga Satuan : \nKas : (KKM / Pribadi)`;
+                await message.reply(template);
+                return;
             }
         }
-        
-        if (!tanggal || !namaBarang || !kas || !hargaSatuanStr) {
-            await message.reply('❌ *Gagal:* Pastikan Tanggal, Nama Barang, Harga Satuan, dan Kas sudah diisi.');
-            return;
+
+        let successCount = 0;
+        let failCount = 0;
+        let replyMsg = '';
+        const insertPromises = [];
+
+        for (const block of blocks) {
+            const lines = block.split('\n');
+            const getValue = (key) => {
+                const line = lines.find(l => l.toLowerCase().startsWith(key.toLowerCase()));
+                return line ? line.substring(line.indexOf(':') + 1).trim() : '';
+            };
+
+            let tanggal = getValue('Tanggal');
+            const namaBarang = getValue('Nama Barang');
+            const siapaBeli = getValue('Siapa Beli');
+            let pcsStr = getValue('Pcs');
+            let hargaSatuanStr = getValue('Harga Satuan');
+            const kas = getValue('Kas');
+            
+            // Coba parsing tanggal jika format DD MMM YYYY
+            if (tanggal && !tanggal.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                const dMatch = tanggal.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
+                if (dMatch) {
+                    const dd = dMatch[1].padStart(2, '0');
+                    const mmm = dMatch[2].toLowerCase();
+                    const yyyy = dMatch[3];
+                    const months = {jan:'01',feb:'02',mar:'03',apr:'04',mei:'05',jun:'06',jul:'07',agu:'08',sep:'09',okt:'10',nov:'11',des:'12'};
+                    const mm = months[mmm.substring(0,3)] || '01';
+                    tanggal = `${yyyy}-${mm}-${dd}`;
+                }
+            }
+            
+            if (!tanggal || !namaBarang || !kas || !hargaSatuanStr) {
+                replyMsg += `❌ *Gagal:* Format tidak lengkap untuk barang "${namaBarang || 'Tanpa Nama'}".\n`;
+                failCount++;
+                continue;
+            }
+
+            const pcs = pcsStr ? parseInt(pcsStr.replace(/[^0-9]/g, '')) || 1 : 1;
+            const hargaSatuan = parseInt(hargaSatuanStr.replace(/[^0-9]/g, '')) || 0;
+            const totalBarang = pcs * hargaSatuan;
+            
+            const isKkm = kas.toLowerCase().includes('kkm');
+            const pengeluaranKkm = isKkm ? totalBarang : null;
+            const pengeluaranPribadi = !isKkm ? totalBarang : null;
+
+            insertPromises.push(
+                supabase.from('keuangan_konsumsi').insert({
+                    tanggal, namaBarang, siapaBeli: siapaBeli || 'Sie Konsumsi', pcs, hargaSatuan, totalBarang, pengeluaranKkm, pengeluaranPribadi, sisaBarang: '-'
+                }).then(({error}) => {
+                    if (error) {
+                        replyMsg += `❌ *Gagal DB:* ${namaBarang}\n`;
+                        failCount++;
+                    } else {
+                        replyMsg += `✅ *Sukses:* ${namaBarang} (Rp ${totalBarang})\n`;
+                        successCount++;
+                    }
+                })
+            );
         }
 
-        const pcs = pcsStr ? parseInt(pcsStr.replace(/[^0-9]/g, '')) || 1 : 1;
-        const hargaSatuan = parseInt(hargaSatuanStr.replace(/[^0-9]/g, '')) || 0;
-        const totalBarang = pcs * hargaSatuan;
-        
-        const isKkm = kas.toLowerCase().includes('kkm');
-        const pengeluaranKkm = isKkm ? totalBarang : null;
-        const pengeluaranPribadi = !isKkm ? totalBarang : null;
-
-        await message.reply(`⏳ Sedang menyimpan pengeluaran *${namaBarang}*...`);
-
-        try {
-            const { error } = await supabase
-                .from('keuangan_konsumsi')
-                .insert({
-                    tanggal: tanggal,
-                    namaBarang: namaBarang,
-                    siapaBeli: siapaBeli || 'Sie Konsumsi',
-                    pcs: pcs,
-                    hargaSatuan: hargaSatuan,
-                    totalBarang: totalBarang,
-                    pengeluaranKkm: pengeluaranKkm,
-                    pengeluaranPribadi: pengeluaranPribadi,
-                    sisaBarang: '-'
-                });
-
-            if (error) throw error;
-            await message.reply(`✅ *Berhasil Disimpan!*\n\nPengeluaran Konsumsi untuk tanggal *${tanggal}* telah dimasukkan ke Database Supabase dan langsung tampil di website.`);
-        } catch (error) {
-            console.error('Gagal mengirim pengeluaran:', error);
-            await message.reply('❌ Terjadi kesalahan saat menghubungi Database Supabase.');
+        if (insertPromises.length > 0) {
+            await message.reply(`⏳ Sedang menyimpan ${insertPromises.length} item pengeluaran...`);
+            await Promise.all(insertPromises);
+            await message.reply(`*Hasil Input Pengeluaran:*\n\n${replyMsg}`);
+        } else if (failCount > 0) {
+            await message.reply(`*Hasil Input Pengeluaran:*\n\n${replyMsg}`);
         }
     }
 
