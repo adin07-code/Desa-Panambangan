@@ -71,6 +71,7 @@ Berikut adalah beberapa perintah yang bisa Anda gunakan:
 6. *!rundown* - Menampilkan rundown kegiatan 1 bulan
 7. *!mandi* - Menampilkan urutan mandi harian
 8. *!keuangan* - Menampilkan ringkasan laporan keuangan
+9. *!pengeluaran* - Menginput data pengeluaran baru (Untuk Semua)
 
 *Khusus Pengurus:*
 9. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
@@ -473,9 +474,12 @@ Kas : (KKM / Pribadi)
 
     // Command: !pengeluaran
     else if (text.startsWith('!pengeluaran')) {
-        const phone = message.author || message.from;
-        if (!loggedInKonsumsi.has(phone)) {
-            await message.reply('🔒 *Akses Ditolak!*\n\nKamu harus login terlebih dahulu menggunakan perintah:\n*!siekonsumsi [password]*');
+        const lines = message.body.split('\n');
+        
+        // Jika hanya memanggil !pengeluaran tanpa argumen, kirimkan template
+        if (lines.length === 1) {
+            const template = `🛒 *INPUT PENGELUARAN*\nSilakan copy-paste pesan ini, isi, lalu kirimkan kembali:\n\n!pengeluaran\nTanggal : (YYYY-MM-DD, cth: 2026-08-29)\nNama Barang : \nSiapa Beli : \nPcs : \nHarga Satuan : \nKas : (KKM / Pribadi)`;
+            await message.reply(template);
             return;
         }
 
