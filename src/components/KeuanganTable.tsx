@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useMemo, useState, useEffect } from 'react';
-import { TrendingDown, TrendingUp, Wallet, CheckCircle2, CheckSquare, Square } from 'lucide-react';
+import { TrendingDown, TrendingUp, Wallet, CheckCircle2, CheckSquare, Square, Edit2, Trash2, X, Loader2 } from 'lucide-react';
 import { KeuanganItem } from '@/data/keuanganData';
 
 interface KeuanganTableProps {
@@ -11,6 +11,9 @@ interface KeuanganTableProps {
 
 export default function KeuanganTable({ data }: KeuanganTableProps) {
   const [localData, setLocalData] = useState<KeuanganItem[]>(data);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [editingItem, setEditingItem] = useState<KeuanganItem | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     setLocalData(data);
@@ -40,6 +43,44 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
       alert('Gagal mengubah status rembes. Coba lagi.');
     }
   };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Yakin ingin menghapus data ini?')) return;
+    setIsDeleting(id);
+    try {
+      const res = await fetch(`/api/keuangan?id=${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Gagal hapus data');
+      setLocalData(prev => prev.filter(item => item.id !== id));
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menghapus data.');
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingItem) return;
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/keuangan', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingItem)
+      });
+      if (!res.ok) throw new Error('Gagal update data');
+      
+      setLocalData(prev => prev.map(item => item.id === editingItem.id ? editingItem : item));
+      setEditingItem(null);
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menyimpan perubahan.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   // Calculate running balance and totals
   const { 
     processedData,
@@ -199,6 +240,7 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
                 <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pengeluaran Kas KKM (Bendahara)</th>
                 <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pengeluaran Pribadi</th>
                 <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-center">Status Rembes</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-center">Aksi</th>
                 <th className="py-4 px-4 font-medium text-right bg-[#081c15]">Total Keseluruhan (Saldo)</th>
               </tr>
             </thead>
@@ -248,12 +290,28 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
                       ) : '-'}
                     </td>
 
+                    <td className="py-3 px-4 border-r border-gray-100 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <button onClick={() => setEditingItem(item)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(item.id)} 
+                          disabled={isDeleting === item.id}
+                          className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-50" 
+                          title="Hapus"
+                        >
+                          {isDeleting === item.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </td>
+
                     <td className="py-3 px-4 text-right font-extrabold text-slate-800 bg-slate-50/50">{formatRupiah(item.saldo)}</td>
                   </tr>
                   
                   {isLastOfDate && (dailyTotal.outKkm > 0 || dailyTotal.outPribadi > 0) && (
                     <tr className="bg-rose-50/40 font-semibold text-sm border-b-2 border-rose-100">
-                      <td colSpan={9} className="py-2.5 px-4 border-r border-gray-200 text-right text-rose-900 tracking-wide uppercase text-xs">
+                      <td colSpan={10} className="py-2.5 px-4 border-r border-gray-200 text-right text-rose-900 tracking-wide uppercase text-xs">
                         Total Pengeluaran ({item.tanggal}):
                       </td>
                       <td className="py-2.5 px-4 border-r border-gray-200 text-right text-rose-800 bg-rose-100/50">
@@ -274,8 +332,74 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
             </tbody>
           </table>
         </div>
+        </div>
       </div>
       
+      {/* Edit Modal */}
+      {editingItem && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 md:p-8 relative">
+            <div className="flex items-center justify-between mb-6 border-b pb-4">
+              <h2 className="text-xl font-bold text-slate-800">Edit Transaksi</h2>
+              <button onClick={() => setEditingItem(null)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleUpdate} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-600">Tanggal</label>
+                  <input type="date" value={editingItem.tanggal} onChange={e => setEditingItem({...editingItem, tanggal: e.target.value})} className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#466651]" required />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-600">Nama Barang</label>
+                  <input type="text" value={editingItem.namaBarang} onChange={e => setEditingItem({...editingItem, namaBarang: e.target.value})} className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#466651]" required />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-600">Siapa Beli</label>
+                  <input type="text" value={editingItem.siapaBeli} onChange={e => setEditingItem({...editingItem, siapaBeli: e.target.value})} className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#466651]" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-600">Pcs</label>
+                  <input type="number" value={editingItem.pcs || ''} onChange={e => setEditingItem({...editingItem, pcs: parseInt(e.target.value) || 0})} className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#466651]" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-600">Harga Satuan (Rp)</label>
+                  <input type="number" value={editingItem.hargaSatuan || ''} onChange={e => setEditingItem({...editingItem, hargaSatuan: parseInt(e.target.value) || 0})} className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#466651]" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-600">Total Barang (Rp)</label>
+                  <input type="number" value={editingItem.totalBarang || ''} onChange={e => setEditingItem({...editingItem, totalBarang: parseInt(e.target.value) || 0})} className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#466651]" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-600">Pemasukan KKM</label>
+                  <input type="number" value={editingItem.pemasukanKkm || ''} onChange={e => setEditingItem({...editingItem, pemasukanKkm: parseInt(e.target.value) || null})} className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#466651]" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-600">Pengeluaran KKM</label>
+                  <input type="number" value={editingItem.pengeluaranKkm || ''} onChange={e => setEditingItem({...editingItem, pengeluaranKkm: parseInt(e.target.value) || null})} className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#466651]" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-600">Pemasukan Pribadi</label>
+                  <input type="number" value={editingItem.pemasukanPribadi || ''} onChange={e => setEditingItem({...editingItem, pemasukanPribadi: parseInt(e.target.value) || null})} className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#466651]" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-600">Pengeluaran Pribadi</label>
+                  <input type="number" value={editingItem.pengeluaranPribadi || ''} onChange={e => setEditingItem({...editingItem, pengeluaranPribadi: parseInt(e.target.value) || null})} className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#466651]" />
+                </div>
+              </div>
+              <div className="pt-6 mt-6 border-t border-gray-100 flex justify-end gap-3">
+                <button type="button" onClick={() => setEditingItem(null)} className="px-5 py-2.5 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">Batal</button>
+                <button type="submit" disabled={isSaving} className="px-5 py-2.5 rounded-xl font-bold text-white bg-[#466651] hover:bg-[#3a5643] transition-colors flex items-center gap-2">
+                  {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                  Simpan Perubahan
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
