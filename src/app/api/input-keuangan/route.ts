@@ -1,43 +1,58 @@
 import { NextResponse } from 'next/server';
-
-const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyw2NQMoDJ1BVfHTp0T5Yh9l5feT5xb6xvultE-KPwqhKUvsO4TBQsNCY9JJ0RvpahM/exec';
+import { supabase } from "@/lib/supabase";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { tanggal, keterangan, pemasukan, pengeluaran } = body;
+    const { 
+      tanggal, 
+      namaBarang, 
+      siapaBeli, 
+      pcs, 
+      hargaSatuan, 
+      totalBarang,
+      pemasukanKkm,
+      pemasukanPribadi,
+      pengeluaranKkm,
+      pengeluaranPribadi
+    } = body;
 
     // Validasi sederhana
-    if (!tanggal || !keterangan) {
+    if (!tanggal || !namaBarang) {
       return NextResponse.json(
-        { status: 'error', message: 'Tanggal dan keterangan harus diisi' },
+        { status: 'error', message: 'Tanggal dan Nama Barang/Uraian harus diisi' },
         { status: 400 }
       );
     }
 
     const payload = {
       tanggal,
-      keterangan,
-      pemasukan: pemasukan || 0,
-      pengeluaran: pengeluaran || 0,
+      namaBarang,
+      siapaBeli: siapaBeli || 'Sie Konsumsi',
+      pcs: pcs || null,
+      sisaBarang: '-',
+      hargaSatuan: hargaSatuan || null,
+      totalBarang: totalBarang || null,
+      pemasukanKkm: pemasukanKkm || null,
+      pemasukanPribadi: pemasukanPribadi || null,
+      pengeluaranKkm: pengeluaranKkm || null,
+      pengeluaranPribadi: pengeluaranPribadi || null,
     };
 
-    const res = await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
+    const { error } = await supabase
+      .from('keuangan_konsumsi')
+      .insert([payload]);
 
-    const result = await res.json();
-
-    if (result.status === 'success') {
-      return NextResponse.json({ status: 'success', message: 'Data berhasil disimpan' });
-    } else {
+    if (error) {
+      console.error("Supabase Insert Error:", error);
       return NextResponse.json(
-        { status: 'error', message: result.message || 'Gagal menyimpan ke spreadsheet' },
-        { status: 400 }
+        { status: 'error', message: 'Gagal menyimpan ke Supabase' },
+        { status: 500 }
       );
     }
+
+    return NextResponse.json({ status: 'success', message: 'Data berhasil disimpan' });
+
   } catch (error) {
     console.error('API /input-keuangan error:', error);
     return NextResponse.json(
