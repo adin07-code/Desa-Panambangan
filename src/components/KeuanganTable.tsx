@@ -259,7 +259,8 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
                 <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pemasukkan Kas KKM (Bendahara)</th>
                 <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pemasukan Pribadi</th>
                 <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pengeluaran Kas KKM (Bendahara)</th>
-                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-center">Pengeluaran Pribadi & Status</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pengeluaran Pribadi</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-center">Status Rembes</th>
                 <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-center">Aksi</th>
                 <th className="py-4 px-4 font-medium text-right bg-[#081c15]">Total Keseluruhan (Saldo)</th>
               </tr>
@@ -293,31 +294,29 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
                     
                     <td className="py-3 px-4 border-r border-gray-100 text-right text-rose-700 bg-rose-50/30">{item.pengeluaranKkm ? formatRupiah(item.pengeluaranKkm) : 'Rp -'}</td>
                     
-                    <td className="py-3 px-4 border-r border-gray-100 text-center bg-rose-50/30">
-                      <div className="flex flex-col items-center justify-center gap-2">
-                        <span className="font-medium text-rose-700">
-                          {item.pengeluaranPribadi ? formatRupiah(item.pengeluaranPribadi) : 'Rp -'}
-                        </span>
-                        
-                        {item.pengeluaranKkm && !item.is_rembes ? (
-                          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold w-max bg-rose-100 text-rose-700">
+                    <td className="py-3 px-4 border-r border-gray-100 text-right text-rose-700 bg-rose-50/30">{item.pengeluaranPribadi ? formatRupiah(item.pengeluaranPribadi) : 'Rp -'}</td>
+                    
+                    <td className="py-3 px-4 border-r border-gray-100 text-center bg-rose-50/10">
+                      {(item.pengeluaranKkm || item.pengeluaranPribadi) ? (
+                        item.pengeluaranKkm && !item.is_rembes ? (
+                          <div className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold w-max mx-auto bg-rose-100 text-rose-700 border border-rose-200">
                             <Wallet className="w-3 h-3" />
                             Kas KKM
                           </div>
-                        ) : (item.pengeluaranPribadi || item.is_rembes) ? (
+                        ) : (
                           <button 
                             onClick={() => toggleRembes(item)}
-                            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold transition-colors ${
+                            className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold mx-auto transition-colors border ${
                               item.is_rembes 
-                                ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' 
-                                : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                                ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-emerald-200' 
+                                : 'bg-amber-100 text-amber-700 hover:bg-amber-200 border-amber-200'
                             }`}
                           >
                             {item.is_rembes ? <CheckSquare className="w-3 h-3" /> : <Square className="w-3 h-3" />}
                             {item.is_rembes ? 'Sudah' : 'Belum'}
                           </button>
-                        ) : null}
-                      </div>
+                        )
+                      ) : '-'}
                     </td>
 
                     <td className="py-3 px-4 border-r border-gray-100 text-center">
@@ -347,6 +346,7 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
                       <td colSpan={2} className="py-2.5 px-4 border-r border-gray-200 text-center font-bold text-rose-800 bg-rose-100/50">
                         {formatRupiah(dailyTotal.outKkm + dailyTotal.outPribadi)}
                       </td>
+                      <td className="py-2.5 px-4 border-r border-gray-200 bg-rose-100/50"></td>
                       <td className="py-2.5 px-4 border-r border-gray-200 bg-rose-100/50"></td>
                       <td className="py-2.5 px-4 text-right font-bold text-rose-900 bg-rose-100/80">
                          {formatRupiah(dailyTotal.outKkm + dailyTotal.outPribadi)}
