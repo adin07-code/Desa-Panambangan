@@ -23,3 +23,30 @@ export async function GET() {
     return NextResponse.json({ error: "Gagal mengambil data", success: false }, { status: 500 });
   }
 }
+
+export async function PATCH(req: Request) {
+  try {
+    const body = await req.json();
+    const { id, is_rembes } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: "ID dibutuhkan", success: false }, { status: 400 });
+    }
+
+    const { data, error } = await supabase
+      .from('keuangan_konsumsi')
+      .update({ is_rembes })
+      .eq('id', id)
+      .select();
+
+    if (error) {
+      console.error("Supabase Error (Update):", error);
+      return NextResponse.json({ error: "Gagal update data", success: false }, { status: 500 });
+    }
+
+    return NextResponse.json({ data, success: true });
+  } catch (error) {
+    console.error("Error updating Keuangan:", error);
+    return NextResponse.json({ error: "Terjadi kesalahan", success: false }, { status: 500 });
+  }
+}

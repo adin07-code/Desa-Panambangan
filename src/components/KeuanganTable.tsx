@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { TrendingDown, TrendingUp, Wallet, CheckCircle2 } from 'lucide-react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { TrendingDown, TrendingUp, Wallet, CheckCircle2, CheckSquare, Square } from 'lucide-react';
 import { KeuanganItem } from '@/data/keuanganData';
 
 interface KeuanganTableProps {
@@ -9,6 +9,36 @@ interface KeuanganTableProps {
 }
 
 export default function KeuanganTable({ data }: KeuanganTableProps) {
+  const [localData, setLocalData] = useState<KeuanganItem[]>(data);
+
+  useEffect(() => {
+    setLocalData(data);
+  }, [data]);
+
+  const toggleRembes = async (id: string, currentStatus: boolean | undefined) => {
+    const newStatus = !currentStatus;
+    
+    // Optimistic update
+    setLocalData(prev => prev.map(item => 
+      item.id === id ? { ...item, is_rembes: newStatus } : item
+    ));
+
+    try {
+      const res = await fetch('/api/keuangan', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, is_rembes: newStatus })
+      });
+      if (!res.ok) throw new Error('Gagal update status');
+    } catch (err) {
+      console.error(err);
+      // Revert if failed
+      setLocalData(prev => prev.map(item => 
+        item.id === id ? { ...item, is_rembes: currentStatus } : item
+      ));
+      alert('Gagal mengubah status rembes. Coba lagi.');
+    }
+  };
   // Calculate running balance and totals
   const { 
     processedData,
@@ -94,7 +124,7 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
       totalPengeluaranPribadi: tPengeluaranPribadi,
       saldoPribadi: currentSaldoPribadi
     };
-  }, [data]);
+  }, [localData]);
 
   // Helper to format currency
   const formatRupiah = (amount: number | null | undefined) => {
@@ -187,6 +217,7 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
                 <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pemasukan Pribadi</th>
                 <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pengeluaran Kas KKM (Bendahara)</th>
                 <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pengeluaran Pribadi</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-center">Status Rembes</th>
                 <th className="py-4 px-4 font-medium text-right bg-[#081c15]">Total Keseluruhan (Saldo)</th>
               </tr>
             </thead>
@@ -220,6 +251,22 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
                     <td className="py-3 px-4 border-r border-gray-100 text-right text-rose-700 bg-rose-50/30">{item.pengeluaranKkm ? formatRupiah(item.pengeluaranKkm) : 'Rp -'}</td>
                     <td className="py-3 px-4 border-r border-gray-100 text-right text-rose-700 bg-rose-50/30">{item.pengeluaranPribadi ? formatRupiah(item.pengeluaranPribadi) : 'Rp -'}</td>
                     
+                    <td className="py-3 px-4 border-r border-gray-100 text-center">
+                      {(item.pengeluaranPribadi || item.pengeluaranKkm) ? (
+                        <button 
+                          onClick={() => toggleRembes(item.id, item.is_rembes)}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold mx-auto transition-colors ${
+                            item.is_rembes 
+                              ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' 
+                              : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                          }`}
+                        >
+                          {item.is_rembes ? <CheckSquare className="w-3.5 h-3.5" /> : <Square className="w-3.5 h-3.5" />}
+                          {item.is_rembes ? 'Sudah' : 'Belum'}
+                        </button>
+                      ) : '-'}
+                    </td>
+
                     <td className="py-3 px-4 text-right font-extrabold text-slate-800 bg-slate-50/50">{formatRupiah(item.saldo)}</td>
                   </tr>
                   
@@ -234,6 +281,7 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
                       <td className="py-2.5 px-4 border-r border-gray-200 text-right text-rose-800 bg-rose-100/50">
                         {dailyTotal.outPribadi > 0 ? formatRupiah(dailyTotal.outPribadi) : 'Rp -'}
                       </td>
+                      <td className="py-2.5 px-4 border-r border-gray-200 bg-rose-100/50"></td>
                       <td className="py-2.5 px-4 text-right font-bold text-rose-900 bg-rose-100/80">
                          {formatRupiah(dailyTotal.outKkm + dailyTotal.outPribadi)}
                       </td>

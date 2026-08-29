@@ -11,6 +11,7 @@ export interface KeuanganItem {
     pemasukanPribadi: number | null;
     pengeluaranKkm: number | null;
     pengeluaranPribadi: number | null;
+    is_rembes?: boolean;
 }
 
 export const keuanganData: KeuanganItem[] = [
