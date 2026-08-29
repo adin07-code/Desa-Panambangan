@@ -204,16 +204,32 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
             const result = await res.json();
             const keuanganData = result.data || [];
             
+            const wibTime = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+            const y = wibTime.getFullYear();
+            const m = (wibTime.getMonth() + 1).toString().padStart(2, '0');
+            const d = wibTime.getDate().toString().padStart(2, '0');
+            const todayStr = `${y}-${m}-${d}`;
+
             let totalPemasukanKkm = 0;
             let totalPengeluaranKkm = 0;
             let totalPemasukanPribadi = 0;
             let totalPengeluaranPribadi = 0;
+
+            const todayItems = [];
+            let todayTotal = 0;
 
             keuanganData.forEach(item => {
                 if (item.pemasukanKkm) totalPemasukanKkm += item.pemasukanKkm;
                 if (item.pengeluaranKkm) totalPengeluaranKkm += item.pengeluaranKkm;
                 if (item.pemasukanPribadi) totalPemasukanPribadi += item.pemasukanPribadi;
                 if (item.pengeluaranPribadi) totalPengeluaranPribadi += item.pengeluaranPribadi;
+
+                if (item.tanggal === todayStr && item.namaBarang && !item.namaBarang.toLowerCase().includes('saldo awal')) {
+                    if (item.pengeluaranKkm || item.pengeluaranPribadi || item.totalBarang) {
+                        todayItems.push(item);
+                        todayTotal += (item.pengeluaranKkm || 0) + (item.pengeluaranPribadi || 0);
+                    }
+                }
             });
 
             const saldoKkm = totalPemasukanKkm - totalPengeluaranKkm;
@@ -229,15 +245,23 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
             let reply = `📊 *LAPORAN KEUANGAN (SIE KONSUMSI)*\n\n`;
             reply += `💰 *Sisa Kas KKM:* ${formatRp(saldoKkm)}\n`;
             reply += `💰 *Sisa Kas Pribadi:* ${formatRp(saldoPribadi)}\n\n`;
+
+            reply += `🛒 *PENGELUARAN HARI INI (${d}/${m}/${y}):*\n`;
+            if (todayItems.length > 0) {
+                todayItems.forEach((item, idx) => {
+                    const itemName = item.namaBarang;
+                    const pcs = item.pcs || '1';
+                    const hargaSatuan = item.hargaSatuan ? formatRp(item.hargaSatuan) : '-';
+                    const totalItem = formatRp((item.pengeluaranKkm || 0) + (item.pengeluaranPribadi || 0));
+                    
+                    reply += `${idx + 1}. *${itemName}*\n`;
+                    reply += `   └ ${pcs} pcs x ${hargaSatuan} = ${totalItem}\n`;
+                });
+                reply += `\n*Total Hari Ini:* ${formatRp(todayTotal)}\n\n`;
+            } else {
+                reply += `_Belum ada data pengeluaran hari ini._\n\n`;
+            }
             
-            reply += `*Detail Kas KKM:*\n`;
-            reply += `📈 Pemasukan: ${formatRp(totalPemasukanKkm)}\n`;
-            reply += `📉 Pengeluaran: ${formatRp(totalPengeluaranKkm)}\n\n`;
-
-            reply += `*Detail Kas Pribadi:*\n`;
-            reply += `📈 Pemasukan: ${formatRp(totalPemasukanPribadi)}\n`;
-            reply += `📉 Pengeluaran: ${formatRp(totalPengeluaranPribadi)}\n\n`;
-
             reply += `_Cek rincian buku kas selengkapnya:_\nhttps://desa-panambangan.vercel.app/laporan-keuangan`;
             
             await message.reply(reply);
