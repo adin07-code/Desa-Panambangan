@@ -1,3 +1,4 @@
+/* eslint-disable */
 const Papa = require('papaparse');
 
 const PIKET_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1ZIM8Eq3lQUfnK7kAUK90A-QwQvhCyA4lPbzxlT5j2Uo/export?format=csv";

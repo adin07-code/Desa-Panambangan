@@ -1,3 +1,4 @@
+/* eslint-disable */
 // WAJIB DIISI: Paste link Google Spreadsheet (Excel) absensi Anda di dalam tanda kutip di bawah ini!
 // Contoh: var SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1qP5OP7Yh3XwIcQiXaym4MNS4n1_VxPRV0zx2yVVppR0/edit";
 var SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1qP5OP7Yh3XwIcQiXaym4MNS4n1_VxPRV0zx2yVVppR0/edit";
