@@ -11,7 +11,8 @@ interface KeuanganTableProps {
 export default function KeuanganTable({ data }: KeuanganTableProps) {
   // Calculate running balance and totals
   const { 
-    processedData, 
+    processedData,
+    dailyTotals,
     totalPemasukanKkm, 
     totalPengeluaranKkm, 
     saldoKkm,
@@ -28,6 +29,7 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
     let tPengeluaranPribadi = 0;
 
     let currentTotalKeseluruhan = 0;
+    const dailyTotals: Record<string, { outKkm: number, outPribadi: number }> = {};
 
     const processed = data.map((item, index, arr) => {
       // KKM
@@ -49,6 +51,13 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
         currentSaldoPribadi -= item.pengeluaranPribadi;
         tPengeluaranPribadi += item.pengeluaranPribadi;
       }
+
+      // Daily totals calculation
+      if (!dailyTotals[item.tanggal]) {
+        dailyTotals[item.tanggal] = { outKkm: 0, outPribadi: 0 };
+      }
+      if (item.pengeluaranKkm) dailyTotals[item.tanggal].outKkm += item.pengeluaranKkm;
+      if (item.pengeluaranPribadi) dailyTotals[item.tanggal].outPribadi += item.pengeluaranPribadi;
 
       // Total Keseluruhan (Saldo)
       currentTotalKeseluruhan = currentSaldoKkm + currentSaldoPribadi;
@@ -77,6 +86,7 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
 
     return {
       processedData: processed,
+      dailyTotals,
       totalPemasukanKkm: tPemasukanKkm,
       totalPengeluaranKkm: tPengeluaranKkm,
       saldoKkm: currentSaldoKkm,
@@ -181,34 +191,55 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {processedData.map((item) => {
+              {processedData.map((item, idx) => {
+                const isLastOfDate = idx === processedData.length - 1 || processedData[idx + 1].tanggal !== item.tanggal;
+                const dailyTotal = dailyTotals[item.tanggal];
                 return (
-                <tr key={item.id} className="hover:bg-gray-50/50 transition-colors text-sm">
-                  {item.rowSpan > 0 && (
-                    <td 
-                      rowSpan={item.rowSpan} 
-                      className="py-3 px-4 border-r border-b border-gray-200 whitespace-nowrap font-medium text-gray-700 align-top bg-white"
-                    >
-                      {item.tanggal}
-                    </td>
+                <React.Fragment key={item.id}>
+                  <tr className="hover:bg-gray-50/50 transition-colors text-sm">
+                    {item.rowSpan > 0 && (
+                      <td 
+                        rowSpan={item.rowSpan} 
+                        className="py-3 px-4 border-r border-b border-gray-200 whitespace-nowrap font-medium text-gray-700 align-top bg-white"
+                      >
+                        {item.tanggal}
+                      </td>
+                    )}
+                    <td className="py-3 px-4 border-r border-gray-100 font-medium text-gray-800">{item.namaBarang}</td>
+                    <td className="py-3 px-4 border-r border-gray-100 text-gray-600">{item.siapaBeli}</td>
+                    
+                    <td className="py-3 px-4 border-r border-gray-100 text-center">{item.pcs || '-'}</td>
+                    <td className="py-3 px-4 border-r border-gray-100 text-center">{item.sisaBarang || '-'}</td>
+                    
+                    <td className="py-3 px-4 border-r border-gray-100 text-right">{item.hargaSatuan ? formatRupiah(item.hargaSatuan) : '-'}</td>
+                    <td className="py-3 px-4 border-r border-gray-100 text-right font-medium">{item.totalBarang ? formatRupiah(item.totalBarang) : '-'}</td>
+                    
+                    <td className="py-3 px-4 border-r border-gray-100 text-right text-emerald-700 bg-emerald-50/30">{item.pemasukanKkm ? formatRupiah(item.pemasukanKkm) : 'Rp -'}</td>
+                    <td className="py-3 px-4 border-r border-gray-100 text-right text-emerald-700 bg-emerald-50/30">{item.pemasukanPribadi ? formatRupiah(item.pemasukanPribadi) : 'Rp -'}</td>
+                    
+                    <td className="py-3 px-4 border-r border-gray-100 text-right text-rose-700 bg-rose-50/30">{item.pengeluaranKkm ? formatRupiah(item.pengeluaranKkm) : 'Rp -'}</td>
+                    <td className="py-3 px-4 border-r border-gray-100 text-right text-rose-700 bg-rose-50/30">{item.pengeluaranPribadi ? formatRupiah(item.pengeluaranPribadi) : 'Rp -'}</td>
+                    
+                    <td className="py-3 px-4 text-right font-extrabold text-slate-800 bg-slate-50/50">{formatRupiah(item.saldo)}</td>
+                  </tr>
+                  
+                  {isLastOfDate && (dailyTotal.outKkm > 0 || dailyTotal.outPribadi > 0) && (
+                    <tr className="bg-rose-50/40 font-semibold text-sm border-b-2 border-rose-100">
+                      <td colSpan={9} className="py-2.5 px-4 border-r border-gray-200 text-right text-rose-900 tracking-wide uppercase text-xs">
+                        Total Pengeluaran ({item.tanggal}):
+                      </td>
+                      <td className="py-2.5 px-4 border-r border-gray-200 text-right text-rose-800 bg-rose-100/50">
+                        {dailyTotal.outKkm > 0 ? formatRupiah(dailyTotal.outKkm) : 'Rp -'}
+                      </td>
+                      <td className="py-2.5 px-4 border-r border-gray-200 text-right text-rose-800 bg-rose-100/50">
+                        {dailyTotal.outPribadi > 0 ? formatRupiah(dailyTotal.outPribadi) : 'Rp -'}
+                      </td>
+                      <td className="py-2.5 px-4 text-right font-bold text-rose-900 bg-rose-100/80">
+                         {formatRupiah(dailyTotal.outKkm + dailyTotal.outPribadi)}
+                      </td>
+                    </tr>
                   )}
-                  <td className="py-3 px-4 border-r border-gray-100 font-medium text-gray-800">{item.namaBarang}</td>
-                  <td className="py-3 px-4 border-r border-gray-100 text-gray-600">{item.siapaBeli}</td>
-                  
-                  <td className="py-3 px-4 border-r border-gray-100 text-center">{item.pcs || '-'}</td>
-                  <td className="py-3 px-4 border-r border-gray-100 text-center">{item.sisaBarang || '-'}</td>
-                  
-                  <td className="py-3 px-4 border-r border-gray-100 text-right">{item.hargaSatuan ? formatRupiah(item.hargaSatuan) : '-'}</td>
-                  <td className="py-3 px-4 border-r border-gray-100 text-right font-medium">{item.totalBarang ? formatRupiah(item.totalBarang) : '-'}</td>
-                  
-                  <td className="py-3 px-4 border-r border-gray-100 text-right text-emerald-700 bg-emerald-50/30">{item.pemasukanKkm ? formatRupiah(item.pemasukanKkm) : 'Rp -'}</td>
-                  <td className="py-3 px-4 border-r border-gray-100 text-right text-emerald-700 bg-emerald-50/30">{item.pemasukanPribadi ? formatRupiah(item.pemasukanPribadi) : 'Rp -'}</td>
-                  
-                  <td className="py-3 px-4 border-r border-gray-100 text-right text-rose-700 bg-rose-50/30">{item.pengeluaranKkm ? formatRupiah(item.pengeluaranKkm) : 'Rp -'}</td>
-                  <td className="py-3 px-4 border-r border-gray-100 text-right text-rose-700 bg-rose-50/30">{item.pengeluaranPribadi ? formatRupiah(item.pengeluaranPribadi) : 'Rp -'}</td>
-                  
-                  <td className="py-3 px-4 text-right font-extrabold text-slate-800 bg-slate-50/50">{formatRupiah(item.saldo)}</td>
-                </tr>
+                </React.Fragment>
                 );
               })}
             </tbody>
