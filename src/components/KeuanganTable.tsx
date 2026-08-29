@@ -62,7 +62,7 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
     let currentTotalKeseluruhan = 0;
     const dailyTotals: Record<string, { outKkm: number, outPribadi: number }> = {};
 
-    const processed = data.map((item, index, arr) => {
+    const processed = localData.map((item, index, arr) => {
       // KKM
       if (item.pemasukanKkm) {
         currentSaldoKkm += item.pemasukanKkm;
@@ -72,8 +72,6 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
         currentSaldoKkm -= item.pengeluaranKkm;
         tPengeluaranKkm += item.pengeluaranKkm;
       }
-
-      // Pribadi
       if (item.pemasukanPribadi) {
         currentSaldoPribadi += item.pemasukanPribadi;
         tPemasukanPribadi += item.pemasukanPribadi;
