@@ -70,10 +70,11 @@ Berikut adalah beberapa perintah yang bisa Anda gunakan:
 5. *!logbook* - Menampilkan link ke pengisian logbook harian
 6. *!rundown* - Menampilkan rundown kegiatan 1 bulan
 7. *!mandi* - Menampilkan urutan mandi harian
+8. *!keuangan* - Menampilkan ringkasan laporan keuangan
 
 *Khusus Pengurus:*
-8. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
-9. *!bendahara* - Menu khusus Edit Laporan Keuangan (Terkunci 🔒)
+9. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
+10. *!bendahara* - Menu khusus Edit Laporan Keuangan (Terkunci 🔒)
 
 _Ketik perintah di atas untuk menggunakan fitur bot._`;
         await message.reply(helpText);
@@ -191,6 +192,59 @@ _Ketik perintah di atas untuk menggunakan fitur bot._`;
     // Command: !rundown
     else if (text === '!rundown' || text === 'rundown') {
         await message.reply('📄 *Rundown 1 Bulan KKM 14*\n\nSilakan cek detail rundown kegiatan kita selama 1 bulan penuh melalui link berikut:\nhttps://docs.google.com/document/d/1vO67-m_gBJYlS53Yn8OAhs6c5OheWpMsyWQm2kVuBfQ/edit?tab=t.0');
+    }
+    
+    // Command: !keuangan
+    else if (text === '!keuangan' || text === 'keuangan') {
+        await message.reply('⏳ Sedang memuat rekapan laporan keuangan...');
+        try {
+            const res = await fetch(`https://desa-panambangan.vercel.app/api/keuangan?t=${new Date().getTime()}`);
+            if (!res.ok) throw new Error('Gagal memuat API');
+            
+            const result = await res.json();
+            const keuanganData = result.data || [];
+            
+            let totalPemasukanKkm = 0;
+            let totalPengeluaranKkm = 0;
+            let totalPemasukanPribadi = 0;
+            let totalPengeluaranPribadi = 0;
+
+            keuanganData.forEach(item => {
+                if (item.pemasukanKkm) totalPemasukanKkm += item.pemasukanKkm;
+                if (item.pengeluaranKkm) totalPengeluaranKkm += item.pengeluaranKkm;
+                if (item.pemasukanPribadi) totalPemasukanPribadi += item.pemasukanPribadi;
+                if (item.pengeluaranPribadi) totalPengeluaranPribadi += item.pengeluaranPribadi;
+            });
+
+            const saldoKkm = totalPemasukanKkm - totalPengeluaranKkm;
+            const saldoPribadi = totalPemasukanPribadi - totalPengeluaranPribadi;
+
+            const formatRp = (angka) => {
+                if (angka === 0) return 'Rp 0';
+                const abs = Math.abs(angka);
+                const str = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(abs);
+                return angka < 0 ? `-${str}` : str;
+            };
+
+            let reply = `📊 *LAPORAN KEUANGAN (SIE KONSUMSI)*\n\n`;
+            reply += `💰 *Sisa Kas KKM:* ${formatRp(saldoKkm)}\n`;
+            reply += `💰 *Sisa Kas Pribadi:* ${formatRp(saldoPribadi)}\n\n`;
+            
+            reply += `*Detail Kas KKM:*\n`;
+            reply += `📈 Pemasukan: ${formatRp(totalPemasukanKkm)}\n`;
+            reply += `📉 Pengeluaran: ${formatRp(totalPengeluaranKkm)}\n\n`;
+
+            reply += `*Detail Kas Pribadi:*\n`;
+            reply += `📈 Pemasukan: ${formatRp(totalPemasukanPribadi)}\n`;
+            reply += `📉 Pengeluaran: ${formatRp(totalPengeluaranPribadi)}\n\n`;
+
+            reply += `_Cek rincian buku kas selengkapnya:_\nhttps://desa-panambangan.vercel.app/laporan-keuangan`;
+            
+            await message.reply(reply);
+        } catch (e) {
+            await message.reply('❌ Terjadi kesalahan saat menarik data keuangan.\n\n_Cek manual di website:_ https://desa-panambangan.vercel.app/laporan-keuangan');
+            console.error(e);
+        }
     }
     
     // Command: !mandi
