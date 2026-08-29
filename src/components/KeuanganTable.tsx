@@ -296,7 +296,12 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
                     <td className="py-3 px-4 border-r border-gray-100 text-right text-rose-700 bg-rose-50/30">{item.pengeluaranPribadi ? formatRupiah(item.pengeluaranPribadi) : 'Rp -'}</td>
                     
                     <td className="py-3 px-4 border-r border-gray-100 text-center">
-                      {(item.pengeluaranPribadi || item.pengeluaranKkm || item.is_rembes) ? (
+                      {item.pengeluaranKkm && !item.is_rembes ? (
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold mx-auto w-max bg-rose-100 text-rose-700">
+                          <Wallet className="w-3.5 h-3.5" />
+                          Kas KKM
+                        </div>
+                      ) : (item.pengeluaranPribadi || item.is_rembes) ? (
                         <button 
                           onClick={() => toggleRembes(item)}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold mx-auto transition-colors ${
