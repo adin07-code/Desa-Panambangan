@@ -2,15 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { TrendingDown, TrendingUp, Wallet, CheckCircle2 } from 'lucide-react';
-
-export interface KeuanganItem {
-    id: string;
-    tanggal: string;
-    hari: string;
-    keterangan: string;
-    tipe: 'Pemasukan' | 'Pengeluaran';
-    jumlah: number;
-}
+import { KeuanganItem } from '@/data/keuanganData';
 
 interface KeuanganTableProps {
   data: KeuanganItem[];
@@ -18,84 +10,147 @@ interface KeuanganTableProps {
 
 export default function KeuanganTable({ data }: KeuanganTableProps) {
   // Calculate running balance and totals
-  const { processedData, totalPemasukan, totalPengeluaran, saldoAkhir } = useMemo(() => {
-    let currentSaldo = 0;
-    let tPemasukan = 0;
-    let tPengeluaran = 0;
+  const { 
+    processedData, 
+    totalPemasukanKkm, 
+    totalPengeluaranKkm, 
+    saldoKkm,
+    totalPemasukanPribadi,
+    totalPengeluaranPribadi,
+    saldoPribadi
+  } = useMemo(() => {
+    let currentSaldoKkm = 0;
+    let tPemasukanKkm = 0;
+    let tPengeluaranKkm = 0;
 
-    const processed = data.map(item => {
-      if (item.tipe === 'Pemasukan') {
-        currentSaldo += item.jumlah;
-        tPemasukan += item.jumlah;
-      } else {
-        currentSaldo -= item.jumlah;
-        tPengeluaran += item.jumlah;
+    let currentSaldoPribadi = 0;
+    let tPemasukanPribadi = 0;
+    let tPengeluaranPribadi = 0;
+
+    let currentTotalKeseluruhan = 0;
+
+    const processed = data.map((item, index, arr) => {
+      // KKM
+      if (item.pemasukanKkm) {
+        currentSaldoKkm += item.pemasukanKkm;
+        tPemasukanKkm += item.pemasukanKkm;
       }
+      if (item.pengeluaranKkm) {
+        currentSaldoKkm -= item.pengeluaranKkm;
+        tPengeluaranKkm += item.pengeluaranKkm;
+      }
+
+      // Pribadi
+      if (item.pemasukanPribadi) {
+        currentSaldoPribadi += item.pemasukanPribadi;
+        tPemasukanPribadi += item.pemasukanPribadi;
+      }
+      if (item.pengeluaranPribadi) {
+        currentSaldoPribadi -= item.pengeluaranPribadi;
+        tPengeluaranPribadi += item.pengeluaranPribadi;
+      }
+
+      // Total Keseluruhan (Saldo)
+      currentTotalKeseluruhan = currentSaldoKkm + currentSaldoPribadi;
+
+      // Calculate rowSpan for tanggal
+      let rowSpan = 1;
+      if (index > 0 && item.tanggal === arr[index - 1].tanggal) {
+        rowSpan = 0; // Don't render td if same as previous
+      } else {
+        // Count how many subsequent rows have the same date
+        for (let i = index + 1; i < arr.length; i++) {
+          if (arr[i].tanggal === item.tanggal) {
+            rowSpan++;
+          } else {
+            break;
+          }
+        }
+      }
+
       return {
         ...item,
-        saldo: currentSaldo
+        saldo: currentTotalKeseluruhan,
+        rowSpan
       };
     });
 
     return {
       processedData: processed,
-      totalPemasukan: tPemasukan,
-      totalPengeluaran: tPengeluaran,
-      saldoAkhir: currentSaldo
+      totalPemasukanKkm: tPemasukanKkm,
+      totalPengeluaranKkm: tPengeluaranKkm,
+      saldoKkm: currentSaldoKkm,
+      totalPemasukanPribadi: tPemasukanPribadi,
+      totalPengeluaranPribadi: tPengeluaranPribadi,
+      saldoPribadi: currentSaldoPribadi
     };
   }, [data]);
 
   // Helper to format currency
-  const formatRupiah = (amount: number) => {
-    return new Intl.NumberFormat('id-ID', {
+  const formatRupiah = (amount: number | null | undefined) => {
+    if (amount === null || amount === undefined) return '-';
+    // Format according to Excel screenshot: Rp 38,000 or -Rp 38,000
+    const isNegative = amount < 0;
+    const absAmount = Math.abs(amount);
+    
+    if (absAmount === 0) return 'Rp -';
+
+    const formatted = new Intl.NumberFormat('id-ID', {
       style: 'currency',
       currency: 'IDR',
       minimumFractionDigits: 0
-    }).format(amount);
+    }).format(absAmount);
+
+    return isNegative ? `-${formatted}` : formatted;
   };
 
   return (
     <div className="w-full pb-12 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
       
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        {/* Pemasukan Card */}
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-emerald-100 flex items-center gap-5">
-          <div className="bg-emerald-100 p-4 rounded-2xl text-emerald-600">
-            <TrendingUp className="w-8 h-8" />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Pemasukan</p>
-            <p className="text-2xl font-bold text-emerald-600">{formatRupiah(totalPemasukan)}</p>
-          </div>
-        </div>
+      {/* Summary Dashboard - matches the screenshot */}
+      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col gap-6">
+        <h2 className="text-xl md:text-2xl font-black text-slate-800 border-b pb-4 flex items-center gap-3">
+          <Wallet className="w-6 h-6 text-[#466651]" /> 
+          LAPORAN KEUANGAN KKM 14 & PRIBADI
+        </h2>
 
-        {/* Pengeluaran Card */}
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-rose-100 flex items-center gap-5">
-          <div className="bg-rose-100 p-4 rounded-2xl text-rose-600">
-            <TrendingDown className="w-8 h-8" />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Pengeluaran</p>
-            <p className="text-2xl font-bold text-rose-600">{formatRupiah(totalPengeluaran)}</p>
-          </div>
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* KKM Section */}
+            <div className="space-y-4">
+                <div className="bg-[#466651] text-white p-4 rounded-xl shadow-md">
+                    <h3 className="text-sm font-bold uppercase tracking-wider mb-1 text-white/80">Total Kas KKM Tersisa</h3>
+                    <p className="text-3xl font-extrabold">{formatRupiah(saldoKkm)}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
+                        <p className="text-xs font-bold text-emerald-800 uppercase mb-1">Total Pemasukan KKM</p>
+                        <p className="text-lg font-bold text-emerald-600">{formatRupiah(totalPemasukanKkm)}</p>
+                    </div>
+                    <div className="bg-rose-50 p-4 rounded-xl border border-rose-100">
+                        <p className="text-xs font-bold text-rose-800 uppercase mb-1">Total Pengeluaran KKM</p>
+                        <p className="text-lg font-bold text-rose-600">{formatRupiah(totalPengeluaranKkm)}</p>
+                    </div>
+                </div>
+            </div>
 
-        {/* Saldo Akhir Card */}
-        <div className="bg-gradient-to-br from-[#466651] to-[#3a5643] rounded-3xl p-6 shadow-xl shadow-[#466651]/20 flex items-center gap-5 text-white border border-white/10 relative overflow-hidden">
-          <div className="absolute right-0 top-0 opacity-10 transform translate-x-4 -translate-y-4">
-             <Wallet className="w-24 h-24" />
-          </div>
-          <div className="bg-[#b2d5bb]/30 p-4 rounded-2xl text-white relative z-10">
-            <Wallet className="w-8 h-8" />
-          </div>
-          <div className="relative z-10">
-            <p className="text-sm font-semibold text-white/80 uppercase tracking-wider">Saldo Akhir</p>
-            <p className="text-2xl font-extrabold">{formatRupiah(saldoAkhir)}</p>
-          </div>
+            {/* Pribadi Section */}
+            <div className="space-y-4">
+                <div className="bg-slate-700 text-white p-4 rounded-xl shadow-md">
+                    <h3 className="text-sm font-bold uppercase tracking-wider mb-1 text-white/80">Total Kas Pribadi Tersisa</h3>
+                    <p className="text-3xl font-extrabold">{formatRupiah(saldoPribadi)}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <p className="text-xs font-bold text-slate-700 uppercase mb-1">Total Pemasukan Pribadi</p>
+                        <p className="text-lg font-bold text-slate-800">{formatRupiah(totalPemasukanPribadi)}</p>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <p className="text-xs font-bold text-slate-700 uppercase mb-1">Total Pengeluaran Pribadi</p>
+                        <p className="text-lg font-bold text-slate-800">{formatRupiah(totalPengeluaranPribadi)}</p>
+                    </div>
+                </div>
+            </div>
         </div>
-
       </div>
 
       {/* Main Ledger Table */}
@@ -104,61 +159,58 @@ export default function KeuanganTable({ data }: KeuanganTableProps) {
           <div className="bg-[#b2d5bb]/30 p-2.5 rounded-2xl text-[#466651]">
             <CheckCircle2 className="w-5 h-5" />
           </div>
-          <h3 className="text-lg font-bold text-[#466651] tracking-tight">Rincian Transaksi</h3>
+          <h3 className="text-lg font-bold text-[#466651] tracking-tight">Buku Kas & Stok (Sie Konsumsi)</h3>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[800px]">
+          <table className="w-full text-left border-collapse min-w-[1200px]">
             <thead>
-              <tr className="bg-white/50 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100">
-                <th className="py-4 px-6 font-medium w-32">Tanggal</th>
-                <th className="py-4 px-6 font-medium">Keterangan</th>
-                <th className="py-4 px-6 font-medium text-right w-40">Pemasukan</th>
-                <th className="py-4 px-6 font-medium text-right w-40">Pengeluaran</th>
-                <th className="py-4 px-6 font-medium text-right w-44">Saldo</th>
+              <tr className="bg-[#1b4332] text-xs font-semibold text-white uppercase tracking-wider border-b border-[#1b4332]">
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f]">Tanggal</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f]">Nama Barang / Uraian</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f]">Siapa yang Beli</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-center">Pcs</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-center">Barang yang Masih Ada</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Harga Satuan</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Total per Barang</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pemasukkan Kas KKM (Bendahara)</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pemasukan Pribadi</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pengeluaran Kas KKM (Bendahara)</th>
+                <th className="py-4 px-4 font-medium border-r border-[#2d6a4f] text-right">Pengeluaran Pribadi</th>
+                <th className="py-4 px-4 font-medium text-right bg-[#081c15]">Total Keseluruhan (Saldo)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
-              {processedData.map((item, idx) => (
-                <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="py-4 px-6">
-                    <div className="font-semibold text-gray-800">{item.tanggal}</div>
-                    <div className="text-xs text-gray-500">{item.hari}</div>
-                  </td>
-                  <td className="py-4 px-6">
-                    <span className="text-gray-700 font-medium">{item.keterangan}</span>
-                  </td>
+            <tbody className="divide-y divide-gray-200">
+              {processedData.map((item) => {
+                return (
+                <tr key={item.id} className="hover:bg-gray-50/50 transition-colors text-sm">
+                  {item.rowSpan > 0 && (
+                    <td 
+                      rowSpan={item.rowSpan} 
+                      className="py-3 px-4 border-r border-b border-gray-200 whitespace-nowrap font-medium text-gray-700 align-top bg-white"
+                    >
+                      {item.tanggal}
+                    </td>
+                  )}
+                  <td className="py-3 px-4 border-r border-gray-100 font-medium text-gray-800">{item.namaBarang}</td>
+                  <td className="py-3 px-4 border-r border-gray-100 text-gray-600">{item.siapaBeli}</td>
                   
-                  {/* Pemasukan */}
-                  <td className="py-4 px-6 text-right">
-                    {item.tipe === 'Pemasukan' ? (
-                      <span className="text-emerald-600 font-bold bg-emerald-50 px-2.5 py-1 rounded-lg inline-block">
-                        + {formatRupiah(item.jumlah)}
-                      </span>
-                    ) : (
-                      <span className="text-gray-300">-</span>
-                    )}
-                  </td>
+                  <td className="py-3 px-4 border-r border-gray-100 text-center">{item.pcs || '-'}</td>
+                  <td className="py-3 px-4 border-r border-gray-100 text-center">{item.sisaBarang || '-'}</td>
                   
-                  {/* Pengeluaran */}
-                  <td className="py-4 px-6 text-right">
-                    {item.tipe === 'Pengeluaran' ? (
-                      <span className="text-rose-600 font-bold bg-rose-50 px-2.5 py-1 rounded-lg inline-block">
-                        - {formatRupiah(item.jumlah)}
-                      </span>
-                    ) : (
-                      <span className="text-gray-300">-</span>
-                    )}
-                  </td>
-
-                  {/* Saldo */}
-                  <td className="py-4 px-6 text-right">
-                    <span className="font-extrabold text-[#466651]">
-                      {formatRupiah(item.saldo)}
-                    </span>
-                  </td>
+                  <td className="py-3 px-4 border-r border-gray-100 text-right">{item.hargaSatuan ? formatRupiah(item.hargaSatuan) : '-'}</td>
+                  <td className="py-3 px-4 border-r border-gray-100 text-right font-medium">{item.totalBarang ? formatRupiah(item.totalBarang) : '-'}</td>
+                  
+                  <td className="py-3 px-4 border-r border-gray-100 text-right text-emerald-700 bg-emerald-50/30">{item.pemasukanKkm ? formatRupiah(item.pemasukanKkm) : 'Rp -'}</td>
+                  <td className="py-3 px-4 border-r border-gray-100 text-right text-emerald-700 bg-emerald-50/30">{item.pemasukanPribadi ? formatRupiah(item.pemasukanPribadi) : 'Rp -'}</td>
+                  
+                  <td className="py-3 px-4 border-r border-gray-100 text-right text-rose-700 bg-rose-50/30">{item.pengeluaranKkm ? formatRupiah(item.pengeluaranKkm) : 'Rp -'}</td>
+                  <td className="py-3 px-4 border-r border-gray-100 text-right text-rose-700 bg-rose-50/30">{item.pengeluaranPribadi ? formatRupiah(item.pengeluaranPribadi) : 'Rp -'}</td>
+                  
+                  <td className="py-3 px-4 text-right font-extrabold text-slate-800 bg-slate-50/50">{formatRupiah(item.saldo)}</td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>

@@ -38,13 +38,13 @@ export default function LaporanKeuanganPage() {
           <div className="flex flex-col items-start gap-4 flex-1">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-100/80 text-emerald-700 text-sm font-semibold tracking-wide border border-emerald-200">
               <CircleDollarSign className="w-4 h-4" />
-              <span>Rekapitulasi Dana (Live dari Google Sheets)</span>
+              <span>Data Rekapitulasi (Format Baru)</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
-              Laporan Keuangan
+              Laporan Keuangan <span className="text-[#466651]">Sie Konsumsi</span>
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl leading-relaxed">
-              Rincian seluruh transaksi arus kas (pemasukan dan pengeluaran) KKM Kelompok 14 UMC di Desa Panambangan secara real-time.
+              Rincian seluruh transaksi arus kas (Dana KKM & Pribadi) khusus untuk keperluan Sie Konsumsi KKM Kelompok 14 UMC di Desa Panambangan.
             </p>
           </div>
 
