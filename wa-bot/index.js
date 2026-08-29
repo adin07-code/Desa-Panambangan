@@ -71,7 +71,7 @@ Berikut adalah beberapa perintah yang bisa Anda gunakan:
 5. *!logbook* - Menampilkan link ke pengisian logbook harian
 6. *!rundown* - Menampilkan rundown kegiatan 1 bulan
 7. *!mandi* - Menampilkan urutan mandi harian
-8. *!keuangan* - Laporan keuangan & link input data pengeluaran
+8. *!pengeluaran* - Laporan keuangan & link input data pengeluaran
 
 *Khusus Pengurus:*
 9. *!siekonsumsi* - Menu khusus Edit Jadwal Piket & Menu (Terkunci 🔒)
